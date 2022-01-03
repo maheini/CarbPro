@@ -7,9 +7,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-//comment
-
-//Comment2
 
 class FileSaver extends StatefulWidget {
   const FileSaver({Key? key}) : super(key: key);
