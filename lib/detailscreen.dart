@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -9,6 +8,9 @@ class DetailScreen extends StatefulWidget {
   @override
   _DetailScreenState createState() => _DetailScreenState();
 }
+
+//FIRST CHANGE
+//SECOND CHANGE
 
 class _DetailScreenState extends State<DetailScreen> {
   Widget _createImage(int index) {
@@ -72,7 +74,7 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     }
     else {
-      print('Plattform wird nicht unterstützt....');
+      print('Plattform nicht unterstützt....');
     }
   }
 
