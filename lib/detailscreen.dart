@@ -12,6 +12,7 @@ class DetailScreen extends StatefulWidget {
 //FIRST CHANGE
 //SECOND CHANGE
 //THIRD CHANGE
+//
 
 class _DetailScreenState extends State<DetailScreen> {
   Widget _createImage(int index) {
