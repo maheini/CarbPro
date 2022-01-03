@@ -10,9 +10,9 @@ import 'package:path/path.dart';
 class DatabaseCommunicator {
 
   //GET PERMISSIONS AND CLOSE DATABASE
-  Future <Database?> _openDatabase()async{
+  static Future <Database?> _openDatabase()async{
     if (Platform.isAndroid) {
-      if (await requestPermission(Permission.storage)) {
+      if (await _requestPermission(Permission.storage)) {
         Directory? dir = await getExternalStorageDirectory();
         if (await dir!.exists()) {
           String path = join(dir.path, 'database.db');
@@ -32,12 +32,12 @@ class DatabaseCommunicator {
   }
 
   //CLOSE DATABASE
-  void _closeDatabase(Database database) {
+  static void _closeDatabase(Database database) {
     database.close();
   }
 
   //ADD ITEM AND RETURNS THE ITEM ID
-  Future<int> addItem(String newName) async {
+  static Future<int> addItem(String newName) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
 
@@ -47,7 +47,7 @@ class DatabaseCommunicator {
   }
 
   //REMOVE ITEM AND RETURNS THE AMOUNT OF AFFECTED ROWS
-  Future<int> removeItem(int id) async {
+  static Future<int> removeItem(int id) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
 
@@ -57,7 +57,7 @@ class DatabaseCommunicator {
   }
 
   //CHANGE NAME AND RETURNS THE AMOUNT OF AFFECTED ROWS
-  Future<int> changeItemName(int id, String newName) async {
+  static Future<int> changeItemName(int id, String newName) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
 
@@ -67,7 +67,7 @@ class DatabaseCommunicator {
   }
 
   //LOADS ALL ITEMS FROM THE DATABASE
-  Future<List<Map>> getItems() async {
+  static Future<List<Map>> getItems() async {
     Database? db = await _openDatabase();
     if(db == null) return [];
 
@@ -76,7 +76,7 @@ class DatabaseCommunicator {
     return result;
   }
 
-  Future<bool> requestPermission(Permission permission) async{
+  static Future<bool> _requestPermission(Permission permission) async{
     if(await permission.isGranted) {
       return true;
     }

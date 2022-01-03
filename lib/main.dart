@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'databasecommunicator.dart';
 import 'detailscreen.dart';
 import 'filesave.dart';
 
 void main() =>runApp(MaterialApp(
-    home: FileSaver(),
-    )
-//   routes: {
-//     '/': (context) => MyApp(),
-//     '/details': (context) => DetailScreen(),
-//   },
-//   theme: ThemeData.dark(),
-//   title: 'CarbPro',
-// )
+    // home: FileSaver(),
+    // )
+  routes: {
+    '/': (context) => MyApp(),
+    '/details': (context) => DetailScreen(),
+  },
+  theme: ThemeData.dark(),
+  title: 'CarbPro',
+)
 );
 
 
@@ -67,15 +68,25 @@ class _MyAppState extends State<MyApp> {
   }
 
   //LIST GENERATER
-  var _items = <String>['Hallo', 'Zusammen', 'GGG', 'Test'];
+  void _loadItems() async {
+    _items = await DatabaseCommunicator.getItems();
+    setState(() {_reloadItems = false;});
+  }
+  List<Map> _items = [];
+  bool _reloadItems = true;
   Widget _makeList({String filter = ''})
   {
-    var items = _search?_items.where((gg) {return gg.contains(_searchController.text);}).toList():_items;
+    if(_reloadItems) _loadItems();
+
+    List<Map> items = [];
+    _search? _items.forEach((element) {if(element['name'].toString().contains(_searchController.text)) items.add(element);}):
+             items = _items;
+
     return ListView.separated(
       itemBuilder: (context, index) {
-        final item = items[index];
+        final Map item = items[index];
         return Dismissible(
-          key: Key(item),
+          key: Key(item['name']),
           direction: DismissDirection.endToStart,
           confirmDismiss: (DismissDirection direction) async {
             return await showDialog(
@@ -99,13 +110,11 @@ class _MyAppState extends State<MyApp> {
             );
           },
           onDismissed: (direction) {
-            setState(() {
-              _items.removeWhere((element) => element == items[index]);
-            });
+            DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
           },
           background: Container( padding: EdgeInsets.symmetric(horizontal: 10), alignment: Alignment.centerRight, color: Colors.red, child: Icon(Icons.remove_circle),),
           child: ListTile(
-            title: Text(item),
+            title: Text(item['name'].toString()),
             onTap: () {Navigator.pushNamed(context, '/details');},
           ),
         );
@@ -176,6 +185,22 @@ class _MyAppState extends State<MyApp> {
       }
     );
 
-    if(input != null) Navigator.pushNamed(context, '/details');
+    if(input.toString().isNotEmpty) {
+      bool alreadyExists = false;
+      for (var element in _items) {
+        if (element['name'].toString().toLowerCase() ==
+            input.toString().toLowerCase()) {
+          alreadyExists = true;
+          break;
+        }
+      }
+      if (!alreadyExists) {
+        DatabaseCommunicator.addItem(input).then((value) =>
+            Navigator.pushNamed(context, '/details').then((value) => _loadItems()));
+      }
+      else {
+        Navigator.pushNamed(context, '/details').then((value) => _loadItems());
+      }
+    }
   }
 }
