@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: _makeList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _AddItem(context),
+        onPressed: () => _addItem(context),
         child: Icon(Icons.add, color: Colors.white),
         backgroundColor: Colors.indigo,
       ),
@@ -139,9 +139,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   //ADD ITEM POPUP
-  void _AddItem(BuildContext context) async {
+  void _addItem(BuildContext context) async {
     TextEditingController _controller = TextEditingController();
-    bool _TextEmptyError = false;
+    bool textEmptyError = false;
     final input = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> {
                 onSubmitted: (String text) {
                   if (_controller.text.isEmpty)
                     setState(() {
-                      _TextEmptyError = true;
+                      textEmptyError = true;
                     });
                   else
                     Navigator.pop(context, _controller.text);
@@ -161,7 +161,7 @@ class _MyAppState extends State<MyApp> {
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: 'Name',
-                  errorText: _TextEmptyError?'Name ist leer':null,
+                  errorText: textEmptyError?'Name ist leer':null,
                 ),
               ),
               actions: <Widget>[
@@ -171,10 +171,8 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                     onPressed: () {
-                      if (_controller.text.isEmpty)
-                        setState(() {_TextEmptyError = true;});
-                      else
-                        Navigator.pop(context, _controller.text);
+                      if (_controller.text.isEmpty) {setState(() => textEmptyError = true);}
+                      else {Navigator.pop(context, _controller.text);}
                     },
                     child: const Text('ERSTELLEN')
                 ),
