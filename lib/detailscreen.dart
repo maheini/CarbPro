@@ -72,7 +72,7 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     }
     else {
-      print('Plattform nicht unterstützt....');
+      print('Plattform wird nicht unterstützt....');
     }
   }
 
