@@ -1,15 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
-//comment
-
-//Comment2
 
 class FileSaver extends StatefulWidget {
   const FileSaver({Key? key}) : super(key: key);
@@ -73,7 +67,7 @@ class _FileSaverState extends State<FileSaver> {
     });
 
 
-    bool downloaded = await SaveFile('https://www.youtube.com/watch?v=3gNd1Ma-gss', 'video.mp4');
+    // bool downloaded = await SaveFile('https://www.youtube.com/watch?v=3gNd1Ma-gss', 'video.mp4');
 
     setState(() {
       loading = false;
@@ -93,7 +87,7 @@ class _FileSaverState extends State<FileSaver> {
         ),
       ),
     );
-    SaveFile('url', 'FileName');
-    return Container();
+    // SaveFile('url', 'FileName');
+    // return Container();
   }
 }
