@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,39 +12,73 @@ class FileSaver extends StatefulWidget {
   @override
   _FileSaverState createState() => _FileSaverState();
 }
-
 class _FileSaverState extends State<FileSaver> {
 
-  bool loading = false;
+  //GET PERMISSIONS AND CLOSE DATABASE
+  Future <Database?> _openDatabase()async{
+    if (Platform.isAndroid) {
+      if (await RequestPermission(Permission.storage)) {
+        Directory? dir = await getExternalStorageDirectory();
+        if (await dir!.exists()) {
+          String path = join(dir.path, 'database.db');
 
-  Future<bool> SaveFile(String url, String FileName) async{
-    try{
-      if(Platform.isAndroid){
-        print('Android');
-        if(await RequestPermission(Permission.storage)){
-          print('Speicher ok');
-          Directory? dir = await getExternalStorageDirectory();
-          print(dir?.path);
-        }
-
-
-
-        if (await RequestPermission(Permission.camera)){
-          print('Kamera ok');
-        }
-        else {
-          print('Keine Berechtigung...');
+          return await openDatabase(
+            path,
+            onCreate: (db, version) {
+              return db.execute(
+                'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',);
+            },
+            version: 1,
+          );
         }
       }
-      else{
-
-      }
     }
-    catch(e) {
+    return null;
+  }
 
-    }
+  //CLOSE DATABASE
+  void _closeDatabase(Database database) {
+    database.close();
+  }
 
-    return false;
+  //ADD ITEM AND RETURNS THE ITEM ID
+  Future<int> _addItem(String newName) async {
+    Database? db = await _openDatabase();
+    if(db == null) return 0;
+
+    final int id = await db.rawInsert('INSERT INTO items (name) VALUES (?)', [newName]);
+    _closeDatabase(db);
+    return id;
+  }
+
+  //REMOVE ITEM AND RETURNS THE AMOUNT OF AFFECTED ROWS
+  Future<int> _removeItem(int id) async {
+    Database? db = await _openDatabase();
+    if(db == null) return 0;
+
+    final count = await db.rawDelete('DELETE FROM items WHERE id = ?',[id]);
+    _closeDatabase(db);
+    return count;
+  }
+
+  //CHANGE NAME AND RETURNS THE AMOUNT OF AFFECTED ROWS
+  Future<int> _changeItemName(int id, String newName) async {
+    Database? db = await _openDatabase();
+    if(db == null) return 0;
+
+    final count = await db.rawUpdate('UPDATE items SET name = ? WHERE id = ?', [newName, id]);
+    _closeDatabase(db);
+    return count;
+  }
+
+  //LOADS ALL ITEMS FROM THE DATABASE
+  Future<List<Map>> _getItems() async {
+    Database? db = await _openDatabase();
+    if(db == null) return [];
+
+    final List<Map> result = await db.rawQuery('SELECT * FROM items');
+    _closeDatabase(db);
+    return result;
   }
 
   Future<bool> RequestPermission(Permission permission) async{
@@ -61,19 +96,6 @@ class _FileSaverState extends State<FileSaver> {
     }
   }
 
-  DownloadFile() async{
-    setState(() {
-      loading = true;
-    });
-
-
-    // bool downloaded = await SaveFile('https://www.youtube.com/watch?v=3gNd1Ma-gss', 'video.mp4');
-
-    setState(() {
-      loading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,13 +103,19 @@ class _FileSaverState extends State<FileSaver> {
         title: Text('Test'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => SaveFile('url', 'path'),
-          child: Text('Berechtigung erfragen'),
-        ),
+        child: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () => _addItem('Itemname'),
+                child: const Text('Eintrag erstellen'),
+            ),
+            ElevatedButton(
+              onPressed: () => _getItems().then((List<Map>  result) => print(result)),
+              child: const Text('Eintrag abrufen'),
+            ),
+          ],
+        )
       ),
     );
-    // SaveFile('url', 'FileName');
-    // return Container();
   }
 }

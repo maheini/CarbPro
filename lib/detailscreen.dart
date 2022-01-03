@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:camera/camera.dart';
 
 class DetailScreen extends StatefulWidget {
 

@@ -31,7 +31,8 @@ dependencies:
   path_provider: ^2.0.8
   image_gallery_saver: ^1.7.1
   permission_handler: ^8.1.4+2
-  camera: 0.9.4+5
+#  camera: 0.9.4+5
+  sqflite: 2.0.1
   flutter:
     sdk: flutter
 
