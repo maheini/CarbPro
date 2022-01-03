@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
           background: Container( padding: EdgeInsets.symmetric(horizontal: 10), alignment: Alignment.centerRight, color: Colors.red, child: Icon(Icons.remove_circle),),
           child: ListTile(
             title: Text(item['name'].toString()),
-            onTap: () {Navigator.pushNamed(context, '/details');},
+            onTap: () {Navigator.pushNamed(context, '/details').then((value) => _loadItems());},
           ),
         );
       },
