@@ -4,12 +4,8 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
 class DetailScreen extends StatefulWidget {
-
-
-  final int id;
-  const DetailScreen({required this.id});
-
-
+  final id;
+  const DetailScreen({Key? key, required this.id}) : super(key:key);
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -17,6 +13,26 @@ class DetailScreen extends StatefulWidget {
 
 
 class _DetailScreenState extends State<DetailScreen> {
+  bool _load_content = true;
+  @override
+  Widget build(BuildContext context) {
+    if(_load_content) {
+      _loadContent();
+      _load_content = false;
+    }
+    return Scaffold(
+      appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
+      floatingActionButton: FloatingActionButton(onPressed: () {setState(() {_ItemCount++;});}, child: Icon(Icons.add_a_photo),),
+      body: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          children: List<Widget>.generate(_ItemCount, (index) {
+            return _createImage(index);
+          })
+      ),
+    );
+  }
 
   //CONTENT MANAGEMENT
   String _itemName = '';
@@ -26,13 +42,10 @@ class _DetailScreenState extends State<DetailScreen> {
     if(result.isEmpty) {
       return;
     }
-    _itemName = result[1];
-    content = result[2];
-
+    _itemName = result[0];
+    content = result[1];
     setState(() {});
   }
-
-
 
   // final item = DatabaseCommunicator()
   Widget _createImage(int index) {
@@ -56,21 +69,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   int _ItemCount = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
-      floatingActionButton: FloatingActionButton(onPressed: () {setState(() {_ItemCount++;});}, child: Icon(Icons.add_a_photo),),
-      body: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: List<Widget>.generate(_ItemCount, (index) {
-            return _createImage(index);
-          })
-      ),
-    );
-  }
 
   void _AddPicture() async {
     if (Platform.isAndroid) {
@@ -124,6 +122,7 @@ class _DetailScreenState extends State<DetailScreen> {
             return AlertDialog(
               title: const Text('Artikel bearbeiten'),
               content: TextField(
+                autofocus: true,
                 onSubmitted: (String text) {
                   if (_controller.text.isEmpty) {
                     setState(() {
@@ -162,22 +161,9 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     );
 
-    // if(input.toString().isNotEmpty) {
-    //   bool alreadyExists = false;
-    //   for (var element in _items) {
-    //     if (element['name'].toString().toLowerCase() ==
-    //         input.toString().toLowerCase()) {
-    //       alreadyExists = true;
-    //       break;
-    //     }
-    //   }
-    //   if (!alreadyExists) {
-    //     DatabaseCommunicator.addItem(input).then((value) =>
-    //         Navigator.pushNamed(context, '/details').then((value) => _loadItems()));
-    //   }
-    //   else {
-    //     Navigator.pushNamed(context, '/details').then((value) => _loadItems());
-    //   }
-    // }
+    if(input != _itemName){
+      DatabaseCommunicator.changeItemName(widget.id, _controller.text)
+          .then((value) =>_loadContent());
+    }
   }
 }

@@ -121,7 +121,8 @@ class _MyAppState extends State<MyApp> {
           ),
           child: ListTile(
             title: Text(item['name'].toString()),
-            onTap: () {Navigator.pushNamed(context, '/details').then((value) => _setSearch(false));},
+            onTap: () { Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
           ),
         );
       },
