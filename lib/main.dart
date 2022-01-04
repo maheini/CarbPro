@@ -7,7 +7,7 @@ void main() =>runApp(MaterialApp(
     // )
   routes: {
     '/': (context) => const MyApp(),
-    '/details': (context) => DetailScreen(),
+    '/details': (context) => const DetailScreen(id: 0),
   },
   theme: ThemeData.dark(),
   title: 'CarbPro',
@@ -53,13 +53,14 @@ class _MyAppState extends State<MyApp> {
       ):
       AppBar(
         title: const Text('CarbPro'),
+        centerTitle: true,
         actions: <Widget>[
           IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
         ],
       ),
       body: _makeList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _addItem(context),
+        onPressed: _addItem,
         child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: Colors.indigo,
       ),
@@ -143,7 +144,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   //ADD ITEM POPUP
-  void _addItem(BuildContext context) async {
+  void _addItem() async {
     TextEditingController _controller = TextEditingController();
     bool textEmptyError = false;
     final input = await showDialog(
