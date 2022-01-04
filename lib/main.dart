@@ -191,21 +191,30 @@ class _MyAppState extends State<MyApp> {
       }
     );
 
+    int existingDBid = 0;
+    final List<Map> allItems = await DatabaseCommunicator.getItems();
     if(input.toString().isNotEmpty) {
       bool alreadyExists = false;
-      for (var element in _items) {
+      for (var element in allItems) {
         if (element['name'].toString().toLowerCase() ==
             input.toString().toLowerCase()) {
+          existingDBid = element['id'];
           alreadyExists = true;
           break;
         }
       }
       if (!alreadyExists) {
-        DatabaseCommunicator.addItem(input).then((value) =>
-            Navigator.pushNamed(context, '/details').then((value) => _loadItems()));
+        final int id = await DatabaseCommunicator.addItem(input);
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => DetailScreen(id: id)))
+
+          .then((value) => _setSearch(false));
       }
       else {
-        Navigator.pushNamed(context, '/details').then((value) => _loadItems());
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => DetailScreen(id: existingDBid)))
+
+            .then((value) => _setSearch(false));
       }
     }
   }
