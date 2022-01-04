@@ -120,7 +120,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: ListTile(
             title: Text(item['name'].toString()),
-            onTap: () {Navigator.pushNamed(context, '/details').then((value) => _loadItems());},
+            onTap: () {Navigator.pushNamed(context, '/details').then((value) => _setSearch(false));},
           ),
         );
       },
