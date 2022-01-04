@@ -9,7 +9,7 @@
 
 
    <application
-        android:label="carb_sy"
+        android:label="CarbPro - dev"
 
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

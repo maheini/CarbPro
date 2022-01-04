@@ -73,10 +73,10 @@ class DatabaseCommunicator {
 
     List<Map> result;
     if(nameFilter.isNotEmpty) {
-      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC', ['%' + nameFilter + '%']);
+      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name COLLATE NOCASE ASC', ['%' + nameFilter + '%']);
     }
     else {
-      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC', ['%' + nameFilter + '%']);
+      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name COLLATE NOCASE ASC', ['%' + nameFilter + '%']);
     }
     _closeDatabase(db);
     return result;
