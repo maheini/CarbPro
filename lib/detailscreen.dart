@@ -13,12 +13,12 @@ class DetailScreen extends StatefulWidget {
 
 
 class _DetailScreenState extends State<DetailScreen> {
-  bool _load_content = true;
+  bool _loadContentOnNextBuild = true;
   @override
   Widget build(BuildContext context) {
-    if(_load_content) {
+    if(_loadContentOnNextBuild) {
       _loadContent();
-      _load_content = false;
+      _loadContentOnNextBuild = false;
     }
     return Scaffold(
       appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
