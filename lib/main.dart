@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'databasecommunicator.dart';
 import 'detailscreen.dart';
-import 'filesave.dart';
 
 void main() =>runApp(MaterialApp(
     // home: FileSaver(),
     // )
   routes: {
-    '/': (context) => MyApp(),
+    '/': (context) => const MyApp(),
     '/details': (context) => DetailScreen(),
   },
   theme: ThemeData.dark(),
@@ -38,11 +37,11 @@ class _MyAppState extends State<MyApp> {
             child: Center(
               child: TextField(
                 autofocus: true,
-                onChanged: (String input) {setState(() {});},
+                onChanged: (input) => _loadItems(),
                 controller: _searchController,
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.clear, color: Colors.blueGrey,),
+                      icon: const Icon(Icons.clear, color: Colors.blueGrey,),
                       onPressed: () => _setSearch(false),
                     ),
                     hintText: 'Suchen',
@@ -53,38 +52,39 @@ class _MyAppState extends State<MyApp> {
           )
       ):
       AppBar(
-        title: Text('CarbPro'),
+        title: const Text('CarbPro'),
         actions: <Widget>[
-          IconButton(onPressed: () {_setSearch(true);}, icon: Icon(Icons.search, color: Colors.white,)),
+          IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
         ],
       ),
       body: _makeList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addItem(context),
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: Colors.indigo,
       ),
     );
   }
 
-  //LIST GENERATER
+  //LIST GENERATOR
   void _loadItems() async {
-    _items = await DatabaseCommunicator.getItems();
+    if(_search){
+      _items = await DatabaseCommunicator.getItems(nameFilter:  _searchController.text);
+    }
+    else {
+      _items = await DatabaseCommunicator.getItems();
+    }
     setState(() {_reloadItems = false;});
   }
   List<Map> _items = [];
   bool _reloadItems = true;
-  Widget _makeList({String filter = ''})
+  Widget _makeList()
   {
     if(_reloadItems) _loadItems();
 
-    List<Map> items = [];
-    _search? _items.forEach((element) {if(element['name'].toString().contains(_searchController.text)) items.add(element);}):
-             items = _items;
-
     return ListView.separated(
       itemBuilder: (context, index) {
-        final Map item = items[index];
+        final Map item = _items[index];
         return Dismissible(
           key: Key(item['name']),
           direction: DismissDirection.endToStart,
@@ -112,7 +112,12 @@ class _MyAppState extends State<MyApp> {
           onDismissed: (direction) {
             DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
           },
-          background: Container( padding: EdgeInsets.symmetric(horizontal: 10), alignment: Alignment.centerRight, color: Colors.red, child: Icon(Icons.remove_circle),),
+          background: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            alignment: Alignment.centerRight,
+            color: Colors.red,
+            child: const Icon(Icons.remove_circle),
+          ),
           child: ListTile(
             title: Text(item['name'].toString()),
             onTap: () {Navigator.pushNamed(context, '/details').then((value) => _loadItems());},
@@ -120,9 +125,9 @@ class _MyAppState extends State<MyApp> {
         );
       },
       separatorBuilder: (context, index) {
-        return Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
+        return const Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
       },
-      itemCount: items.length,
+      itemCount: _items.length,
     );
   }
   
@@ -134,8 +139,7 @@ class _MyAppState extends State<MyApp> {
   {
     _search = enabled;
     _searchController.clear();
-    setState(() {
-    });
+    _loadItems();
   }
 
   //ADD ITEM POPUP
@@ -148,15 +152,16 @@ class _MyAppState extends State<MyApp> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Artikel einfügen'),
+              title: const Text('Artikel einfügen'),
               content: TextField(
                 onSubmitted: (String text) {
-                  if (_controller.text.isEmpty)
+                  if (_controller.text.isEmpty) {
                     setState(() {
                       textEmptyError = true;
                     });
-                  else
+                  } else {
                     Navigator.pop(context, _controller.text);
+                  }
                 },
                 controller: _controller,
                 decoration: InputDecoration(

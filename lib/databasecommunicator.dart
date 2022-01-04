@@ -67,11 +67,17 @@ class DatabaseCommunicator {
   }
 
   //LOADS ALL ITEMS FROM THE DATABASE
-  static Future<List<Map>> getItems() async {
+  static Future<List<Map>> getItems({String nameFilter = ''}) async {
     Database? db = await _openDatabase();
     if(db == null) return [];
 
-    final List<Map> result = await db.rawQuery('SELECT * FROM items');
+    List<Map> result;
+    if(nameFilter.isNotEmpty) {
+      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC', ['%' + nameFilter + '%']);
+    }
+    else {
+      result = await db.rawQuery('SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC', ['%' + nameFilter + '%']);
+    }
     _closeDatabase(db);
     return result;
   }
