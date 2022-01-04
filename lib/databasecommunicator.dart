@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 
 class DatabaseCommunicator {
 
-  //GET PERMISSIONS AND CLOSE DATABASE
+  ///GET PERMISSIONS AND CLOSE DATABASE
   static Future <Database?> _openDatabase()async{
     if (Platform.isAndroid) {
       if (await _requestPermission(Permission.storage)) {
@@ -20,6 +20,8 @@ class DatabaseCommunicator {
           return await openDatabase(
             path,
             onCreate: (db, version) {
+              db.execute(
+                'CREATE TABLE content(id INTEGER PRIMARY KEY, description TEXT, imageurl TEXT)');
               return db.execute(
                 'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',);
             },
@@ -31,12 +33,12 @@ class DatabaseCommunicator {
     return null;
   }
 
-  //CLOSE DATABASE
+  ///CLOSE DATABASE
   static void _closeDatabase(Database database) {
     database.close();
   }
 
-  //ADD ITEM AND RETURNS THE ITEM ID
+  ///ADD ITEM AND RETURNS THE ITEM ID
   static Future<int> addItem(String newName) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
@@ -46,7 +48,7 @@ class DatabaseCommunicator {
     return id;
   }
 
-  //REMOVE ITEM AND RETURNS THE AMOUNT OF AFFECTED ROWS
+  ///REMOVE ITEM AND RETURNS THE AMOUNT OF AFFECTED ROWS
   static Future<int> removeItem(int id) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
@@ -56,7 +58,7 @@ class DatabaseCommunicator {
     return count;
   }
 
-  //CHANGE NAME AND RETURNS THE AMOUNT OF AFFECTED ROWS
+  ///CHANGE NAME AND RETURNS THE AMOUNT OF AFFECTED ROWS
   static Future<int> changeItemName(int id, String newName) async {
     Database? db = await _openDatabase();
     if(db == null) return 0;
@@ -66,7 +68,7 @@ class DatabaseCommunicator {
     return count;
   }
 
-  //LOADS ALL ITEMS FROM THE DATABASE
+  ///LOADS ALL ITEMS FROM THE DATABASE
   static Future<List<Map>> getItems({String nameFilter = ''}) async {
     Database? db = await _openDatabase();
     if(db == null) return [];
@@ -82,6 +84,26 @@ class DatabaseCommunicator {
     return result;
   }
 
+  ///LOADS ITEM CONTENT FROM DATABASE
+  ///first item of the List is the name as String,
+  ///second is a List<Map>, containing:
+  ///'id'   'description'   'imageurl'
+  ///int       String       String path
+  static Future<List>getContent({required int id}) async {
+    Database? db = await _openDatabase();
+    if(db == null) return [];
+
+    List<Map> nameQuery = await db.rawQuery('SELECT * FROM items WHERE id = ?', [id]);
+    if(nameQuery.isEmpty){
+      return [];
+    }
+    List<Map> contentQuery = await db.rawQuery('SELECT * FROM content WHERE id = ?', [id]);
+    _closeDatabase(db);
+    return [nameQuery.first['name'].toString(), contentQuery];
+  }
+
+  ///REQUESTS ANDROID PERMISSION
+  ///true if all is good, otherwhise false
   static Future<bool> _requestPermission(Permission permission) async{
     if(await permission.isGranted) {
       return true;
