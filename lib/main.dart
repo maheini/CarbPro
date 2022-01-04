@@ -155,6 +155,7 @@ class _MyAppState extends State<MyApp> {
             return AlertDialog(
               title: const Text('Artikel einfügen'),
               content: TextField(
+                autofocus: true,
                 onSubmitted: (String text) {
                   if (_controller.text.isEmpty) {
                     setState(() {
