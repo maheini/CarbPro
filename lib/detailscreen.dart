@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
 class DetailScreen extends StatefulWidget {
-  final id;
+  final int id;
   const DetailScreen({Key? key, required this.id}) : super(key:key);
 
   @override
