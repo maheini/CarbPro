@@ -22,12 +22,10 @@ class _DetailScreenState extends State<DetailScreen> {
     }
     return Scaffold(
       appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
-      floatingActionButton: FloatingActionButton(onPressed: () {setState(() {_ItemCount++;});}, child: Icon(Icons.add_a_photo),),
+      floatingActionButton: FloatingActionButton(onPressed: () {setState(() {_itemCount++;});}, child: Icon(Icons.add_a_photo),),
       body: GridView.count(
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: List<Widget>.generate(_ItemCount, (index) {
+          children: List<Widget>.generate(_itemCount, (index) {
             return _createImage(index);
           })
       ),
@@ -49,30 +47,46 @@ class _DetailScreenState extends State<DetailScreen> {
 
   // final item = DatabaseCommunicator()
   Widget _createImage(int index) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text('Hallo'),
-          Container(
-            decoration: BoxDecoration(border: Border.all()),
-            child: Center(
-              child: Text('hi $_ItemCount'),
+    return InkWell(
+      onTap: null, //Todo Add editable Popup here
+      child: Container(
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: BorderRadius.all(Radius.circular(4))),
+        margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Flexible(
+              flex: 17,
+              child: Container(
+                alignment: Alignment.center,
+                child: Text('Bild'),
+                decoration: BoxDecoration(border: Border.all(width: 1)),
+              ),
             ),
-          )
-        ],
+            const Spacer(
+              flex: 1,
+            ),
+            Flexible(
+              flex: 3,
+              child: Container(
+                child: Text('Beschreibung'),
+                decoration: BoxDecoration(border: Border.all(width: 1)),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  int _ItemCount = 0;
+  int _itemCount = 0;
 
 
-  void _AddPicture() async {
+  void _addPicture() async {
     if (Platform.isAndroid) {
-      if (await _GetPermssion(Permission.camera)) {
+      if (await _getPermission(Permission.camera)) {
 
       }
       else {
@@ -80,12 +94,12 @@ class _DetailScreenState extends State<DetailScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Fehler'),
-                content: Text('Die Berechtigung für die Kamera fehlt'),
+                title: const Text('Fehler'),
+                content: const Text('Die Berechtigung für die Kamera fehlt'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'ok'),
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               );
@@ -98,7 +112,7 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  Future<bool> _GetPermssion(Permission permission) async{
+  Future<bool> _getPermission(Permission permission) async{
     PermissionStatus status = await permission.status;
     if(status.isGranted){
       return true;
