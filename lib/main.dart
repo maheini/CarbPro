@@ -98,12 +98,12 @@ class _MyAppState extends State<MyApp> {
                   content: const Text("Möchtest du des Element wirklich entfernen?"),
                   actions: <Widget>[
                     TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("ENTFERNEN")
-                    ),
-                    TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
                       child: const Text("ABBRECHEN"),
+                    ),
+                    TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text("ENTFERNEN")
                     ),
                   ],
                 );
