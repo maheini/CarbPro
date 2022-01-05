@@ -87,8 +87,7 @@ class DatabaseCommunicator {
   ///LOADS ITEM CONTENT FROM DATABASE
   ///first item of the List is the name as String,
   ///second is a List<Map>, containing:
-  ///'id'   'description'   'imageurl'
-  ///int       String       String path
+  ///'id' <int>   'description' <String>   'imageurl' <String path>
   static Future<List>getContent({required int id}) async {
     Database? db = await _openDatabase();
     if(db == null) return [];
