@@ -1,16 +1,12 @@
-# carb_sy
+# CarbPro
 
-A new Flutter project.
+An Android app created with Flutter. Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker...
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Feel free to download the apk, or contribute via creating issues or pulling requests.
 
-A few resources to get you started if this is your first Flutter project:
+## A special thanks to
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+All the developers of Nightscout, AndroidAPS and Loop - you rock! I got diabetes myself in march 2020 and all those things made it so much easier. With this app, I would like to give something back to the community.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
