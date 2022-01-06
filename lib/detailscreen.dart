@@ -15,15 +15,18 @@ class DetailScreen extends StatefulWidget {
 
 
 class _DetailScreenState extends State<DetailScreen> {
-  bool _loadContentOnNextBuild = true;
+
+  @override
+  @protected
+  @mustCallSuper
+  void initState() {
+    super.initState();
+    _loadListContent();
+  }
 
   //UI BUILDER
   @override
   Widget build(BuildContext context) {
-    if(_loadContentOnNextBuild) {
-      _loadListContent();
-      _loadContentOnNextBuild = false;
-    }
     return Scaffold(
       appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
       floatingActionButton: FloatingActionButton(onPressed: () => _itemEditor(newitem: true), child: Icon(Icons.add_a_photo),),
