@@ -101,6 +101,70 @@ class DatabaseCommunicator {
     return [nameQuery.first['name'].toString(), contentQuery];
   }
 
+  /// ADD ITEM CONTENT
+  ///
+  /// the file will be copied to a final path, the path should therefore be temporary
+  static Future<bool> addItemContent({required String name, File? tempImage}) async{
+    Database? db = await _openDatabase();
+    if(db == null) return false;
+
+    if(tempImage != null) {
+      Directory? dir = await getExternalStorageDirectory();
+      if(dir == null) {
+        _closeDatabase(db);
+        return false;
+      }
+
+      final String filename = basename(tempImage.path);
+      await tempImage.copy('${dir.path}/$filename');
+
+      if (dir == null){
+        _closeDatabase(db);
+        return false;
+      }
+
+      await db.rawInsert('INSERT INTO items (description, imageurl) VALUES (?, ?)', [name, filename]);
+    }
+    else {
+      await db.rawInsert('INSERT INTO items (description) VALUES (?)', [name]);
+    }
+    _closeDatabase(db);
+    return true;
+  }
+
+
+  /// ADD or UPDATES ITEM CONTENT
+  ///
+  /// the file will be copied to a final path, the path should therefore be temporary
+  static Future<bool> updateItemContent({required int id, required String name, File? tempImage}) async{
+    Database? db = await _openDatabase();
+    if(db == null) return false;
+
+    if(tempImage != null) {
+      Directory? dir = await getExternalStorageDirectory();
+      if(dir == null) {
+        _closeDatabase(db);
+        return false;
+      }
+
+      final String filename = basename(tempImage.path);
+      await tempImage.copy('${dir.path}/$filename');
+
+
+      if (dir == null){
+        _closeDatabase(db);
+        return false;
+      }
+
+      await db.rawUpdate('UPDATE items SET description = ?, imageurl = ? WHERE id = ?', [name, filename, id]);
+    }
+    else {
+      await db.rawUpdate('UPDATE items SET description = ? WHERE id = ?', [name, id]);
+    }
+    _closeDatabase(db);
+    return true;
+  }
+
   ///REQUESTS ANDROID PERMISSION
   ///true if all is good, otherwhise false
   static Future<bool> _requestPermission(Permission permission) async{
