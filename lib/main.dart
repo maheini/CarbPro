@@ -9,7 +9,9 @@ void main() =>runApp(MaterialApp(
     '/': (context) => const MyApp(),
     '/details': (context) => const DetailScreen(id: 0),
   },
-  theme: ThemeData.dark(),
+  theme: ThemeData(),
+  darkTheme: ThemeData.dark(),
+  themeMode: ThemeMode.system,
   title: 'CarbPro',
 )
 );
