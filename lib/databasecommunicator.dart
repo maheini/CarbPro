@@ -21,7 +21,7 @@ class DatabaseCommunicator {
             path,
             onCreate: (db, version) {
               db.execute(
-                'CREATE TABLE content(id INTEGER PRIMARY KEY, description TEXT, imageurl TEXT)');
+                'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT)');
               return db.execute(
                 'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',);
             },
@@ -88,15 +88,15 @@ class DatabaseCommunicator {
   ///first item of the List is the name as String,
   ///second is a List<Map>, containing:
   ///'id' <int>   'description' <String>   'imageurl' <String path>
-  static Future<List>getContent({required int id}) async {
+  static Future<List>getContent({required int parentId}) async {
     Database? db = await _openDatabase();
     if(db == null) return [];
 
-    List<Map> nameQuery = await db.rawQuery('SELECT * FROM items WHERE id = ?', [id]);
+    List<Map> nameQuery = await db.rawQuery('SELECT * FROM items WHERE id = ?', [parentId]);
     if(nameQuery.isEmpty){
       return [];
     }
-    List<Map> contentQuery = await db.rawQuery('SELECT * FROM content WHERE id = ?', [id]);
+    List<Map> contentQuery = await db.rawQuery('SELECT * FROM content WHERE parentId = ?', [parentId]);
     _closeDatabase(db);
     return [nameQuery.first['name'].toString(), contentQuery];
   }
@@ -104,7 +104,7 @@ class DatabaseCommunicator {
   /// ADD ITEM CONTENT
   ///
   /// the file will be copied to a final path, the path should therefore be temporary
-  static Future<bool> addItemContent({required String name, File? tempImage}) async{
+  static Future<bool> addItemContent({required int parentId, required String name, File? tempImage}) async{
     Database? db = await _openDatabase();
     if(db == null) return false;
 
@@ -122,11 +122,10 @@ class DatabaseCommunicator {
         _closeDatabase(db);
         return false;
       }
-
-      await db.rawInsert('INSERT INTO content (description, imageurl) VALUES (?, ?)', [name, filename]);
+      int id = await db.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?, ?, ?)', [parentId, name, filename]);
     }
     else {
-      await db.rawInsert('INSERT INTO content (description) VALUES (?)', [name]);
+      await db.rawInsert('INSERT INTO content (parent, description) VALUES (?, ?)', [parentId, name]);
     }
     _closeDatabase(db);
     return true;
