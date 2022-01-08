@@ -118,11 +118,8 @@ class DatabaseCommunicator {
       final String filename = basename(tempImage.path);
       await tempImage.copy('${dir.path}/$filename');
 
-      if (dir == null){
-        _closeDatabase(db);
-        return false;
-      }
-      int id = await db.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?, ?, ?)', [parentId, name, filename]);
+
+      await db.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?, ?, ?)', [parentId, name, filename]);
     }
     else {
       await db.rawInsert('INSERT INTO content (parent, description) VALUES (?, ?)', [parentId, name]);
@@ -149,11 +146,6 @@ class DatabaseCommunicator {
       final String filename = basename(tempImage.path);
       await tempImage.copy('${dir.path}/$filename');
 
-
-      if (dir == null){
-        _closeDatabase(db);
-        return false;
-      }
 
       await db.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', [name, filename, id]);
     }
