@@ -4,6 +4,8 @@ import 'package:carbpro/databasecommunicator.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DetailScreen extends StatefulWidget {
   final int id;
@@ -15,6 +17,9 @@ class DetailScreen extends StatefulWidget {
 
 
 class _DetailScreenState extends State<DetailScreen> {
+  String _itemName = '';
+  List<Map> _content = [];
+  List<Widget> _generatedContentItems = [];
 
   @override
   @protected
@@ -28,8 +33,11 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: Icon(Icons.edit), onPressed: _editName,)],),
-      floatingActionButton: FloatingActionButton(onPressed: () => _itemEditor(newitem: true), child: Icon(Icons.add_a_photo),),
+      appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: const Icon(Icons.edit), onPressed: _editName,)],),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _itemEditor(),
+        backgroundColor: Colors.indigo,
+        child: const Icon(Icons.add_a_photo),),
       body: GridView.count(
         crossAxisCount: 2,
         children: _generatedContentItems,
@@ -37,76 +45,8 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  //CREATE LIST
-  String _itemName = '';
-  List<Map> _content = [];
-  List<Widget> _generatedContentItems = [];
-  //CREATE LIST
-  Future<Widget> _createListTile(int index, bool hasImageReadPermission) async{
 
-    File file = File(_content[index]['imageurl']);
-    if(!await file.exists()){
-      hasImageReadPermission = false;
-    }
-
-    return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: BorderRadius.all(Radius.circular(4))),
-      margin: const EdgeInsets.all(10),
-      child: InkWell(
-        onLongPress: () async {
-          bool remove = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Bestätigen"),
-                content: const Text("Möchtest du den Eintrag wirklich entfernen?"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("ABBRECHEN"),
-                  ),
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("ENTFERNEN")
-                  ),
-                ],
-              );
-            },
-          );
-
-          if(remove){
-            //todo implement remove method and setstate for the content.
-          }
-        },
-        onTap: _addPicture,
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                flex: 17,
-                child: Container(
-                  alignment: Alignment.center,
-                  child: hasImageReadPermission? Image.file(file) : const Icon(Icons.wallpaper),
-                ),
-              ),
-              const Spacer(
-                flex: 1,
-              ),
-              Flexible(
-                flex: 3,
-                child: Container(
-                  child: Text(_content[index]['name']),
-                ),
-              )
-            ],
-          ),
-        )
-      )
-    );
-  }
+  //LOAD ALL VALUES OF THIS ITEM AND SET NEW STATE
   void _loadListContent() async{
     //CHECK PERMISSION FOR ACCESSING IMAGE FILEPATH'S FOR LIST-GENERATION AND DB ACCESS
     final bool imageReadPermission = await _getPermission(Permission.storage);
@@ -127,8 +67,7 @@ class _DetailScreenState extends State<DetailScreen> {
           }
       );
     }
-
-    List result = await DatabaseCommunicator.getContent(id: widget.id);
+    List result = await DatabaseCommunicator.getContent(parentId: widget.id);
     if(result.isEmpty) {
       showDialog(
           context: context,
@@ -152,43 +91,87 @@ class _DetailScreenState extends State<DetailScreen> {
     //GENERATE LIST WITH IMAGES AND THEIR DESCRIPTION
     List<Widget> _tempContentList = [];
     for(int x=0; x<_content.length; x++)
-      {
-        _tempContentList.add(await _createListTile(x, imageReadPermission));
-      }
+    {
+      _tempContentList.add(await _createListTile(x, imageReadPermission));
+    }
     _generatedContentItems = _tempContentList;
 
     //NOW SHOW ALL THOSE CHANGES...
     setState(() {});
   }
 
+  //CREATE LIST TILE
+  Future<Widget> _createListTile(int index, bool hasImageReadPermission) async{
 
-  void _addPicture() async {
-    if (Platform.isAndroid) {
-      if (await _getPermission(Permission.camera)) {
+    Directory dir = await getExternalStorageDirectory() ?? Directory('');
 
-      }
-      else {
-        showDialog(
+    File file = File('${dir.path}/${_content[index]['imageurl']}');
+    if(!await file.exists()){
+      hasImageReadPermission = false;
+    }
+
+
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: const BorderRadius.all(Radius.circular(4))),
+      margin: const EdgeInsets.all(10),
+      child: InkWell(
+        onTap: () => _itemEditor(
+            id: _content[index]['id'],
+            description: _content[index]['description'],
+            image: Image.file(file, fit: BoxFit.cover,)),
+        onLongPress: () async {
+          bool remove = await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Fehler'),
-                content: const Text('Die Berechtigung für die Kamera fehlt'),
-                actions: [
+                title: const Text("Bestätigen"),
+                content: const Text("Möchtest du den Eintrag wirklich entfernen?"),
+                actions: <Widget>[
                   TextButton(
-                    onPressed: () => Navigator.pop(context, 'ok'),
-                    child: const Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("ABBRECHEN"),
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text("ENTFERNEN")
                   ),
                 ],
               );
-            }
-        );
-      }
-    }
-    else {
-      print('Plattform nicht unterstützt....');
-    }
+            },
+          );
+
+          if(remove){
+            DatabaseCommunicator.removeItemContent(id: _content[index]['id']).then((value) => _loadListContent());
+          }
+        },
+        child: Container(   //CONTENT
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                flex: 17,
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                ),
+              ),
+              const Spacer(
+                flex: 1,
+              ),
+              Flexible(
+                flex: 3,
+                child: Text(_content[index]['description']),
+              )
+            ],
+          ),
+        )
+      )
+    );
   }
+
+
 
   Future<bool> _getPermission(Permission permission) async{
     PermissionStatus status = await permission.status;
@@ -202,10 +185,12 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   //EDIT ITEM
-  void _itemEditor({bool newitem = false, Image? image, String text = ''}) async {
-    TextEditingController itemNameController = TextEditingController(text: text);
+  void _itemEditor({int? id, Image? image, String description = ''}) async {
+    TextEditingController itemNameController = TextEditingController(text: description);
     bool textEmptyError = false;
     bool nameEditingLocked = true;
+
+    File? newFile;
 
     await showDialog(
       context: context,
@@ -218,9 +203,13 @@ class _DetailScreenState extends State<DetailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     InkWell(
-                      onTap: _addPicture,
+                      onTap: () {_pickImage().then((file) {
+                        if(file != null){
+                          newFile = file;
+                          setState(() => image = Image.file(file, fit: BoxFit.cover,));
+                        }
+                      });},
                       child: AspectRatio(
-                        //todo add function for camera and database update / insert
                         aspectRatio: 1,
                           child: image ?? const Icon(Icons.add_photo_alternate_outlined, size: 50,),
                       ),
@@ -258,11 +247,23 @@ class _DetailScreenState extends State<DetailScreen> {
                 TextButton(
                     onPressed: () {
                       if (itemNameController.text.isEmpty && image == null) {
-                        Navigator.pop(context);
+                        Navigator.pop(context, false);
                       }
                       else {
-                        //Todo add function for adding / save new item.
-                        Navigator.pop(context);
+                        if(id == null){
+                          DatabaseCommunicator.addItemContent(
+                            parentId: widget.id,
+                            name: itemNameController.text,
+                            tempImage: newFile
+                          ).then((value) => Navigator.pop(context, value));
+                        }
+                        else {
+                          DatabaseCommunicator.updateItemContent(
+                            id: id,
+                            name: itemNameController.text,
+                            tempImage: newFile
+                          ).then((value) => Navigator.pop(context, value));
+                        }
                       }
                     },
                     child: const Text('SPEICHERN')
@@ -272,7 +273,23 @@ class _DetailScreenState extends State<DetailScreen> {
           },
         );
       }
+    ).then((value) {
+      if(value){
+        _loadListContent();
+      }
+    });
+  }
+
+  Future<File?> _pickImage() async{
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
     );
+
+    File? imageFile;
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+    }
+    return imageFile;
   }
 
 

@@ -9,8 +9,10 @@
 
 
    <application
-        android:label="CarbPro"
+        android:requestLegacyExternalStorage="true"
 
+
+        android:label="CarbPro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

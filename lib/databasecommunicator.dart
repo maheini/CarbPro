@@ -129,7 +129,32 @@ class DatabaseCommunicator {
   }
 
 
-  /// ADD or UPDATES ITEM CONTENT
+  /// REMOVE ITEM CONTENT
+  static Future<bool> removeItemContent({required int id}) async{
+    Database? db = await _openDatabase();
+    if(db == null) return false;
+
+    List<Map> imageurl = await db.rawQuery('SELECT imageurl FROM content WHERE id = ?', [id]);
+    if(imageurl.isEmpty){
+      _closeDatabase(db);
+      return false;
+    }
+
+    Directory dir = await getExternalStorageDirectory() ?? Directory('');
+
+    File file = File('${dir.path}/${imageurl[0]['imageurl']}');
+    if(await file.exists()){
+      await file.delete();
+    }
+
+    db.rawDelete('DELETE FROM content WHERE id = ?', [id]);
+
+    _closeDatabase(db);
+    return true;
+  }
+
+
+  /// UPDATES ITEM CONTENT
   ///
   /// the file will be copied to a final path, the path should therefore be temporary
   static Future<bool> updateItemContent({required int id, required String name, File? tempImage}) async{

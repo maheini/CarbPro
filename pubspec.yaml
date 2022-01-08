@@ -27,12 +27,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  dio: ^4.0.4
+  image_picker: ^0.8.4+4
   path_provider: ^2.0.8
-  image_gallery_saver: ^1.7.1
   permission_handler: ^8.1.4+2
-  camera: 0.9.4+5
-  sqflite: 2.0.1
+  sqflite: ^2.0.1
   flutter:
     sdk: flutter
 
