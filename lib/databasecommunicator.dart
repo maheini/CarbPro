@@ -96,7 +96,7 @@ class DatabaseCommunicator {
     if(nameQuery.isEmpty){
       return [];
     }
-    List<Map> contentQuery = await db.rawQuery('SELECT * FROM content WHERE parentId = ?', [parentId]);
+    List<Map> contentQuery = await db.rawQuery('SELECT * FROM content WHERE parent = ?', [parentId]);
     _closeDatabase(db);
     return [nameQuery.first['name'].toString(), contentQuery];
   }
