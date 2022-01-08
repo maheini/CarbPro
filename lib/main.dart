@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'databasecommunicator.dart';
 import 'detailscreen.dart';
-import 'filesave.dart';
 
 void main() =>runApp(MaterialApp(
-    home: FileSaver(),
-    )
-//   routes: {
-//     '/': (context) => MyApp(),
-//     '/details': (context) => DetailScreen(),
-//   },
-//   theme: ThemeData.dark(),
-//   title: 'CarbPro',
-// )
+    // home: FileSaver(),
+    // )
+  routes: {
+    '/': (context) => const MyApp(),
+    '/details': (context) => const DetailScreen(id: 0),
+  },
+  theme: ThemeData.dark(),
+  title: 'CarbPro',
+)
 );
 
 
@@ -37,11 +37,11 @@ class _MyAppState extends State<MyApp> {
             child: Center(
               child: TextField(
                 autofocus: true,
-                onChanged: (String input) {setState(() {});},
+                onChanged: (input) => _loadItems(),
                 controller: _searchController,
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.clear, color: Colors.blueGrey,),
+                      icon: const Icon(Icons.clear, color: Colors.blueGrey,),
                       onPressed: () => _setSearch(false),
                     ),
                     hintText: 'Suchen',
@@ -52,30 +52,42 @@ class _MyAppState extends State<MyApp> {
           )
       ):
       AppBar(
-        title: Text('CarbPro'),
+        title: const Text('CarbPro'),
+        centerTitle: true,
         actions: <Widget>[
-          IconButton(onPressed: () {_setSearch(true);}, icon: Icon(Icons.search, color: Colors.white,)),
+          IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
         ],
       ),
       body: _makeList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _AddItem(context),
-        child: Icon(Icons.add, color: Colors.white),
+        onPressed: _addItem,
+        child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: Colors.indigo,
       ),
     );
   }
 
-  //LIST GENERATER
-  var _items = <String>['Hallo', 'Zusammen', 'GGG', 'Test'];
-  Widget _makeList({String filter = ''})
+  //LIST GENERATOR
+  void _loadItems() async {
+    if(_search){
+      _items = await DatabaseCommunicator.getItems(nameFilter:  _searchController.text);
+    }
+    else {
+      _items = await DatabaseCommunicator.getItems();
+    }
+    setState(() {_reloadItems = false;});
+  }
+  List<Map> _items = [];
+  bool _reloadItems = true;
+  Widget _makeList()
   {
-    var items = _search?_items.where((gg) {return gg.contains(_searchController.text);}).toList():_items;
+    if(_reloadItems) _loadItems();
+
     return ListView.separated(
       itemBuilder: (context, index) {
-        final item = items[index];
+        final Map item = _items[index];
         return Dismissible(
-          key: Key(item),
+          key: Key(item['name']),
           direction: DismissDirection.endToStart,
           confirmDismiss: (DismissDirection direction) async {
             return await showDialog(
@@ -86,12 +98,12 @@ class _MyAppState extends State<MyApp> {
                   content: const Text("Möchtest du des Element wirklich entfernen?"),
                   actions: <Widget>[
                     TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("ENTFERNEN")
-                    ),
-                    TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
                       child: const Text("ABBRECHEN"),
+                    ),
+                    TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text("ENTFERNEN")
                     ),
                   ],
                 );
@@ -99,21 +111,25 @@ class _MyAppState extends State<MyApp> {
             );
           },
           onDismissed: (direction) {
-            setState(() {
-              _items.removeWhere((element) => element == items[index]);
-            });
+            DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
           },
-          background: Container( padding: EdgeInsets.symmetric(horizontal: 10), alignment: Alignment.centerRight, color: Colors.red, child: Icon(Icons.remove_circle),),
+          background: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            alignment: Alignment.centerRight,
+            color: Colors.red,
+            child: const Icon(Icons.remove_circle),
+          ),
           child: ListTile(
-            title: Text(item),
-            onTap: () {Navigator.pushNamed(context, '/details');},
+            title: Text(item['name'].toString()),
+            onTap: () { Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
           ),
         );
       },
       separatorBuilder: (context, index) {
-        return Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
+        return const Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
       },
-      itemCount: items.length,
+      itemCount: _items.length,
     );
   }
   
@@ -125,34 +141,35 @@ class _MyAppState extends State<MyApp> {
   {
     _search = enabled;
     _searchController.clear();
-    setState(() {
-    });
+    _loadItems();
   }
 
   //ADD ITEM POPUP
-  void _AddItem(BuildContext context) async {
+  void _addItem() async {
     TextEditingController _controller = TextEditingController();
-    bool _TextEmptyError = false;
+    bool textEmptyError = false;
     final input = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Artikel einfügen'),
+              title: const Text('Artikel einfügen'),
               content: TextField(
+                autofocus: true,
                 onSubmitted: (String text) {
-                  if (_controller.text.isEmpty)
+                  if (_controller.text.isEmpty) {
                     setState(() {
-                      _TextEmptyError = true;
+                      textEmptyError = true;
                     });
-                  else
+                  } else {
                     Navigator.pop(context, _controller.text);
+                  }
                 },
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: 'Name',
-                  errorText: _TextEmptyError?'Name ist leer':null,
+                  errorText: textEmptyError?'Name ist leer':null,
                 ),
               ),
               actions: <Widget>[
@@ -162,10 +179,8 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                     onPressed: () {
-                      if (_controller.text.isEmpty)
-                        setState(() {_TextEmptyError = true;});
-                      else
-                        Navigator.pop(context, _controller.text);
+                      if (_controller.text.isEmpty) {setState(() => textEmptyError = true);}
+                      else {Navigator.pop(context, _controller.text);}
                     },
                     child: const Text('ERSTELLEN')
                 ),
@@ -176,6 +191,31 @@ class _MyAppState extends State<MyApp> {
       }
     );
 
-    if(input != null) Navigator.pushNamed(context, '/details');
+    int existingDBid = 0;
+    final List<Map> allItems = await DatabaseCommunicator.getItems();
+    if(input.toString().isNotEmpty) {
+      bool alreadyExists = false;
+      for (var element in allItems) {
+        if (element['name'].toString().toLowerCase() ==
+            input.toString().toLowerCase()) {
+          existingDBid = element['id'];
+          alreadyExists = true;
+          break;
+        }
+      }
+      if (!alreadyExists) {
+        final int id = await DatabaseCommunicator.addItem(input);
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => DetailScreen(id: id)))
+
+          .then((value) => _setSearch(false));
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => DetailScreen(id: existingDBid)))
+
+            .then((value) => _setSearch(false));
+      }
+    }
   }
 }
