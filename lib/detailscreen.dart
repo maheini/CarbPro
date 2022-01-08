@@ -37,19 +37,6 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-
-  //CONTENT (IMAGES AND TEXT) MANAGEMENT
-  void _loadContent() async{
-    List result = await DatabaseCommunicator.getContent(id: widget.id);
-    if(result.isEmpty) {
-      return;
-    }
-    _itemName = result[0];
-    _content = result[1];
-    setState(() {});
-  }
-
-
   //CREATE LIST
   String _itemName = '';
   List<Map> _content = [];
@@ -341,9 +328,14 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     );
 
-    if(input != _itemName){
-      DatabaseCommunicator.changeItemName(widget.id, _controller.text)
-          .then((value) =>_loadContent());
+    if(input != _itemName){     //NAME CHANGED? THEN SAVE AND RELOAD NAME&UI
+      await DatabaseCommunicator.changeItemName(widget.id, _controller.text);
+      List result = await DatabaseCommunicator.getContent(parentId: widget.id);
+      if(result.isEmpty) {
+        return;
+      }
+      _itemName = result[0];
+      setState(() {});
     }
   }
 }
