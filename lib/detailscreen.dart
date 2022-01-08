@@ -39,6 +39,7 @@ class _DetailScreenState extends State<DetailScreen> {
         backgroundColor: Colors.indigo,
         child: const Icon(Icons.add_a_photo),),
       body: GridView.count(
+        childAspectRatio: 32/37,
         crossAxisCount: 2,
         children: _generatedContentItems,
       ),
@@ -113,7 +114,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: const BorderRadius.all(Radius.circular(4))),
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(7),
       child: InkWell(
         onTap: () => _itemEditor(
             id: _content[index]['id'],
@@ -147,7 +148,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Container(   //CONTENT
           padding: const EdgeInsets.all(5),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Flexible(
@@ -161,7 +162,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 flex: 1,
               ),
               Flexible(
-                flex: 3,
+                flex: 2,
                 child: Text(_content[index]['description']),
               )
             ],
