@@ -88,44 +88,33 @@ class _MyAppState extends State<MyApp> {
     return ListView.separated(
       itemBuilder: (context, index) {
         final Map item = _items[index];
-        return Dismissible(
-          key: Key(item['name']),
-          direction: DismissDirection.endToStart,
-          confirmDismiss: (DismissDirection direction) async {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Bestätigen"),
-                  content: const Text("Möchtest du des Element wirklich entfernen?"),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("ABBRECHEN"),
-                    ),
-                    TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("ENTFERNEN")
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          onDismissed: (direction) {
-            DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
-          },
-          background: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            alignment: Alignment.centerRight,
-            color: Colors.red,
-            child: const Icon(Icons.remove_circle),
-          ),
-          child: ListTile(
-            title: Text(item['name'].toString()),
-            onTap: () { Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
-          ),
+        return ListTile(
+          title: Text(item['name'].toString()),
+          onTap: () { Navigator.push(context, MaterialPageRoute(
+            builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
+          onLongPress: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Bestätigen"),
+                content: const Text("Möchtest du des Element wirklich entfernen?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("ABBRECHEN"),
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text("ENTFERNEN")
+                  ),
+                ],
+              );
+            },
+          ).then((removeConfirmation) {
+            if(removeConfirmation){
+              DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
+            }
+          }),
         );
       },
       separatorBuilder: (context, index) {
