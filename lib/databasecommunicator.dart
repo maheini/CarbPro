@@ -123,10 +123,10 @@ class DatabaseCommunicator {
         return false;
       }
 
-      await db.rawInsert('INSERT INTO items (description, imageurl) VALUES (?, ?)', [name, filename]);
+      await db.rawInsert('INSERT INTO content (description, imageurl) VALUES (?, ?)', [name, filename]);
     }
     else {
-      await db.rawInsert('INSERT INTO items (description) VALUES (?)', [name]);
+      await db.rawInsert('INSERT INTO content (description) VALUES (?)', [name]);
     }
     _closeDatabase(db);
     return true;
@@ -156,10 +156,10 @@ class DatabaseCommunicator {
         return false;
       }
 
-      await db.rawUpdate('UPDATE items SET description = ?, imageurl = ? WHERE id = ?', [name, filename, id]);
+      await db.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', [name, filename, id]);
     }
     else {
-      await db.rawUpdate('UPDATE items SET description = ? WHERE id = ?', [name, id]);
+      await db.rawUpdate('UPDATE content SET description = ? WHERE id = ?', [name, id]);
     }
     _closeDatabase(db);
     return true;
