@@ -153,9 +153,12 @@ class _DetailScreenState extends State<DetailScreen> {
             children: <Widget>[
               Flexible(
                 flex: 17,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                  ),
                 ),
               ),
               const Spacer(
@@ -212,7 +215,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       });},
                       child: AspectRatio(
                         aspectRatio: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
                           child: image ?? const Icon(Icons.add_photo_alternate_outlined, size: 50,),
+                        )
                       ),
                     ),
                     TextField(
