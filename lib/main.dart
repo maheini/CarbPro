@@ -3,17 +3,15 @@ import 'databasecommunicator.dart';
 import 'detailscreen.dart';
 
 void main() =>runApp(MaterialApp(
-    // home: FileSaver(),
-    // )
-  routes: {
-    '/': (context) => const MyApp(),
-    '/details': (context) => const DetailScreen(id: 0),
-  },
-  theme: ThemeData(),
-  darkTheme: ThemeData.dark(),
-  themeMode: ThemeMode.system,
-  title: 'CarbPro',
-)
+    routes: {
+      '/': (context) => const MyApp(),
+      '/details': (context) => const DetailScreen(id: 0),
+    },
+    theme: ThemeData(),
+    darkTheme: ThemeData.dark(),
+    themeMode: ThemeMode.system,
+    title: 'CarbPro',
+  )
 );
 
 
