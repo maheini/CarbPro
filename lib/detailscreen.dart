@@ -119,7 +119,7 @@ class _DetailScreenState extends State<DetailScreen> {
         onTap: () => _itemEditor(
             id: _content[index]['id'],
             description: _content[index]['description'],
-            image: Image.file(file, fit: BoxFit.cover,)),
+            image: hasImageReadPermission ?  Image.file(file, fit: BoxFit.cover,) : null),
         onLongPress: () async {
           bool remove = await showDialog(
             context: context,
