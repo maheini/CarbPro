@@ -229,7 +229,14 @@ class _DetailScreenState extends State<DetailScreen> {
                         hintText: 'Beschreibung',
                         errorText: textEmptyError ? 'Beschreibung ist leer' : null,
                         suffixIcon: IconButton(
-                          onPressed: () => setState(() => nameEditingLocked = !nameEditingLocked),
+                          onPressed: () => setState(() {
+                          if(nameEditingLocked){
+                            itemNameController.selection = TextSelection(baseOffset: 0, extentOffset: itemNameController.value.text.length);
+                          } else {
+                            itemNameController.selection = const TextSelection(baseOffset: 0, extentOffset: 0);
+                          }
+                          nameEditingLocked = !nameEditingLocked;
+                          }),
                           icon: Icon(nameEditingLocked?Icons.edit:Icons.done),
                         ),
                       ),
