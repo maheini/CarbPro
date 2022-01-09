@@ -28,43 +28,53 @@ class _MyAppState extends State<MyApp> {
   //UI BUILDER
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _search?
-      AppBar(
-          title: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3)),
-            child: Center(
-              child: TextField(
-                autofocus: true,
-                onChanged: (input) => _loadItems(),
-                controller: _searchController,
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.blueGrey,),
-                      onPressed: () => _setSearch(false),
-                    ),
-                    hintText: 'Suchen',
-                    border: InputBorder.none
+    return WillPopScope(
+      onWillPop: () async {
+        if(_search){
+          setState(() => _setSearch(false));
+          return false;
+        }
+        else {
+          return true;
+        }},
+      child: Scaffold(
+        appBar: _search?
+        AppBar(
+            title: Container(
+              width: double.infinity,
+              height: 40,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3)),
+              child: Center(
+                child: TextField(
+                  autofocus: true,
+                  onChanged: (input) => _loadItems(),
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.blueGrey,),
+                        onPressed: () => _setSearch(false),
+                      ),
+                      hintText: 'Suchen',
+                      border: InputBorder.none
+                  ),
                 ),
               ),
-            ),
-          )
-      ):
-      AppBar(
-        title: const Text('CarbPro'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
-        ],
-      ),
-      body: _makeList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addItem,
-        child: const Icon(Icons.add, color: Colors.white),
-        backgroundColor: Colors.indigo,
+            )
+        ) :
+        AppBar(
+          title: const Text('CarbPro'),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
+          ],
+        ),
+        body: _makeList(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _addItem,
+         child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: Colors.indigo,
+        ),
       ),
     );
   }
