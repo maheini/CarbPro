@@ -297,6 +297,9 @@ class _DetailScreenState extends State<DetailScreen> {
   Future<File?> _pickImage() async{
     XFile? pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
+      maxHeight: 720,
+      maxWidth: 720,
+      imageQuality: 40,
     );
 
     File? imageFile;
