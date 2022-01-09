@@ -2,9 +2,9 @@
 
 An Android app created with Flutter. Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker...
 
-## Getting Started
+## Feature requested or Issue found?
 
-Feel free to download the apk, or contribute via creating issues or pulling requests.
+Every idea is welcome. Feel free to contribute via creating issues or pulling requests.
 
 ## A special thanks to
 
