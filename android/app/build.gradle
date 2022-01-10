@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.carbpro"
+        applicationId "com.neofix.carbpro"
         minSdkVersion 21 //flutter.minSdkVersion
         targetSdkVersion 31 //flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

@@ -3,15 +3,15 @@ import 'databasecommunicator.dart';
 import 'detailscreen.dart';
 
 void main() =>runApp(MaterialApp(
-    // home: FileSaver(),
-    // )
-  routes: {
-    '/': (context) => const MyApp(),
-    '/details': (context) => const DetailScreen(id: 0),
-  },
-  theme: ThemeData.dark(),
-  title: 'CarbPro',
-)
+    routes: {
+      '/': (context) => const MyApp(),
+      '/details': (context) => const DetailScreen(id: 0),
+    },
+    theme: ThemeData(),
+    darkTheme: ThemeData.dark(),
+    themeMode: ThemeMode.system,
+    title: 'CarbPro',
+  )
 );
 
 
@@ -26,43 +26,53 @@ class _MyAppState extends State<MyApp> {
   //UI BUILDER
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _search?
-      AppBar(
-          title: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3)),
-            child: Center(
-              child: TextField(
-                autofocus: true,
-                onChanged: (input) => _loadItems(),
-                controller: _searchController,
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.blueGrey,),
-                      onPressed: () => _setSearch(false),
-                    ),
-                    hintText: 'Suchen',
-                    border: InputBorder.none
+    return WillPopScope(
+      onWillPop: () async {
+        if(_search){
+          setState(() => _setSearch(false));
+          return false;
+        }
+        else {
+          return true;
+        }},
+      child: Scaffold(
+        appBar: _search?
+        AppBar(
+            title: Container(
+              width: double.infinity,
+              height: 40,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3)),
+              child: Center(
+                child: TextField(
+                  autofocus: true,
+                  onChanged: (input) => _loadItems(),
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.blueGrey,),
+                        onPressed: () => _setSearch(false),
+                      ),
+                      hintText: 'Suchen',
+                      border: InputBorder.none
+                  ),
                 ),
               ),
-            ),
-          )
-      ):
-      AppBar(
-        title: const Text('CarbPro'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
-        ],
-      ),
-      body: _makeList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addItem,
-        child: const Icon(Icons.add, color: Colors.white),
-        backgroundColor: Colors.indigo,
+            )
+        ) :
+        AppBar(
+          title: const Text('CarbPro'),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
+          ],
+        ),
+        body: _makeList(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _addItem,
+         child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: Colors.indigo,
+        ),
       ),
     );
   }
@@ -86,44 +96,33 @@ class _MyAppState extends State<MyApp> {
     return ListView.separated(
       itemBuilder: (context, index) {
         final Map item = _items[index];
-        return Dismissible(
-          key: Key(item['name']),
-          direction: DismissDirection.endToStart,
-          confirmDismiss: (DismissDirection direction) async {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Bestätigen"),
-                  content: const Text("Möchtest du des Element wirklich entfernen?"),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("ABBRECHEN"),
-                    ),
-                    TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("ENTFERNEN")
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          onDismissed: (direction) {
-            DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
-          },
-          background: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            alignment: Alignment.centerRight,
-            color: Colors.red,
-            child: const Icon(Icons.remove_circle),
-          ),
-          child: ListTile(
-            title: Text(item['name'].toString()),
-            onTap: () { Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
-          ),
+        return ListTile(
+          title: Text(item['name'].toString()),
+          onTap: () { Navigator.push(context, MaterialPageRoute(
+            builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
+          onLongPress: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Bestätigen"),
+                content: const Text("Möchtest du des Element wirklich entfernen?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("ABBRECHEN"),
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text("ENTFERNEN")
+                  ),
+                ],
+              );
+            },
+          ).then((removeConfirmation) {
+            if(removeConfirmation){
+              DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
+            }
+          }),
         );
       },
       separatorBuilder: (context, index) {

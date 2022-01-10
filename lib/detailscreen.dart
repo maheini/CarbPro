@@ -37,8 +37,9 @@ class _DetailScreenState extends State<DetailScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _itemEditor(),
         backgroundColor: Colors.indigo,
-        child: const Icon(Icons.add_a_photo),),
+        child: const Icon(Icons.add_a_photo_outlined, color: Colors.white,),),
       body: GridView.count(
+        childAspectRatio: 32/37,
         crossAxisCount: 2,
         children: _generatedContentItems,
       ),
@@ -112,13 +113,16 @@ class _DetailScreenState extends State<DetailScreen> {
 
 
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: const BorderRadius.all(Radius.circular(4))),
-      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          color: Colors.black.withOpacity(0.2),
+      ),
+      margin: const EdgeInsets.all(7),
       child: InkWell(
         onTap: () => _itemEditor(
             id: _content[index]['id'],
             description: _content[index]['description'],
-            image: Image.file(file, fit: BoxFit.cover,)),
+            image: hasImageReadPermission ?  Image.file(file, fit: BoxFit.cover,) : null),
         onLongPress: () async {
           bool remove = await showDialog(
             context: context,
@@ -147,21 +151,24 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Container(   //CONTENT
           padding: const EdgeInsets.all(5),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Flexible(
                 flex: 17,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                  ),
                 ),
               ),
               const Spacer(
                 flex: 1,
               ),
               Flexible(
-                flex: 3,
+                flex: 2,
                 child: Text(_content[index]['description']),
               )
             ],
@@ -211,7 +218,14 @@ class _DetailScreenState extends State<DetailScreen> {
                       });},
                       child: AspectRatio(
                         aspectRatio: 1,
-                          child: image ?? const Icon(Icons.add_photo_alternate_outlined, size: 50,),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: image ?? Center(child: CircleAvatar(
+                            radius: 45,
+                            backgroundColor: Colors.black.withOpacity(0.1),
+                            child: const Icon(Icons.add_photo_alternate_outlined,
+                              size: 50,),),)
+                        )
                       ),
                     ),
                     TextField(
@@ -222,7 +236,14 @@ class _DetailScreenState extends State<DetailScreen> {
                         hintText: 'Beschreibung',
                         errorText: textEmptyError ? 'Beschreibung ist leer' : null,
                         suffixIcon: IconButton(
-                          onPressed: () => setState(() => nameEditingLocked = !nameEditingLocked),
+                          onPressed: () => setState(() {
+                          if(nameEditingLocked){
+                            itemNameController.selection = TextSelection(baseOffset: 0, extentOffset: itemNameController.value.text.length);
+                          } else {
+                            itemNameController.selection = const TextSelection(baseOffset: 0, extentOffset: 0);
+                          }
+                          nameEditingLocked = !nameEditingLocked;
+                          }),
                           icon: Icon(nameEditingLocked?Icons.edit:Icons.done),
                         ),
                       ),
@@ -283,6 +304,9 @@ class _DetailScreenState extends State<DetailScreen> {
   Future<File?> _pickImage() async{
     XFile? pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
+      maxHeight: 1600,
+      maxWidth: 1600,
+      imageQuality: 50,
     );
 
     File? imageFile;
@@ -297,6 +321,7 @@ class _DetailScreenState extends State<DetailScreen> {
   //    provide a possibility for adding new items.
   void _editName() async {
     TextEditingController _controller = TextEditingController(text: _itemName);
+    _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
     bool textEmptyError = false;
     final input = await showDialog(
       context: context,

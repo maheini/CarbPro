@@ -53,6 +53,17 @@ class DatabaseCommunicator {
     Database? db = await _openDatabase();
     if(db == null) return 0;
 
+    Directory dir = await getExternalStorageDirectory() ?? Directory('');
+    List<Map> imageurls = await db.rawQuery('SELECT imageurl FROM content WHERE parent = ?', [id]);
+    imageurls.forEach((element) async {
+      File file = File('${dir.path}/${element['imageurl']}');
+      if(await file.exists()){
+        await file.delete();
+      }
+    });
+
+    db.rawDelete('DELETE FROM content WHERE parent = ?', [id]);
+
     final count = await db.rawDelete('DELETE FROM items WHERE id = ?',[id]);
     _closeDatabase(db);
     return count;
@@ -162,19 +173,32 @@ class DatabaseCommunicator {
     if(db == null) return false;
 
     if(tempImage != null) {
+      //GET OLD IMAGE
+      List<Map> imageurl = await db.rawQuery('SELECT imageurl FROM content WHERE id = ?', [id]);
+
+      //COPY NEW FILE INTO APP DIRECTORY
       Directory? dir = await getExternalStorageDirectory();
       if(dir == null) {
         _closeDatabase(db);
         return false;
       }
-
       final String filename = basename(tempImage.path);
       await tempImage.copy('${dir.path}/$filename');
 
-
+      //UPDATE DB
       await db.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', [name, filename, id]);
+
+      //REMOVE OLD IMAGE
+      if(imageurl.isNotEmpty) {
+        Directory dir = await getExternalStorageDirectory() ?? Directory('');
+        File file = File('${dir.path}/${imageurl[0]['imageurl']}');
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
     }
     else {
+      //CHANGE DESCRIPTION
       await db.rawUpdate('UPDATE content SET description = ? WHERE id = ?', [name, id]);
     }
     _closeDatabase(db);
