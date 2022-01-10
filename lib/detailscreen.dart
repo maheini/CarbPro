@@ -314,6 +314,7 @@ class _DetailScreenState extends State<DetailScreen> {
   //    provide a possibility for adding new items.
   void _editName() async {
     TextEditingController _controller = TextEditingController(text: _itemName);
+    _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
     bool textEmptyError = false;
     final input = await showDialog(
       context: context,
