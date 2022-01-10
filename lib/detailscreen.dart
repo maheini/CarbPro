@@ -220,7 +220,11 @@ class _DetailScreenState extends State<DetailScreen> {
                         aspectRatio: 1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
-                          child: image ?? const Icon(Icons.add_photo_alternate_outlined, size: 50,),
+                          child: image ?? Center(child: CircleAvatar(
+                            radius: 45,
+                            backgroundColor: Colors.black.withOpacity(0.1),
+                            child: const Icon(Icons.add_photo_alternate_outlined,
+                              size: 50,),),)
                         )
                       ),
                     ),
