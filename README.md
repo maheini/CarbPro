@@ -1,12 +1,16 @@
 [![Website](https://img.shields.io/badge/Web-neofix.ch-brightgreen?style=for-the-badge)](https://neofix.ch)
-![GitHub](https://img.shields.io/github/license/maheini35/carbpro?style=for-the-badge&color=blue)
+[![GitHub](https://img.shields.io/github/license/maheini35/carbpro?style=for-the-badge&color=blue)](LICENSE)
 ![GitHub top language](https://img.shields.io/github/languages/top/maheini35/carbpro?style=for-the-badge&color=blue)
 ![Visitor count](https://shields-io-visitor-counter.herokuapp.com/badge?page=maheini35.CarbPro&style=for-the-badge&color=blue)
 ![Platform](https://img.shields.io/badge/Platform-Android-blue?style=for-the-badge)
 
-# CarbPro
+# CarbPro for Android
 
-An Android app created with Flutter. Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker...
+An Android app written in Dart with Flutter. CarbPro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker...
+
+## iOS Support
+
+If you have the possibility to deploy this app on iOS and publish it to the App Store I would highly support that. If you face any problems, just contact me :)
 
 ## Feature requested or Issue found?
 
