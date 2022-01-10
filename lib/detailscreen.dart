@@ -37,7 +37,7 @@ class _DetailScreenState extends State<DetailScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _itemEditor(),
         backgroundColor: Colors.indigo,
-        child: const Icon(Icons.add_a_photo),),
+        child: const Icon(Icons.add_a_photo_outlined, color: Colors.white,),),
       body: GridView.count(
         childAspectRatio: 32/37,
         crossAxisCount: 2,
@@ -113,7 +113,10 @@ class _DetailScreenState extends State<DetailScreen> {
 
 
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),borderRadius: const BorderRadius.all(Radius.circular(4))),
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          color: Colors.black.withOpacity(0.2),
+      ),
       margin: const EdgeInsets.all(7),
       child: InkWell(
         onTap: () => _itemEditor(
