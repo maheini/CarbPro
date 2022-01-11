@@ -93,7 +93,7 @@ class DatabaseHandler {
   Future<List<ItemChild>> getChildren(final int parentID) async {
     List<ItemChild> result = [];
 
-    List<Map> queryResult = await _database.rawQuery('SELECT * FROM items');
+    List<Map> queryResult = await _database.rawQuery('SELECT * FROM content WHERE parent = ?', [parentID]);
     for (var element in queryResult) {
       if (element.containsKey('id') && element.containsKey('description') && element.containsKey('imageurl')) {
         ItemChild newItem = ItemChild(element['id']is int ? element['id'] : 0,

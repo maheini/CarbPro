@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carbpro/databasehandler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'databasehandler_test.mocks.dart';
@@ -148,9 +150,50 @@ void main(){
 
   group('Testing all the Children Methods in DatabaseHandler', () {
 
+    // Test getChildren
     test('Should return 2 Children from the Database', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      final databaseValue = Future.value([
+        {'id': 1, 'parent': 3, 'description': 'Description', 'imageurl': 'emptypath'},
+        {'id': 2, 'parent': 3, 'description': 'Description2', 'imageurl': 'emptypath2'}]);
+      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3])).thenAnswer((realInvocation) async => databaseValue);
 
+      // Act
+      final List<ItemChild> result = await databaseHandler.getChildren(3);
+
+      //Assert
+      expect(result.length, 2);
+      ItemChild child = result[0];
+      expect(child.id, 1);
+      expect(child.parentID, 3);
+      expect(child.description, 'Description');
+      expect(child.imagepath, 'emptypath');
     });
+    test('Should return 1 Child from the Database, because the DB column description is missing', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      final databaseValue = Future.value([
+        {'id': 1, 'parent': 3, 'description': 'Description', 'imageurl': 'emptypath'},
+        {'id': 2, 'parent': 3, 'imageurl': 'emptypath2'}]);    //Missing column here :)
+      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3])).thenAnswer((realInvocation) async => databaseValue);
+
+      // Act
+      final List<ItemChild> result = await databaseHandler.getChildren(3);
+
+      //Assert
+      expect(result.length, 1);
+      ItemChild child = result[0];
+      expect(child.id, 1);
+      expect(child.parentID, 3);
+      expect(child.description, 'Description');
+      expect(child.imagepath, 'emptypath');
+    });
+
+    // Test addItemChild Method
+
 
 
   }); // End of all Children Tests in DatabaseHandler
