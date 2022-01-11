@@ -10,6 +10,40 @@ import 'package:sqflite/sqflite.dart';
 
 @GenerateMocks([Database])
 void main(){
+
+  group('Test Classes Item and ItemChild', () {
+
+    test('Test Item -> Set Values and get them all back', () {
+      // Arrange
+      Item item = Item(5, 'Name');
+
+      // Act
+      final int id = item.id;
+      final String name = item.name;
+
+      // Assert
+      expect(id, 5);
+      expect(name, 'Name');
+    });
+    test('Test ItemChild -> Set Values and get them all back', () {
+      // Arrange
+      ItemChild item = ItemChild(1, 2,'description', 'imagepath');
+
+      // Act
+      final int id = item.id;
+      final int parentID = item.parentID;
+      final String description = item.description;
+      final String imagepath = item.imagepath;
+
+      // Assert
+      expect(id, 1);
+      expect(parentID, 2);
+      expect(description, 'description');
+      expect(imagepath, 'imagepath');
+    });
+
+  }); // Finished Class testing of Item and ItemChild
+
   group('Testing all Item methods', () {
     //Testing getItems method
     test('DatabaseHandler method getItems should return 2 valid Items', () async{
@@ -193,31 +227,95 @@ void main(){
     });
 
     // Test addItemChild Method
+    test('addItemChild should return the id of the inserted child', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      when(mockDatabase.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)', [1, 'description', 'imagepath']))
+          .thenAnswer((realInvocation) async => Future.value(5));
 
+      // Act
+      final int id = await databaseHandler.addItemChild(itemChild);
 
+      //Assert
+      expect(id, 5);
+    });
+    test('addItemChild should return no id -> Item couldn\'t be inserted', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      when(mockDatabase.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)', [1, 'description', 'imagepath']))
+          .thenAnswer((realInvocation) async => Future.value(0));
+
+      // Act
+      final int id = await databaseHandler.addItemChild(itemChild);
+
+      //Assert
+      expect(id, 0);
+    });
+
+    // Test deleteItemChild
+    test('Testing deleteItemChild -> wich should return 1 (means 1 affected row)', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(1, 1, 'description', 'imagepath');
+      when(mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [1]))
+          .thenAnswer((realInvocation) async => Future.value(1));
+
+      // Act
+      final int affectedRows = await databaseHandler.deleteItemChild(itemChild);
+
+      //Assert
+      expect(affectedRows, 1);
+    });
+    test('Testing deleteItemChild -> wich should return 0 (means 0 affected rows)', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      when(mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [0]))
+          .thenAnswer((realInvocation) async => Future.value(0));
+
+      // Act
+      final int affectedRows = await databaseHandler.deleteItemChild(itemChild);
+
+      //Assert
+      expect(affectedRows, 0);
+    });
+
+    // Testing updateItemChild
+    test('Make sure rawupdate gets called with the right values and 1 row got affected', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(1, 2, 'newDescription', 'newImagepath');
+      when(mockDatabase.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', ['newDescription', 'newImagepath', 1]))
+          .thenAnswer((realInvocation) async => Future.value(1));
+
+      // Act
+      final int affectedRows = await databaseHandler.updateItemChild(itemChild);
+
+      //Assert
+      expect(affectedRows, 1);
+    });
+    test('Make sure rawupdate gets called with the right values and 0 row got affected -> with faked DB return', () async {
+      // Arrange
+      MockDatabase mockDatabase = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
+      ItemChild itemChild = ItemChild(0, 2, 'newDescription', 'newImagepath');
+      when(mockDatabase.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', ['newDescription', 'newImagepath', 0]))
+          .thenAnswer((realInvocation) async => Future.value(0));
+
+      // Act
+      final int affectedRows = await databaseHandler.updateItemChild(itemChild);
+
+      //Assert
+      expect(affectedRows, 0);
+    });
 
   }); // End of all Children Tests in DatabaseHandler
-
-  // How Widgets would be tested
-  //
-  //
-  // testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-  //   // Build our app and trigger a frame.
-  //   await tester.pumpWidget(const MyApp());
-  //
-  //   // Verify that our counter starts at 0.
-  //   expect(find.text('0'), findsOneWidget);
-  //   expect(find.text('1'), findsNothing);
-  //
-  //   // Tap the '+' icon and trigger a frame.
-  //   await tester.tap(find.byIcon(Icons.add));
-  //   await tester.pump();
-  //
-  //   // Verify that our counter has incremented.
-  //   expect(find.text('0'), findsNothing);
-  //   expect(find.text('1'), findsOneWidget);
-  // });
-
-  // expect(shouldBeDuration, TypeMatcher<Duration>());
-
 }
+
