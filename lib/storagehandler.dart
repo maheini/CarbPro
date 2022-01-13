@@ -25,7 +25,7 @@ class PlatformWrapper{
 
 class StorageHandler {
   late final FileAccessWrapper _fileAccessWrapper;
-  StorageHandler({fileAccessWrapper = FileAccessWrapper}){_fileAccessWrapper = fileAccessWrapper;}
+  StorageHandler(this._fileAccessWrapper);
 
   Future<Image> getImage(String filepath) async{
     File file= File(filepath);
