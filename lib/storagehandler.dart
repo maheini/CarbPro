@@ -6,9 +6,9 @@ class FileAccessWrapper{
   // This is a wrapper class for file operations -> designed for unit testing
 
   Future<bool> exists(File file) async => file.exists();
-  Future<RandomAccessFile> open(File file) async => file.open();
-  Future<File> copy(File file, String newPath) async => file.copy(newPath);
-  Future<FileSystemEntity> delete(File file) async => file.delete();
+  Future<RandomAccessFile> openFile(File file) async => file.open();
+  Future<File> copyFile(File file, String newPath) async => file.copy(newPath);
+  Future<FileSystemEntity> deleteFile(File file) async => file.delete();
 }
 
 class PlatformWrapper{
@@ -29,18 +29,18 @@ class StorageHandler {
 
   Future<Image> getImage(String filepath) async{
     File file= File(filepath);
-    await _fileAccessWrapper.open(file);
+    await _fileAccessWrapper.openFile(file);
     return Image.file(file);
   }
 
-  Future<File> copyImage(String filepath, String newFilePath) async{
+  Future<File> copyFile(String filepath, String newFilePath) async{
     File file = File(filepath);
-    return await _fileAccessWrapper.copy(file, newFilePath);
+    return await _fileAccessWrapper.copyFile(file, newFilePath);
   }
 
   Future<void> deleteFile(String filepath) async{
     File file= File(filepath);
-    await _fileAccessWrapper.delete(file);
+    await _fileAccessWrapper.deleteFile(file);
   }
 
   Future <bool> getPermission(Permission permission, PlatformWrapper wrapper) async {
