@@ -22,4 +22,4 @@ All the developers of Nightscout, AndroidAPS and Loop - you rock! I got diabetes
 
 ## License & copyright
  
-Licensed under the [GPLv3 License](LICENSE)
+Licensed under the [GPLv3 License](LICENSE).
