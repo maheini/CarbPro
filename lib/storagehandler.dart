@@ -7,7 +7,7 @@ class FileAccessWrapper{
 
   Future<bool> exists(File file) async => file.exists();
   Future<RandomAccessFile> open(File file) async => file.open();
-  Future<File> store(File file, String newPath) async => file.copy(newPath);
+  Future<File> copy(File file, String newPath) async => file.copy(newPath);
   Future<FileSystemEntity> delete(File file) async => file.delete();
 }
 
@@ -35,7 +35,7 @@ class StorageHandler {
 
   Future<File> copyImage(String filepath, String newFilePath) async{
     File file = File(filepath);
-    return await _fileAccessWrapper.store(file, newFilePath);
+    return await _fileAccessWrapper.copy(file, newFilePath);
   }
 
   Future<void> deleteFile(String filepath) async{
