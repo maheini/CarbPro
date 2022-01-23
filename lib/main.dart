@@ -3,9 +3,14 @@ import 'databasecommunicator.dart';
 import 'detailscreen.dart';
 
 void main() =>runApp(MaterialApp(
-    routes: {
-      '/': (context) => const MyApp(),
-      '/details': (context) => const DetailScreen(id: 0),
+    onGenerateRoute: (settings) {
+      if (settings.name == '/details') {
+        return MaterialPageRoute(builder: (_) => DetailScreen(id: settings.arguments as int)); // Pass it to BarPage.
+      }
+      else if (settings.name == '/'){
+        return MaterialPageRoute(builder: (_) => const MyApp());
+      }
+      return null; // Let `onUnknownRoute` handle this behavior.
     },
     theme: ThemeData(),
     darkTheme: ThemeData.dark(),
@@ -98,8 +103,9 @@ class _MyAppState extends State<MyApp> {
         final Map item = _items[index];
         return ListTile(
           title: Text(item['name'].toString()),
-          onTap: () { Navigator.push(context, MaterialPageRoute(
-            builder: (context) => DetailScreen(id: item['id']))).then((value) => _setSearch(false));},
+          onTap: () {
+            Navigator.pushNamed(context, '/details', arguments: item['id'])
+                .then((value) => _setSearch(false));},
           onLongPress: () => showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -204,15 +210,11 @@ class _MyAppState extends State<MyApp> {
       }
       if (!alreadyExists) {
         final int id = await DatabaseCommunicator.addItem(input);
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => DetailScreen(id: id)))
-
+        Navigator.pushNamed(context, '/details', arguments: id)
           .then((value) => _setSearch(false));
       }
       else {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => DetailScreen(id: existingDBid)))
-
+        Navigator.pushNamed(context, '/details', arguments: existingDBid)
             .then((value) => _setSearch(false));
       }
     }
