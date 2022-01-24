@@ -40,18 +40,18 @@ class MockFileAccessWrapper extends _i1.Mock implements _i3.FileAccessWrapper {
           returnValue: Future<bool>.value(false)) as _i4.Future<bool>);
   @override
   _i4.Future<_i2.RandomAccessFile> openFile(_i2.File? file) =>
-      (super.noSuchMethod(Invocation.method(#open, [file]),
+      (super.noSuchMethod(Invocation.method(#openFile, [file]),
               returnValue:
                   Future<_i2.RandomAccessFile>.value(_FakeRandomAccessFile_0()))
           as _i4.Future<_i2.RandomAccessFile>);
   @override
   _i4.Future<_i2.File> copyFile(_i2.File? file, String? newPath) =>
-      (super.noSuchMethod(Invocation.method(#copy, [file, newPath]),
+      (super.noSuchMethod(Invocation.method(#copyFile, [file, newPath]),
               returnValue: Future<_i2.File>.value(_FakeFile_1()))
           as _i4.Future<_i2.File>);
   @override
   _i4.Future<_i2.FileSystemEntity> deleteFile(_i2.File? file) =>
-      (super.noSuchMethod(Invocation.method(#delete, [file]),
+      (super.noSuchMethod(Invocation.method(#deleteFile, [file]),
               returnValue:
                   Future<_i2.FileSystemEntity>.value(_FakeFileSystemEntity_2()))
           as _i4.Future<_i2.FileSystemEntity>);

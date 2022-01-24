@@ -26,6 +26,13 @@ class CarbPro extends StatefulWidget {
 }
 
 class _CarbProState extends State<CarbPro> {
+
+  @override
+  void initState() {
+    prepareApp();
+    super.initState();
+  }
+
   @visibleForTesting
   bool databaseIsOpen = false;
   @visibleForTesting
@@ -48,5 +55,21 @@ class _CarbProState extends State<CarbPro> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+
+  Widget requestPermissionScreen({VoidCallback? onRequestPressed}){
+    return Center(
+      child: Column(
+        children: [
+          Title(color: Colors.grey[850]!, child: const Text('Berechtigung fehlt')),
+          const Text('Die Berechtigung für den Speicher wird benötigt '
+              'um Bilder und Daten auf dem Gerät zu speichern.'),
+          ElevatedButton(
+            onPressed: onRequestPressed,
+            child: const Text('Berechtigung anfragen'),
+          ),
+        ],
+      ),
+    );
   }
 }
