@@ -2,19 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/datamodels/itemchild.dart';
 
-class Item {
-  Item(this.id, this.name);
-  final int id;
-  String name;
-}
-
-class ItemChild {
-  ItemChild(this.id, this.parentID, this.description, this.imagepath);
-  final int id;
-  final int parentID;
-  String description;
-  String imagepath;
-}
+const String databaseName = 'carbpro_db.sqlite';
 
 class DatabaseHandler {
 
@@ -26,9 +14,9 @@ class DatabaseHandler {
 
   final Database _database;
 
-  static Future<Database?> addDatabase(String path) async {
+  static Future<Database> addDatabase() async {
     return await openDatabase(
-      'C:/',
+      databaseName,
       onCreate: (db, version) {
         db.execute(
             'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT)');
