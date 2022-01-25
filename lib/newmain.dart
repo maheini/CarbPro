@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'detailscreen.dart';
 import 'databasecommunicator.dart';
 import 'package:get_it/get_it.dart';
-import 'databasehandler.dart';
-import 'storagehandler.dart';
+import 'handler/databasehandler.dart';
+import 'handler/storagehandler.dart';
 
 GetIt getIt = GetIt.instance;
 
