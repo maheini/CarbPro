@@ -31,7 +31,7 @@ dependencies:
   path_provider: ^2.0.8
   permission_handler: ^8.1.4+2
   sqflite: ^2.0.1
-  provider: ^6.0.2
+  get_it: ^7.2.0
   flutter:
     sdk: flutter
 
