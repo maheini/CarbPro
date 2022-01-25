@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
-
+import 'package:carbpro/datamodels/item.dart';
+import 'package:carbpro/datamodels/itemchild.dart';
 
 class Item {
   Item(this.id, this.name);
@@ -36,7 +37,6 @@ class DatabaseHandler {
       },
       version: 1,
     );
-    // return database;
   }
 
   //---------------------------------------------Item methods-------------------------------------------------

@@ -1,4 +1,6 @@
 import 'package:carbpro/handler/databasehandler.dart';
+import 'package:carbpro/datamodels/item.dart';
+import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'databasehandler_test.mocks.dart';
 import 'package:mockito/annotations.dart';
