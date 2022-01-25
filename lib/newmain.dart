@@ -4,11 +4,9 @@ import 'databasecommunicator.dart';
 import 'package:get_it/get_it.dart';
 import 'handler/databasehandler.dart';
 import 'handler/storagehandler.dart';
-
-GetIt getIt = GetIt.instance;
+import 'locator/locator.dart';
 
 void main() {
-  getIt.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
   runApp(
     MaterialApp(
       onGenerateRoute: (settings) {
