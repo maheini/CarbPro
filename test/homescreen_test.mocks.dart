@@ -2,12 +2,16 @@
 // in carbpro/test/homescreen_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i3;
+import 'dart:async' as _i5;
+import 'dart:io' as _i3;
 
-import 'package:carbpro/datamodels/item.dart' as _i4;
-import 'package:carbpro/datamodels/itemchild.dart' as _i5;
-import 'package:carbpro/handler/databasehandler.dart' as _i2;
+import 'package:carbpro/datamodels/item.dart' as _i6;
+import 'package:carbpro/datamodels/itemchild.dart' as _i7;
+import 'package:carbpro/handler/databasehandler.dart' as _i4;
+import 'package:carbpro/handler/storagehandler.dart' as _i8;
+import 'package:flutter/cupertino.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:permission_handler/permission_handler.dart' as _i9;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -18,50 +22,89 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
+class _FakeImage_0 extends _i1.Fake implements _i2.Image {
+  @override
+  String toString({_i2.DiagnosticLevel? minLevel = _i2.DiagnosticLevel.info}) =>
+      super.toString();
+}
+
+class _FakeFile_1 extends _i1.Fake implements _i3.File {}
+
 /// A class which mocks [DatabaseHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseHandler extends _i1.Mock implements _i2.DatabaseHandler {
+class MockDatabaseHandler extends _i1.Mock implements _i4.DatabaseHandler {
   MockDatabaseHandler() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.Item>> getItems() =>
+  _i5.Future<List<_i6.Item>> getItems() =>
       (super.noSuchMethod(Invocation.method(#getItems, []),
-              returnValue: Future<List<_i4.Item>>.value(<_i4.Item>[]))
-          as _i3.Future<List<_i4.Item>>);
+              returnValue: Future<List<_i6.Item>>.value(<_i6.Item>[]))
+          as _i5.Future<List<_i6.Item>>);
   @override
-  _i3.Future<int> addItem(String? newName) =>
+  _i5.Future<int> addItem(String? newName) =>
       (super.noSuchMethod(Invocation.method(#addItem, [newName]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<int> deleteItem(int? id) =>
+  _i5.Future<int> deleteItem(int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteItem, [id]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<int> deleteAllChildren(int? parentID) =>
+  _i5.Future<int> deleteAllChildren(int? parentID) =>
       (super.noSuchMethod(Invocation.method(#deleteAllChildren, [parentID]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<int> changeItemName(int? id, String? newName) =>
+  _i5.Future<int> changeItemName(int? id, String? newName) =>
       (super.noSuchMethod(Invocation.method(#changeItemName, [id, newName]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<List<_i5.ItemChild>> getChildren(int? parentID) =>
+  _i5.Future<List<_i7.ItemChild>> getChildren(int? parentID) =>
       (super.noSuchMethod(Invocation.method(#getChildren, [parentID]),
-              returnValue: Future<List<_i5.ItemChild>>.value(<_i5.ItemChild>[]))
-          as _i3.Future<List<_i5.ItemChild>>);
+              returnValue: Future<List<_i7.ItemChild>>.value(<_i7.ItemChild>[]))
+          as _i5.Future<List<_i7.ItemChild>>);
   @override
-  _i3.Future<int> addItemChild(_i5.ItemChild? itemChild) =>
+  _i5.Future<int> addItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#addItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<int> deleteItemChild(_i5.ItemChild? itemChild) =>
+  _i5.Future<int> deleteItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#deleteItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
   @override
-  _i3.Future<int> updateItemChild(_i5.ItemChild? itemChild) =>
+  _i5.Future<int> updateItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#updateItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i3.Future<int>);
+          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+}
+
+/// A class which mocks [StorageHandler].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockStorageHandler extends _i1.Mock implements _i8.StorageHandler {
+  MockStorageHandler() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Future<_i2.Image> getImage(String? filepath) =>
+      (super.noSuchMethod(Invocation.method(#getImage, [filepath]),
+              returnValue: Future<_i2.Image>.value(_FakeImage_0()))
+          as _i5.Future<_i2.Image>);
+  @override
+  _i5.Future<_i3.File> copyFile(String? filepath, String? newFilePath) =>
+      (super.noSuchMethod(Invocation.method(#copyFile, [filepath, newFilePath]),
+              returnValue: Future<_i3.File>.value(_FakeFile_1()))
+          as _i5.Future<_i3.File>);
+  @override
+  _i5.Future<void> deleteFile(String? filepath) =>
+      (super.noSuchMethod(Invocation.method(#deleteFile, [filepath]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+  @override
+  _i5.Future<bool> getPermission(
+          _i9.Permission? permission, _i8.PlatformWrapper? wrapper) =>
+      (super.noSuchMethod(
+          Invocation.method(#getPermission, [permission, wrapper]),
+          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
 }

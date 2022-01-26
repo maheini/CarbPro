@@ -41,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //UI BUILDER
+  bool _isLoading = true;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -53,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return true;
         }},
       child: Scaffold(
-        appBar: _search?
+        appBar: _isLoading ? AppBar(title: const Text('CarbPro'),) : _search?
         AppBar(
             title: Container(
               width: double.infinity,
@@ -84,8 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
           ],
         ),
-        body: _makeList(),
-        floatingActionButton: FloatingActionButton(
+        body: _isLoading? const CircularProgressIndicator(): _makeList(),
+        floatingActionButton: _isLoading ? null : FloatingActionButton(
           onPressed: _addItem,
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: Colors.indigo,
