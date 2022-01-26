@@ -1,8 +1,10 @@
+import 'package:carbpro/locator/locator.dart';
 import 'package:flutter/material.dart';
 import 'detailscreen.dart';
 import 'homescreen.dart';
 
 void main() {
+  setupLocator();
   runApp(
     const CarbPro()
   );

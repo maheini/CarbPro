@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'databasecommunicator.dart';
+import 'locator/locator.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +16,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    awaitLocatorSetup();
+  }
+
+  void awaitLocatorSetup() async{
+    await locator.allReady();
+    // todo load database
   }
 
   Widget requestPermissionContainer({VoidCallback? onRequestPressed}){
