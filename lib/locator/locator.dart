@@ -4,7 +4,7 @@ import 'package:carbpro/handler/storagehandler.dart';
 
 GetIt locator = GetIt.instance;
 
-void setupLocator()async {
+void setupLocator() {
   // Register all Storage access services
   locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
 

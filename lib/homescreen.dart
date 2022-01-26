@@ -1,6 +1,8 @@
+import 'package:carbpro/handler/databasehandler.dart';
 import 'package:flutter/material.dart';
 import 'databasecommunicator.dart';
 import 'locator/locator.dart';
+import 'datamodels/item.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +23,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void awaitLocatorSetup() async{
     await locator.allReady();
-    // todo load database
+    _loadAndDisplayItems();
+  }
+
+  void _loadAndDisplayItems() async {
+    _items = await locator<DatabaseHandler>().getItems();
+    setState(() {_isLoading = false;});   // hides loader and rebuilding everything with the new list
+  }
+
+  List<Item> _items = [];
+
+  Widget _itemList({String? filter, required List<Item> list}){
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(_items[index].name),
+          onTap: () {
+            Navigator.pushNamed(context, '/details', arguments: _items[index].id)
+                .then((value) => _setSearch(false));},
+          onLongPress: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Bestätigen"),
+                content: const Text("Möchtest du des Element wirklich entfernen?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("ABBRECHEN"),
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text("ENTFERNEN")
+                  ),
+                ],
+              );
+            },
+          ).then((removeConfirmation) {
+            if(removeConfirmation){
+              DatabaseCommunicator.removeItem(_items[index].id).then((value) => _loadItems());
+            }
+          }),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
+      },
+      itemCount: _items.length,
+    );
   }
 
   Widget requestPermissionContainer({VoidCallback? onRequestPressed}){
@@ -85,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
           ],
         ),
-        body: _isLoading? const CircularProgressIndicator(): _makeList(),
+        body: _isLoading? const CircularProgressIndicator(): _itemList(list: _items),
         floatingActionButton: _isLoading ? null : FloatingActionButton(
           onPressed: _addItem,
           child: const Icon(Icons.add, color: Colors.white),
@@ -98,58 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
   //LIST GENERATOR
   void _loadItems() async {
     if(_search){
-      _items = await DatabaseCommunicator.getItems(nameFilter:  _searchController.text);
+      // _items = await DatabaseCommunicator.getItems(nameFilter:  _searchController.text);
     }
     else {
-      _items = await DatabaseCommunicator.getItems();
+      // _items = await DatabaseCommunicator.getItems();
     }
     setState(() {_reloadItems = false;});
   }
-  List<Map> _items = [];
   bool _reloadItems = true;
-  Widget _makeList()
-  {
-    if(_reloadItems) _loadItems();
-
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final Map item = _items[index];
-        return ListTile(
-          title: Text(item['name'].toString()),
-          onTap: () {
-            Navigator.pushNamed(context, '/details', arguments: item['id'])
-                .then((value) => _setSearch(false));},
-          onLongPress: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Bestätigen"),
-                content: const Text("Möchtest du des Element wirklich entfernen?"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("ABBRECHEN"),
-                  ),
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("ENTFERNEN")
-                  ),
-                ],
-              );
-            },
-          ).then((removeConfirmation) {
-            if(removeConfirmation){
-              DatabaseCommunicator.removeItem(item['id']).then((value) => _loadItems());
-            }
-          }),
-        );
-      },
-      separatorBuilder: (context, index) {
-        return const Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
-      },
-      itemCount: _items.length,
-    );
-  }
 
   //SEARCH BAR CONTROL
   bool _search = false;
