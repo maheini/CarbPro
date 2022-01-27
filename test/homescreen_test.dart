@@ -14,21 +14,27 @@ import 'package:carbpro/locator/locator.dart';
 @GenerateMocks([DatabaseHandler, StorageHandler])
 void main(){
   group('App startup', () {
-    // testWidgets('Open App and check if Circular Progress is visisible while opening the database', (WidgetTester tester) async{
-    //   locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
-    //   locator.registerSingletonAsync<DatabaseHandler>(() async {
-    //     return MockDatabaseHandler();
-    //   }, signalsReady: true);
-    //   setupLocator();
-    //
-    //   await tester.pumpWidget(const CarbPro());
-    //
-    //   expect(find.byType (AlertDialog), findsNothing);
-    //   expect(find.text('CarbPro'), findsOneWidget);
-    //   expect(find.byIcon(Icons.add), findsNothing);
-    //   expect(find.byIcon(Icons.search), findsNothing);
-    //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    // });
+    testWidgets('Open App and check if Circular Progress is visisible while opening the database', (WidgetTester tester) async{
+      MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1,'Item1')]));
+
+      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingletonAsync<DatabaseHandler>(() async {
+        await Future.delayed(const Duration(milliseconds: 3));
+        return databaseHandler;
+      });
+
+      await tester.pumpWidget(const CarbPro());
+
+      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.text('CarbPro'), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsNothing);
+      expect(find.byIcon(Icons.search), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      tester.pump(const Duration(seconds: 5));
+      locator.resetScope(dispose: true);
+    });
 
     testWidgets('Return one fake Item from the Database -> Home should list this '
         'and show add+search button without warning and progress indicator', (WidgetTester tester) async {
