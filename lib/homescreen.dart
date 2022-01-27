@@ -34,12 +34,19 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Item> _items = [];
 
   Widget _itemList({String? filter, required List<Item> list}){
+    late final List<Item> items;
+    if(filter == null){
+      items = list;
+    }
+    else{
+      items = list.where((element) => element.name.contains(filter)).toList();
+    }
     return ListView.separated(
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(_items[index].name),
+          title: Text(items[index].name),
           onTap: () {
-            Navigator.pushNamed(context, '/details', arguments: _items[index].id)
+            Navigator.pushNamed(context, '/details', arguments: items[index].id)
                 .then((value) => _setSearch(false));},
           onLongPress: () => showDialog(
             context: context,
@@ -61,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ).then((removeConfirmation) {
             if(removeConfirmation){
-              DatabaseCommunicator.removeItem(_items[index].id).then((value) => _loadItems());
+              DatabaseCommunicator.removeItem(items[index].id).then((value) => _loadItems());
             }
           }),
         );
@@ -69,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
       separatorBuilder: (context, index) {
         return const Divider(indent: 10, endIndent: 10, thickness: 1, height: 5,);
       },
-      itemCount: _items.length,
+      itemCount: items.length,
     );
   }
 
@@ -96,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () async {
         if(_search){
-          setState(() => _setSearch(false));
+          setState(() => _search = false);
           return false;
         }
         else {
@@ -113,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Center(
                 child: TextField(
                   autofocus: true,
-                  onChanged: (input) => _loadItems(),
+                  onChanged: (_) => setState(() {}),
                   controller: _searchController,
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
@@ -134,7 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
           ],
         ),
-        body: _isLoading? const CircularProgressIndicator(): _itemList(list: _items),
+        body: _isLoading? const CircularProgressIndicator()
+          : _itemList(list: _items, filter: _search? _searchController.text: null),
         floatingActionButton: _isLoading ? null : FloatingActionButton(
           onPressed: _addItem,
           child: const Icon(Icons.add, color: Colors.white),
