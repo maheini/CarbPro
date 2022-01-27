@@ -256,6 +256,10 @@ void main(){
           .thenAnswer((realInvocation) => Future.value([ItemChild(11,1,'', 'path')]));
       when(databaseHandler.getItems())
           .thenAnswer((realInvocation) => Future.value([]));
+      when(databaseHandler.deleteAllChildren(1))
+          .thenAnswer((realInvocation) => Future.value(1));
+      when(databaseHandler.deleteItem(1))
+          .thenAnswer((realInvocation) => Future.value(1));
       when(storageHandler.getPermission(Permission.storage, any))
           .thenAnswer((realInvocation) => Future.value(true));
       when(storageHandler.deleteFile('path'))
@@ -271,6 +275,8 @@ void main(){
       // check if every necessary function get called
       verify(storageHandler.getPermission(Permission.storage, any)).called(1);
       verify(databaseHandler.getChildren(1)).called(1);
+      verify(databaseHandler.deleteItem(1)).called(1);
+      verify(databaseHandler.deleteAllChildren(1)).called(1);
       verify(storageHandler.deleteFile('path')).called(1);
 
       // load to check if item isn't visible anymore
@@ -283,6 +289,5 @@ void main(){
       // reset locator
       locator.resetScope(dispose: true);
     });
-
   });
 }
