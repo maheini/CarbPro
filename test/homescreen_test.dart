@@ -41,18 +41,42 @@ void main(){
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
       locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      Item item = Item(1, 'Test-Item');
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([item]));
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
 
       await tester.pumpWidget(const CarbPro());
       await tester.pump();
 
       expect(find.byType (AlertDialog), findsNothing);
       expect(find.text('CarbPro'), findsOneWidget);
-      expect(find.text('Test-Item'), findsOneWidget);
+      expect(find.text('Item1'), findsOneWidget);
       expect(find.byIcon(Icons.add), findsOneWidget);
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
+      locator.resetScope(dispose: true);
+    });
+  });
+
+  group('Test search method', () {
+    testWidgets('After tapping search button, the title should be replaced by a Textfield', (WidgetTester tester) async {
+      MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<DatabaseHandler>(databaseHandler);
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([]));
+
+      await tester.pumpWidget(const CarbPro());
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pump();
+
+      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.text('CarbPro'), findsNothing);
+      expect(find.text('Item1'), findsOneWidget);
+      expect(find.text('Item2'), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.search), findsNothing);
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      locator.resetScope(dispose: true);
     });
   });
 }
