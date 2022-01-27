@@ -80,22 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget requestPermissionContainer({VoidCallback? onRequestPressed}){
-    return Center(
-      child: Column(
-        children: [
-          Title(color: Colors.grey[850]!, child: const Text('Berechtigung fehlt')),
-          const Text('Die Berechtigung für den Speicher wird benötigt '
-              'um Bilder und Daten auf dem Gerät zu speichern.'),
-          ElevatedButton(
-            onPressed: onRequestPressed,
-            child: const Text('Berechtigung anfragen'),
-          ),
-        ],
-      ),
-    );
-  }
-
   //UI BUILDER
   bool _isLoading = true;
   @override
@@ -160,9 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
     else {
       // _items = await DatabaseCommunicator.getItems();
     }
-    setState(() {_reloadItems = false;});
+    setState(() {});
   }
-  bool _reloadItems = true;
 
   //SEARCH BAR CONTROL
   bool _search = false;
