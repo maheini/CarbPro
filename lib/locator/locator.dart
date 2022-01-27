@@ -11,5 +11,5 @@ void setupLocator() {
   // Register all Database access services
   locator.registerSingletonAsync<DatabaseHandler>(() async {
     return DatabaseHandler(await DatabaseHandler.addDatabase());
-  }, signalsReady: true);
+  });
 }
