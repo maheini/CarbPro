@@ -290,4 +290,81 @@ void main(){
       locator.resetScope(dispose: true);
     });
   });
+
+  group('Test the add button', () {
+
+    testWidgets('-After pressing the Add Button, there should appear a popup, '
+        'including a Textfield, ´ABBRECHEN´ and ´ERSTELLEN´ Button'
+        '-An empty line Item shouldn´t be added'
+        '-After pressing ´ABBRECHEN´, the popup should disappear', (WidgetTester tester) async {
+      MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+      locator.registerSingleton<DatabaseHandler>(databaseHandler);
+      when(databaseHandler.addItem('nameDoesntExists')).thenAnswer((_) async => Future.value(1));
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExists')]));
+
+      // Start App
+      await tester.pumpWidget(const CarbPro());
+      await tester.pumpAndSettle();
+
+      // Press add button
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+
+      // Check if Popup is visible
+      expect(find.byType(TextField), findsOneWidget);
+      expect(find.text('ERSTELLEN'), findsOneWidget);
+      expect(find.text('ABBRECHEN'), findsOneWidget);
+
+      // tap ´ERSTELLEN´ button
+      // -> there shouldn't be any call to DatabaseHandler.addItem, because text is empty
+      await tester.enterText(find.byType(TextField), '');
+      await tester.tap(find.text('ERSTELLEN'));
+      verifyNever(databaseHandler.addItem(any));
+      await tester.pump();
+
+
+      // Tap cancel, popup should disappear
+      await tester.tap(find.text('ABBRECHEN'));
+      await tester.pump();
+      expect(find.byType(TextField), findsNothing);
+      expect(find.text('ERSTELLEN'), findsNothing);
+      expect(find.text('ABBRECHEN'), findsNothing);
+    });
+
+    // testWidgets('After pressing the Add Button, there should appear a popup, '
+    //     'including a Textfield, ´ABBRECHEN´ and ´ERSTELLEN´ Button', (WidgetTester tester) async {
+    //   MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+    //   locator.registerSingleton<DatabaseHandler>(databaseHandler);
+    //   when(databaseHandler.addItem('nameDoesntExists')).thenAnswer((_) async => Future.value(1));
+    //   when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExists')]));
+    //
+    //   // Start App
+    //   await tester.pumpWidget(const CarbPro());
+    //   await tester.pump();
+    //
+    //   // Press add button
+    //   await tester.tap(find.byIcon(Icons.add));
+    //   await tester.pump();
+    //
+    //   // Check if Popup is visible
+    //   expect(find.byType(TextField), findsOneWidget);
+    //   expect(find.text('ERSTELLEN'), findsOneWidget);
+    //   expect(find.text('ABBRECHEN'), findsOneWidget);
+    //
+    //   // tap ´ERSTELLEN´ button
+    //   // -> there shouldn't be any call to DatabaseHandler.addItem, because text is empty
+    //   await tester.tap(find.text('ERSTELLEN'));
+    //   verify(databaseHandler.addItem(any)).called(0);
+    //   await tester.pump();
+    //
+    //
+    //   // Tap cancel, popup should disappear
+    //   await tester.tap(find.text('ABBRECHEN'));
+    //   await tester.pump();
+    //   expect(find.byType(TextField), findsNothing);
+    //   expect(find.text('ERSTELLEN'), findsNothing);
+    //   expect(find.text('ABBRECHEN'), findsNothing);
+    // });
+
+  });
 }

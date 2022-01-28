@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 actions: <Widget>[
                   TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pop(context, _controller.text),
                       child: const Text('ABBRECHEN')
                   ),
                   TextButton(
@@ -236,6 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
       if (!alreadyExists) {
+        print('hi-------------------------------------------------------------');
         final int id = await DatabaseCommunicator.addItem(input);
         Navigator.pushNamed(context, '/details', arguments: id)
             .then((value) => _setSearch(false));
