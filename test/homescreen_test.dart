@@ -339,7 +339,7 @@ void main(){
       when(databaseHandler.addItem('nameDoesntExist')).thenAnswer((_) async => Future.value(1));
       when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
 
-      var previousArgument;
+      Object? previousArgument;
 
       await tester.pumpWidget(MaterialApp(
           onGenerateRoute: (settings) {
@@ -378,7 +378,7 @@ void main(){
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
 
-      var previousArgument;
+      Object? previousArgument;
 
       await tester.pumpWidget(MaterialApp(
           onGenerateRoute: (settings) {
@@ -386,7 +386,7 @@ void main(){
             if(settings.name == '/details'){
               previousArgument = settings.arguments;
               return MaterialPageRoute(builder: (BuildContext context) =>
-                  Scaffold(appBar: AppBar(title: TextButton(child: Text('return'),
+                  Scaffold(appBar: AppBar(title: TextButton(child: const Text('return'),
                     onPressed: () => Navigator.of(context).pop(),),)));
             }
             if(settings.name == '/'){

@@ -2,14 +2,14 @@
 // in carbpro/test/homescreen_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
-import 'dart:io' as _i3;
+import 'dart:async' as _i6;
+import 'dart:io' as _i4;
 
-import 'package:carbpro/datamodels/item.dart' as _i6;
+import 'package:carbpro/datamodels/item.dart' as _i2;
 import 'package:carbpro/datamodels/itemchild.dart' as _i7;
-import 'package:carbpro/handler/databasehandler.dart' as _i4;
+import 'package:carbpro/handler/databasehandler.dart' as _i5;
 import 'package:carbpro/handler/storagehandler.dart' as _i8;
-import 'package:flutter/cupertino.dart' as _i2;
+import 'package:flutter/cupertino.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:permission_handler/permission_handler.dart' as _i9;
 
@@ -22,60 +22,67 @@ import 'package:permission_handler/permission_handler.dart' as _i9;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeImage_0 extends _i1.Fake implements _i2.Image {
+class _FakeItem_0 extends _i1.Fake implements _i2.Item {}
+
+class _FakeImage_1 extends _i1.Fake implements _i3.Image {
   @override
-  String toString({_i2.DiagnosticLevel? minLevel = _i2.DiagnosticLevel.info}) =>
+  String toString({_i3.DiagnosticLevel? minLevel = _i3.DiagnosticLevel.info}) =>
       super.toString();
 }
 
-class _FakeFile_1 extends _i1.Fake implements _i3.File {}
+class _FakeFile_2 extends _i1.Fake implements _i4.File {}
 
 /// A class which mocks [DatabaseHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseHandler extends _i1.Mock implements _i4.DatabaseHandler {
+class MockDatabaseHandler extends _i1.Mock implements _i5.DatabaseHandler {
   MockDatabaseHandler() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<List<_i6.Item>> getItems() =>
+  _i6.Future<List<_i2.Item>> getItems() =>
       (super.noSuchMethod(Invocation.method(#getItems, []),
-              returnValue: Future<List<_i6.Item>>.value(<_i6.Item>[]))
-          as _i5.Future<List<_i6.Item>>);
+              returnValue: Future<List<_i2.Item>>.value(<_i2.Item>[]))
+          as _i6.Future<List<_i2.Item>>);
   @override
-  _i5.Future<int> addItem(String? newName) =>
+  _i6.Future<_i2.Item> getItem(int? id) =>
+      (super.noSuchMethod(Invocation.method(#getItem, [id]),
+              returnValue: Future<_i2.Item>.value(_FakeItem_0()))
+          as _i6.Future<_i2.Item>);
+  @override
+  _i6.Future<int> addItem(String? newName) =>
       (super.noSuchMethod(Invocation.method(#addItem, [newName]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<int> deleteItem(int? id) =>
+  _i6.Future<int> deleteItem(int? id) =>
       (super.noSuchMethod(Invocation.method(#deleteItem, [id]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<int> deleteAllChildren(int? parentID) =>
+  _i6.Future<int> deleteAllChildren(int? parentID) =>
       (super.noSuchMethod(Invocation.method(#deleteAllChildren, [parentID]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<int> changeItemName(int? id, String? newName) =>
+  _i6.Future<int> changeItemName(int? id, String? newName) =>
       (super.noSuchMethod(Invocation.method(#changeItemName, [id, newName]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<List<_i7.ItemChild>> getChildren(int? parentID) =>
+  _i6.Future<List<_i7.ItemChild>> getChildren(int? parentID) =>
       (super.noSuchMethod(Invocation.method(#getChildren, [parentID]),
               returnValue: Future<List<_i7.ItemChild>>.value(<_i7.ItemChild>[]))
-          as _i5.Future<List<_i7.ItemChild>>);
+          as _i6.Future<List<_i7.ItemChild>>);
   @override
-  _i5.Future<int> addItemChild(_i7.ItemChild? itemChild) =>
+  _i6.Future<int> addItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#addItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<int> deleteItemChild(_i7.ItemChild? itemChild) =>
+  _i6.Future<int> deleteItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#deleteItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
   @override
-  _i5.Future<int> updateItemChild(_i7.ItemChild? itemChild) =>
+  _i6.Future<int> updateItemChild(_i7.ItemChild? itemChild) =>
       (super.noSuchMethod(Invocation.method(#updateItemChild, [itemChild]),
-          returnValue: Future<int>.value(0)) as _i5.Future<int>);
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
 }
 
 /// A class which mocks [StorageHandler].
@@ -87,24 +94,24 @@ class MockStorageHandler extends _i1.Mock implements _i8.StorageHandler {
   }
 
   @override
-  _i5.Future<_i2.Image> getImage(String? filepath) =>
+  _i6.Future<_i3.Image> getImage(String? filepath) =>
       (super.noSuchMethod(Invocation.method(#getImage, [filepath]),
-              returnValue: Future<_i2.Image>.value(_FakeImage_0()))
-          as _i5.Future<_i2.Image>);
+              returnValue: Future<_i3.Image>.value(_FakeImage_1()))
+          as _i6.Future<_i3.Image>);
   @override
-  _i5.Future<_i3.File> copyFile(String? filepath, String? newFilePath) =>
+  _i6.Future<_i4.File> copyFile(String? filepath, String? newFilePath) =>
       (super.noSuchMethod(Invocation.method(#copyFile, [filepath, newFilePath]),
-              returnValue: Future<_i3.File>.value(_FakeFile_1()))
-          as _i5.Future<_i3.File>);
+              returnValue: Future<_i4.File>.value(_FakeFile_2()))
+          as _i6.Future<_i4.File>);
   @override
-  _i5.Future<void> deleteFile(String? filepath) =>
+  _i6.Future<void> deleteFile(String? filepath) =>
       (super.noSuchMethod(Invocation.method(#deleteFile, [filepath]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  _i5.Future<bool> getPermission(
+  _i6.Future<bool> getPermission(
           _i9.Permission? permission, _i8.PlatformWrapper? wrapper) =>
       (super.noSuchMethod(
           Invocation.method(#getPermission, [permission, wrapper]),
-          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
+          returnValue: Future<bool>.value(false)) as _i6.Future<bool>);
 }
