@@ -1,8 +1,11 @@
 import 'package:carbpro/handler/databasehandler.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter/material.dart';
 import 'databasecommunicator.dart';
 import 'locator/locator.dart';
 import 'datamodels/item.dart';
+import 'datamodels/itemchild.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -66,9 +69,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             },
-          ).then((removeConfirmation) {
+          ).then((removeConfirmation) async {
             if(removeConfirmation){
-              DatabaseCommunicator.removeItem(items[index].id).then((value) => _loadItems());
+              final parentID = items[index].id;
+              List<ItemChild> images = await locator<DatabaseHandler>().getChildren(parentID);
+              if(images.isNotEmpty){
+                if (!await locator<StorageHandler>().getPermission(Permission.storage, PlatformWrapper())){
+                  // todo: add alertdialog
+                  return;
+                }
+                else {
+                  for (var element in images) {
+                    locator<StorageHandler>().deleteFile(element.imagepath);
+                  }
+                  await locator<DatabaseHandler>().deleteAllChildren(parentID);
+                }
+              }
+              await locator<DatabaseHandler>().deleteItem(parentID);
+              _loadAndDisplayItems();
             }
           }),
         );
