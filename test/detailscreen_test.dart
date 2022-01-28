@@ -22,6 +22,7 @@ void main() {
 
     testWidgets('After Item got loaded, Appbar should display the Item name and a edit Icon', (WidgetTester tester) async {
       when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
 
       // start app
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
@@ -34,6 +35,7 @@ void main() {
     testWidgets('After pressing the edit Icon, a popup should appear. With this popup, '
         'the name of the item should be changeable', (WidgetTester tester) async {
       when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
 
       // start app
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
