@@ -227,10 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Map> allItems = await DatabaseCommunicator.getItems();
     if(input.toString().isNotEmpty) {
       bool alreadyExists = false;
-      for (var element in allItems) {
-        if (element['name'].toString().toLowerCase() ==
-            input.toString().toLowerCase()) {
-          existingDBid = element['id'];
+      for(Item element in _items){
+        if(element.name.toLowerCase() == input.toString().toLowerCase()){
+          existingDBid = element.id;
           alreadyExists = true;
           break;
         }

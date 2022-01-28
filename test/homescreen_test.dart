@@ -333,40 +333,45 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
-    // testWidgets('After pressing the Add Button, there should appear a popup, '
-    //     'including a Textfield, ´ABBRECHEN´ and ´ERSTELLEN´ Button', (WidgetTester tester) async {
-    //   MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-    //   locator.registerSingleton<DatabaseHandler>(databaseHandler);
-    //   when(databaseHandler.addItem('nameDoesntExists')).thenAnswer((_) async => Future.value(1));
-    //   when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExists')]));
-    //
-    //   // Start App
-    //   await tester.pumpWidget(const CarbPro());
-    //   await tester.pump();
-    //
-    //   // Press add button
-    //   await tester.tap(find.byIcon(Icons.add));
-    //   await tester.pump();
-    //
-    //   // Check if Popup is visible
-    //   expect(find.byType(TextField), findsOneWidget);
-    //   expect(find.text('ERSTELLEN'), findsOneWidget);
-    //   expect(find.text('ABBRECHEN'), findsOneWidget);
-    //
-    //   // tap ´ERSTELLEN´ button
-    //   // -> there shouldn't be any call to DatabaseHandler.addItem, because text is empty
-    //   await tester.tap(find.text('ERSTELLEN'));
-    //   verify(databaseHandler.addItem(any)).called(0);
-    //   await tester.pump();
-    //
-    //
-    //   // Tap cancel, popup should disappear
-    //   await tester.tap(find.text('ABBRECHEN'));
-    //   await tester.pump();
-    //   expect(find.byType(TextField), findsNothing);
-    //   expect(find.text('ERSTELLEN'), findsNothing);
-    //   expect(find.text('ABBRECHEN'), findsNothing);
-    // });
+    testWidgets('After entering existing item name, the existing item should be opened.', (WidgetTester tester) async {
+      MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+      locator.registerSingleton<DatabaseHandler>(databaseHandler);
+      when(databaseHandler.addItem('nameDoesntExist')).thenAnswer((_) async => Future.value(1));
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
+
+      var previousArgument;
+
+      await tester.pumpWidget(MaterialApp(
+          onGenerateRoute: (settings) {
+            previousArgument = settings.arguments;
+            if(settings.name == '/details'){
+              previousArgument = settings.arguments;
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            if(settings.name == '/'){
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            return null;
+          }
+      ));
+      await tester.pumpAndSettle();
+
+      // Press add button
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pump();
+
+      // enter existing item name and press ´ERSTELLEN´ button
+      await tester.enterText(find.byType(TextField), 'NameDoesExist');
+      await tester.tap(find.text('ERSTELLEN'));
+      await tester.pump();
+
+      // expect db never called and new screen called with existing id
+      verifyNever(databaseHandler.addItem(any));
+      expect(previousArgument, 1);
+
+      // reset locator
+      locator.resetScope(dispose: true);
+    });
 
   });
 }
