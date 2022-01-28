@@ -373,5 +373,57 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
+    testWidgets('After creating a new item name, one should be generated and opened', (WidgetTester tester) async {
+      MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+      locator.registerSingleton<DatabaseHandler>(databaseHandler);
+      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
+
+      var previousArgument;
+
+      await tester.pumpWidget(MaterialApp(
+          onGenerateRoute: (settings) {
+            previousArgument = settings.arguments;
+            if(settings.name == '/details'){
+              previousArgument = settings.arguments;
+              return MaterialPageRoute(builder: (BuildContext context) =>
+                  Scaffold(appBar: AppBar(title: TextButton(child: Text('return'),
+                    onPressed: () => Navigator.of(context).pop(),),)));
+            }
+            if(settings.name == '/'){
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            return null;
+          }
+      ));
+      await tester.pumpAndSettle();
+
+      // Press add button
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pump();
+
+      // Prepare DB for inserting item
+      when(databaseHandler.addItem('nameDoesntExist')).thenAnswer((_) async => Future.value(2));
+
+      // enter existing item name and press ´ERSTELLEN´ button
+      await tester.enterText(find.byType(TextField), 'nameDoesntExist');
+      await tester.tap(find.text('ERSTELLEN'));
+      await tester.pump();
+
+      // expect db to be called and new screen called with new id
+      verify(databaseHandler.addItem(any)).called(1);
+      expect(previousArgument, 2);
+
+      // ensure new Item is visible now
+      when(databaseHandler.getItems())
+          .thenAnswer((realInvocation) => Future.value([Item(1, 'NameDoesExist'), Item(2, 'nameDoesntExist')]));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('return'));
+      await tester.pump();
+      expect(find.text('nameDoesntExist'), findsOneWidget);
+
+      // reset locator
+      locator.resetScope(dispose: true);
+    });
+
   });
 }

@@ -227,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       if (!alreadyExists) {
-        final int id = await DatabaseCommunicator.addItem(input);
+        final int id = await locator<DatabaseHandler>().addItem(input);
         Navigator.pushNamed(context, '/details', arguments: id)
             .then((value) => _loadAndDisplayItems());
       }
