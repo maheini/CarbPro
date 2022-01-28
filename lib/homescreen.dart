@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(items[index].name),
           onTap: () {
             Navigator.pushNamed(context, '/details', arguments: items[index].id)
-                .then((value) => _setSearch(false));},
+                .then((value) => _loadAndDisplayItems());},
           onLongPress: () => showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -189,15 +189,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: const Text('Artikel einfügen'),
                 content: TextField(
                   autofocus: true,
-                  onSubmitted: (String text) {
-                    if (_controller.text.isEmpty) {
-                      setState(() {
-                        textEmptyError = true;
-                      });
-                    } else {
-                      Navigator.pop(context, _controller.text);
-                    }
-                  },
                   controller: _controller,
                   decoration: InputDecoration(
                     hintText: 'Name',
@@ -238,11 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!alreadyExists) {
         final int id = await DatabaseCommunicator.addItem(input);
         Navigator.pushNamed(context, '/details', arguments: id)
-            .then((value) => _setSearch(false));
+            .then((value) => _loadAndDisplayItems());
       }
       else {
         Navigator.pushNamed(context, '/details', arguments: existingDBid)
-            .then((value) => _setSearch(false));
+            .then((value) => _loadAndDisplayItems());
       }
     }
   }
