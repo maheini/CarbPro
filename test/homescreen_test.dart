@@ -317,7 +317,6 @@ void main(){
 
       // tap ´ERSTELLEN´ button
       // -> there shouldn't be any call to DatabaseHandler.addItem, because text is empty
-      await tester.enterText(find.byType(TextField), '');
       await tester.tap(find.text('ERSTELLEN'));
       verifyNever(databaseHandler.addItem(any));
       await tester.pump();
@@ -329,6 +328,9 @@ void main(){
       expect(find.byType(TextField), findsNothing);
       expect(find.text('ERSTELLEN'), findsNothing);
       expect(find.text('ABBRECHEN'), findsNothing);
+
+      // reset locator
+      locator.resetScope(dispose: true);
     });
 
     // testWidgets('After pressing the Add Button, there should appear a popup, '

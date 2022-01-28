@@ -235,8 +235,8 @@ class _HomeScreenState extends State<HomeScreen> {
           break;
         }
       }
+
       if (!alreadyExists) {
-        print('hi-------------------------------------------------------------');
         final int id = await DatabaseCommunicator.addItem(input);
         Navigator.pushNamed(context, '/details', arguments: id)
             .then((value) => _setSearch(false));
