@@ -44,6 +44,19 @@ class DatabaseHandler {
     return result;
   }
 
+  /// Loads a single Item from Database
+  Future<Item> getItem(final int id) async {
+    List<Map> queryResult = await _database.rawQuery('SELECT * FROM items WHERE id = ?', [id]);
+    if(queryResult.isNotEmpty){
+      Map element = queryResult[0];
+      if (element.containsKey('id') && element.containsKey('name')) {
+        return Item(element['id']is int ? element['id'] : 0,
+            element['name']is String ? element['name'] : '');
+      }
+    }
+    return Item(0,'');
+  }
+
   /// Insert a new Item to the Database
   /// returns the database id of this new item
   Future<int> addItem(String newName) async {

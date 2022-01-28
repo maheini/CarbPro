@@ -76,6 +76,39 @@ void main(){
       expect(actual.length, 1);
     });
 
+    //Testing getItem method
+    test('DatabaseHandler method getItem should return 1 valid Item', () async{
+      // Arrange
+      MockDatabase database = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(database);
+      final future = Future.value([{'id': 1, 'name': 'name'}]);
+      when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
+          .thenAnswer((_) async => future);
+
+      // Act
+      Item actual = await databaseHandler.getItem(1);
+
+      // Assert
+      expect(actual.id, 1);
+      expect(actual.name, 'name');
+    });
+    test('This time, getItem should return 1 invalid item, '
+        'because the Database is returning a invalid item in the first row data', () async{
+      // Arrange
+      MockDatabase database = MockDatabase();
+      DatabaseHandler databaseHandler = DatabaseHandler(database);
+      final future = Future.value([{'id': 1}]);
+      when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
+          .thenAnswer((_) async => future);
+
+      // Act
+      Item actual = await databaseHandler.getItem(1);
+
+      // Assert
+      expect(actual.id, 0);
+      expect(actual.name, '');
+    });
+
     // testing addItem method
     test('addItem should return a value of 1 row affected', () async {
       // Arrange
