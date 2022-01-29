@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:carbpro/databasecommunicator.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as Path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -316,7 +316,7 @@ class _DetailScreenState extends State<DetailScreen> {
       Directory? dirPrefix = await getExternalStorageDirectory();
       if(dirPrefix == null) return false;
 
-      final String filename = basename(newImagePath);
+      final String filename = Path.basename(newImagePath);
 
       if (!await    // copy file and check if new file exists
         (await locator<StorageHandler>().copyFile(newImagePath, '$dirPrefix/$filename'))
