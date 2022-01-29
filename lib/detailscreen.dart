@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'datamodels/item.dart';
 import 'datamodels/itemchild.dart';
@@ -56,150 +57,129 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_item.name), centerTitle: true, actions: [IconButton(icon: const Icon(Icons.edit), onPressed: _editName,)],),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _itemEditor(),
-        backgroundColor: Colors.indigo,
-        child: const Icon(Icons.add_a_photo_outlined, color: Colors.white,),),
       body: GridView.count(
         childAspectRatio: 32/37,
         crossAxisCount: 2,
         children: _generatedContentItems,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _itemEditor(),
+        backgroundColor: Colors.indigo,
+        child: const Icon(Icons.add_a_photo_outlined, color: Colors.white,),),
     );
   }
 
-
+  bool _permissionWarningShowed = false;
   //LOAD ALL VALUES OF THIS ITEM AND SET NEW STATE
-  void _loadListContent() async{
-    //CHECK PERMISSION FOR ACCESSING IMAGE FILEPATH'S FOR LIST-GENERATION AND DB ACCESS
-    final bool imageReadPermission = await _getPermission(Permission.storage);
-    if(!imageReadPermission){
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Fehler'),
-              content: const Text('Die Berechtigung für den Speicherzugriff fehlt'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'ok'),
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          }
-      );
+  void _buildList() async {
+    final bool hasStorageAccess = await locator<StorageHandler>().getPermission(Permission.storage, PlatformWrapper());
+    if(hasStorageAccess){
+      if(!_permissionWarningShowed){
+        _permissionWarningShowed = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Berechtigung für Speicher abgelehnt'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
-    List result = await DatabaseCommunicator.getContent(parentId: widget.id);
-    if(result.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Fehler'),
-              content: const Text('Unbekannter Datenbankfehler'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'ok'),
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          }
-      );
+    else {
+      _permissionWarningShowed = false;
     }
-    _content = result[1];
+
+
 
     //GENERATE LIST WITH IMAGES AND THEIR DESCRIPTION
     List<Widget> _tempContentList = [];
-    for(int x=0; x<_content.length; x++)
+    for(int x=0; x<_itemChildren.length; x++)
     {
-      _tempContentList.add(await _createListTile(x, imageReadPermission));
+      _tempContentList.add(await _createListTile(_itemChildren[x], hasStorageAccess));
     }
     _generatedContentItems = _tempContentList;
 
-    //NOW SHOW ALL THOSE CHANGES...
-    setState(() {});
   }
 
   //CREATE LIST TILE
-  Future<Widget> _createListTile(int index, bool hasImageReadPermission) async{
+  Future<Widget> _createListTile(ItemChild item, bool hasImageReadPermission) async{
 
     Directory dir = await getExternalStorageDirectory() ?? Directory('');
 
-    File file = File('${dir.path}/${_content[index]['imageurl']}');
+    File file = File('${dir.path}/${item.imagepath}');
     if(!await file.exists()){
       hasImageReadPermission = false;
     }
 
 
     return Container(
-      decoration: BoxDecoration(
+        decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(4)),
           color: Colors.black.withOpacity(0.2),
-      ),
-      margin: const EdgeInsets.all(7),
-      child: InkWell(
-        onTap: () => _itemEditor(
-            id: _content[index]['id'],
-            description: _content[index]['description'],
-            image: hasImageReadPermission ?  Image.file(file, fit: BoxFit.cover,) : null),
-        onLongPress: () async {
-          bool remove = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Bestätigen"),
-                content: const Text("Möchtest du den Eintrag wirklich entfernen?"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("ABBRECHEN"),
-                  ),
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("ENTFERNEN")
-                  ),
-                ],
+        ),
+        margin: const EdgeInsets.all(7),
+        child: InkWell(
+            onTap: () => _itemEditor(
+                id: item.id,
+                description: item.description,
+                image: hasImageReadPermission ?  Image.file(file, fit: BoxFit.cover,) : null),
+            onLongPress: () async {
+              bool remove = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Bestätigen"),
+                    content: const Text("Möchtest du den Eintrag wirklich entfernen?"),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text("ABBRECHEN"),
+                      ),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("ENTFERNEN")
+                      ),
+                    ],
+                  );
+                },
               );
-            },
-          );
 
-          if(remove){
-            DatabaseCommunicator.removeItemContent(id: _content[index]['id']).then((value) => _loadListContent());
-          }
-        },
-        child: Container(   //CONTENT
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                flex: 17,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+              if(remove){
+                if(hasImageReadPermission && await file.exists()){
+                  await locator<StorageHandler>().deleteFile(file.path);
+                }
+                await locator<DatabaseHandler>().deleteItemChild(item);
+                setState(() { });
+              }
+            },
+            child: Container(   //CONTENT
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    flex: 17,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(3),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: hasImageReadPermission? Image.file(file, fit: BoxFit.cover,) : const Icon(Icons.wallpaper),
+                      ),
+                    ),
                   ),
-                ),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Text(item.description),
+                  )
+                ],
               ),
-              const Spacer(
-                flex: 1,
-              ),
-              Flexible(
-                flex: 2,
-                child: Text(_content[index]['description']),
-              )
-            ],
-          ),
+            )
         )
-      )
     );
   }
-
-
 
   Future<bool> _getPermission(Permission permission) async{
     PermissionStatus status = await permission.status;
@@ -317,7 +297,8 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     ).then((value) {
       if(value){
-        _loadListContent();
+        _loadItemChildren();
+        setState(() {});
       }
     });
   }
