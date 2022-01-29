@@ -25,7 +25,7 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   Item _item = Item (0 ,'');
   List<ItemChild> _itemChildren = [];
-  
+
   List<Map> _content = [];
   List<Widget> _generatedContentItems = [];
 
@@ -108,7 +108,6 @@ class _DetailScreenState extends State<DetailScreen> {
           }
       );
     }
-    _itemName = result[0];
     _content = result[1];
 
     //GENERATE LIST WITH IMAGES AND THEIR DESCRIPTION
@@ -345,7 +344,7 @@ class _DetailScreenState extends State<DetailScreen> {
     TextEditingController _controller = TextEditingController(text: _item.name);
     _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
     bool textEmptyError = false;
-    final input = await showDialog(
+    String? input = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -383,8 +382,8 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     );
 
-    if(input != _item.name){     //NAME CHANGED? THEN SAVE AND RELOAD NAME&UI
-      await locator<DatabaseHandler>().changeItemName(_item.id, _controller.text);
+    if(input != null && input != _item.name){     //NAME CHANGED? THEN SAVE AND RELOAD NAME&UI
+      await locator<DatabaseHandler>().changeItemName(_item.id, input);
       await _loadItemContent();
       setState(() {});
     }
