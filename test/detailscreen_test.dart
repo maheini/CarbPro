@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/detailscreen.dart';
 import 'package:carbpro/locator/locator.dart';
@@ -133,7 +134,7 @@ void main() {
             (WidgetTester tester) async {
       MockImagePicker imagePicker = MockImagePicker();
       when(imagePicker.pickImage(source: ImageSource.camera))
-          .thenAnswer((realInvocation) => Future.value(null));  // todo: pass fake image
+          .thenAnswer((realInvocation) => Future.value(XFile('assets/storagehandler_test_image.jpg')));
       when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
       when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
 
@@ -154,7 +155,7 @@ void main() {
       when(databaseHandler.addItemChild(any))
           .thenAnswer((realInvocation) => Future.value(2));
       when(storageHandler.copyFile(any, any))
-          .thenAnswer((_) => Future.value()); // todo: pass fake file
+          .thenAnswer((_) => Future.value(File('assets/storagehandler_test_image.jpg')));
       verify(databaseHandler.addItem(any)).called(1);
       verify(storageHandler.copyFile(any, any)).called(1);
       await tester.tap(find.text('SPEICHERN'));
