@@ -47,7 +47,7 @@ void main() {
       await tester.pump();
 
       // Check if Popup is visible
-      expect(find.text('ItemName'), findsOneWidget);
+      expect(find.text('ItemName'), findsNWidgets(2));
       expect(find.byType(TextField), findsOneWidget);
       expect(find.text('ABBRECHEN'), findsOneWidget);
       expect(find.text('SPEICHERN'), findsOneWidget);
@@ -68,11 +68,14 @@ void main() {
       verifyNever(databaseHandler.changeItemName(any, any));
 
       // change name
-      await tester.enterText(find.byType(TextField), 'NewItemName');
       when(databaseHandler.changeItemName(1, 'NewItemName'))
           .thenAnswer((realInvocation) => Future.value(1));
-      verify(databaseHandler.changeItemName(1, 'NewItemName'));
-      await tester.pumpAndSettle();
+      when(databaseHandler.getItem(1))
+          .thenAnswer((realInvocation) => Future.value(Item(1, 'NewItemName')));
+      await tester.enterText(find.byType(TextField), 'NewItemName');
+      await tester.tap(find.text('SPEICHERN'));
+      verify(databaseHandler.changeItemName(1, 'NewItemName')).called(1);
+      await tester.pump();
 
       expect(find.byType(TextField), findsNothing);
       expect(find.text('NewItemName'), findsOneWidget);
