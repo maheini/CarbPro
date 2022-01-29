@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:carbpro/databasecommunicator.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -301,6 +302,35 @@ class _DetailScreenState extends State<DetailScreen> {
         setState(() {});
       }
     });
+  }
+
+  /// Updates and/or add ItemChild inside File sytem and database
+  /// remember to serve newImagePath if your image isn't inside the default dir.
+  ///
+  /// returns false if there is any error (file System Permission, no externalStorageDirectory, Database error...)
+  Future<bool> _setItemChild({required ItemChild itemChild, String? newImagePath}) async {
+    if(newImagePath != null){
+      if (!await locator<StorageHandler>()
+          .getPermission(Permission.storage, PlatformWrapper())) return false;
+
+      Directory? dirPrefix = await getExternalStorageDirectory();
+      if(dirPrefix == null) return false;
+
+      final String filename = basename(newImagePath);
+
+      if (!await    // copy file and check if new file exists
+        (await locator<StorageHandler>().copyFile(newImagePath, '$dirPrefix/$filename'))
+          .exists()) return false;
+
+      itemChild.imagepath = filename;
+    }
+    if(itemChild.id == 0){
+      if (await locator<DatabaseHandler>().updateItemChild(itemChild) > 0) return true;
+    }
+    else {
+      if (await locator<DatabaseHandler>().addItemChild(itemChild) > 0) return true;
+    }
+    return false;
   }
 
   Future<File?> _pickImage() async{
