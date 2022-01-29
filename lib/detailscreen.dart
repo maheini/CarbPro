@@ -7,6 +7,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'datamodels/item.dart';
+import 'datamodels/itemchild.dart';
+import 'locator/locator.dart';
+import 'handler/databasehandler.dart';
+import 'handler/storagehandler.dart';
+
 class DetailScreen extends StatefulWidget {
   final int id;
   const DetailScreen({Key? key, required this.id}) : super(key:key);
@@ -17,7 +23,9 @@ class DetailScreen extends StatefulWidget {
 
 
 class _DetailScreenState extends State<DetailScreen> {
-  String _itemName = '';
+  Item _item = Item (0 ,'');
+  List<ItemChild> _itemChildren = [];
+  
   List<Map> _content = [];
   List<Widget> _generatedContentItems = [];
 
@@ -26,14 +34,28 @@ class _DetailScreenState extends State<DetailScreen> {
   @mustCallSuper
   void initState() {
     super.initState();
-    _loadListContent();
+    _loadFullContent();
+  }
+
+  void _loadFullContent() async {
+    await _loadItemContent();
+    await _loadItemChildren();
+    setState(() {});
+  }
+
+  Future<void> _loadItemContent() async {
+    _item = await locator<DatabaseHandler>().getItem(widget.id);
+  }
+
+  Future<void> _loadItemChildren() async {
+    _itemChildren = await locator<DatabaseHandler>().getChildren(widget.id);
   }
 
   //UI BUILDER
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_itemName), centerTitle: true, actions: [IconButton(icon: const Icon(Icons.edit), onPressed: _editName,)],),
+      appBar: AppBar(title: Text(_item.name), centerTitle: true, actions: [IconButton(icon: const Icon(Icons.edit), onPressed: _editName,)],),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _itemEditor(),
         backgroundColor: Colors.indigo,
@@ -320,7 +342,7 @@ class _DetailScreenState extends State<DetailScreen> {
   //EDIT ITEM NAME ->Main purpose: show Details of an Item, let the user edit them and
   //    provide a possibility for adding new items.
   void _editName() async {
-    TextEditingController _controller = TextEditingController(text: _itemName);
+    TextEditingController _controller = TextEditingController(text: _item.name);
     _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
     bool textEmptyError = false;
     final input = await showDialog(
@@ -370,13 +392,9 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     );
 
-    if(input != _itemName){     //NAME CHANGED? THEN SAVE AND RELOAD NAME&UI
-      await DatabaseCommunicator.changeItemName(widget.id, _controller.text);
-      List result = await DatabaseCommunicator.getContent(parentId: widget.id);
-      if(result.isEmpty) {
-        return;
-      }
-      _itemName = result[0];
+    if(input != _item.name){     //NAME CHANGED? THEN SAVE AND RELOAD NAME&UI
+      await locator<DatabaseHandler>().changeItemName(_item.id, _controller.text);
+      await _loadItemContent();
       setState(() {});
     }
   }
