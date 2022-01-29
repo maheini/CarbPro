@@ -354,15 +354,6 @@ class _DetailScreenState extends State<DetailScreen> {
               title: const Text('Artikel bearbeiten'),
               content: TextField(
                 autofocus: true,
-                onSubmitted: (String text) {
-                  if (_controller.text.isEmpty) {
-                    setState(() {
-                      textEmptyError = true;
-                    });
-                  } else {
-                    Navigator.pop(context, _controller.text);
-                  }
-                },
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: 'Name',
