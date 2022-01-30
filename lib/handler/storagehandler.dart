@@ -32,6 +32,8 @@ class StorageHandler {
     return await path_provider.getExternalStorageDirectory();
   }
 
+  Future<bool> exists(File file) => file.exists();
+
   Future<Image> getImage(String filepath) async{
     File file= File(filepath);
     await _fileAccessWrapper.openFile(file);
