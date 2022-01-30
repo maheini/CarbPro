@@ -1,24 +1,29 @@
 import 'dart:io';
 import 'package:carbpro/datamodels/item.dart';
+import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:carbpro/detailscreen.dart';
+import 'package:carbpro/handler/databasehandler.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 import 'package:carbpro/locator/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:carbpro/handler/databasehandler.dart';
-import 'package:carbpro/handler/storagehandler.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'detailscreen_test.mocks.dart';
-
 
 @GenerateMocks([DatabaseHandler, StorageHandler, ImagePicker])
 void main() {
   group('Test Detailscreen AppBar', () {
     MockDatabaseHandler databaseHandler = MockDatabaseHandler();
+    MockStorageHandler storageHandler = MockStorageHandler();
     setUp(() {
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
+      locator.registerSingleton<StorageHandler>(storageHandler);
+      when(storageHandler.getPermission(Permission.storage, any))
+          .thenAnswer((realInvocation) => Future.value(true));
     });
 
     testWidgets('After Item got loaded, Appbar should display the Item name and a edit Icon', (WidgetTester tester) async {
@@ -94,6 +99,8 @@ void main() {
     setUp(() {
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       locator.registerSingleton<StorageHandler>(storageHandler);
+      when(storageHandler.getPermission(Permission.storage, any))
+          .thenAnswer((realInvocation) => Future.value(true));
     });
 
     testWidgets('Check if Addbutton is aviable -> after clicking on it, '
@@ -110,7 +117,7 @@ void main() {
       
       // expect a popup with textfield and add-image icon
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.byIcon(Icons.wallpaper), findsOneWidget);
+      expect(find.byIcon(Icons.add_photo_alternate_outlined), findsOneWidget);
       expect(find.text('SPEICHERN'), findsOneWidget);
       expect(find.text('ABBRECHEN'), findsOneWidget);
       
@@ -136,10 +143,18 @@ void main() {
     testWidgets('click addbutton and afterwards try to add an image & text & store them', 
             (WidgetTester tester) async {
       MockImagePicker imagePicker = MockImagePicker();
-      when(imagePicker.pickImage(source: ImageSource.camera))
-          .thenAnswer((realInvocation) => Future.value(XFile('assets/storagehandler_test_image.jpg')));
+      when(imagePicker.pickImage(
+          source: anyNamed('source'), maxWidth: anyNamed('maxWidth'), maxHeight: anyNamed('maxHeight'),
+          imageQuality: anyNamed('imageQuality'), preferredCameraDevice:anyNamed('preferredCameraDevice')
+      )).thenAnswer((realInvocation) => Future.value(XFile('assets/storagehandler_test_image.jpg')));
       when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
       when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
+      when(storageHandler.getExternalStorageDirectory())
+          .thenAnswer((realInvocation) => Future.value(Directory('')));
+      when(storageHandler.getPermission(Permission.storage, any))
+          .thenAnswer((realInvocation) => Future.value(true));
+      when(storageHandler.exists(any))
+          .thenAnswer((realInvocation) => Future.value(true));
 
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
       await tester.pump();
@@ -150,7 +165,7 @@ void main() {
       
       // Pick image and enter name
       locator.registerLazySingleton<ImagePicker>(() => imagePicker);
-      await tester.tap(find.byIcon(Icons.wallpaper));
+      await tester.tap(find.byIcon(Icons.add_photo_alternate_outlined));
       await tester.enterText(find.byType(TextField), 'ItemChild');
       await tester.pump();
 
@@ -159,14 +174,20 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(2));
       when(storageHandler.copyFile(any, any))
           .thenAnswer((_) => Future.value(File('assets/storagehandler_test_image.jpg')));
-      verify(databaseHandler.addItem(any)).called(1);
-      verify(storageHandler.copyFile(any, any)).called(1);
+      when(databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([ItemChild(1, 1, 'ItemChild', '')]));
+      expect(find.text('SPEICHERN'), findsOneWidget);
       await tester.tap(find.text('SPEICHERN'));
+      await tester.pump();
+      verify(storageHandler.copyFile(any, any)).called(1);
+      verify(databaseHandler.addItemChild(any)).called(1);
+
+      // let the ui reload all items and new stub
       await tester.pumpAndSettle();
 
       // expect home with one widget to show up
       expect(find.byType(TextField), findsNothing);
-      expect(find.byIcon(Icons.wallpaper), findsNothing);
+      expect(find.byIcon(Icons.add_photo_alternate_outlined), findsNothing);
       expect(find.text('SPEICHERN'), findsNothing);
       expect(find.text('ABBRECHEN'), findsNothing);
       expect(find.text('ItemChild'), findsOneWidget);
