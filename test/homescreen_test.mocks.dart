@@ -99,6 +99,10 @@ class MockStorageHandler extends _i1.Mock implements _i8.StorageHandler {
               returnValue: Future<_i4.Directory?>.value())
           as _i6.Future<_i4.Directory?>);
   @override
+  _i6.Future<bool> exists(_i4.File? file) =>
+      (super.noSuchMethod(Invocation.method(#exists, [file]),
+          returnValue: Future<bool>.value(false)) as _i6.Future<bool>);
+  @override
   _i6.Future<_i3.Image> getImage(String? filepath) =>
       (super.noSuchMethod(Invocation.method(#getImage, [filepath]),
               returnValue: Future<_i3.Image>.value(_FakeImage_1()))
