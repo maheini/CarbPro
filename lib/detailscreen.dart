@@ -42,6 +42,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void _loadFullContent() async {
     await _loadItemContent();
     await _loadItemChildren();
+    _generatedContentItems = await _buildList();
     setState(() {});
   }
 
@@ -72,7 +73,8 @@ class _DetailScreenState extends State<DetailScreen> {
 
   bool _permissionWarningShowed = false;
   //LOAD ALL VALUES OF THIS ITEM AND SET NEW STATE
-  void _buildList() async {
+  Future<List<Widget>> _buildList() async
+  {
     final bool hasStorageAccess = await locator<StorageHandler>().getPermission(Permission.storage, PlatformWrapper());
     if(hasStorageAccess){
       if(!_permissionWarningShowed){
@@ -298,7 +300,8 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     ).then((value) {
       if(value){
-        _loadItemChildren();
+        await _loadItemChildren();
+        _generatedContentItems = await _buildList();
         setState(() {});
       }
     });
