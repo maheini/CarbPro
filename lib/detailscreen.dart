@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:path/path.dart' as Path;
+import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -272,7 +272,7 @@ class _DetailScreenState extends State<DetailScreen> {
       Directory? dirPrefix = await locator<StorageHandler>().getExternalStorageDirectory();
       if(dirPrefix == null) return false;
 
-      final String filename = Path.basename(newImagePath);
+      final String filename = path.basename(newImagePath);
 
       File copyFile = await locator<StorageHandler>().copyFile(newImagePath, '${dirPrefix.path}/$filename');
       if(!await locator<StorageHandler>().exists(copyFile)) return false;

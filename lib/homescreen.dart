@@ -1,7 +1,6 @@
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter/material.dart';
-import 'databasecommunicator.dart';
 import 'locator/locator.dart';
 import 'datamodels/item.dart';
 import 'datamodels/itemchild.dart';
@@ -100,6 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //UI BUILDER
   bool _isLoading = true;
+  bool _search = false;     //SEARCH BAR CONTROL AND CONTROLLER
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear, color: Colors.blueGrey,),
-                        onPressed: () => _setSearch(false),
+                        onPressed: () => setState(() => _search = false),
                       ),
                       hintText: 'Suchen',
                       border: InputBorder.none
@@ -140,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text('CarbPro'),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(onPressed: () {_setSearch(true);}, icon: const Icon(Icons.search, color: Colors.white,)),
+            IconButton(onPressed: () => setState(() => _search = true), icon: const Icon(Icons.search, color: Colors.white,)),
           ],
         ),
         body: _isLoading? const CircularProgressIndicator()
@@ -154,27 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  //LIST GENERATOR
-  void _loadItems() async {
-    if(_search){
-      // _items = await DatabaseCommunicator.getItems(nameFilter:  _searchController.text);
-    }
-    else {
-      // _items = await DatabaseCommunicator.getItems();
-    }
-    setState(() {});
-  }
-
-  //SEARCH BAR CONTROL
-  bool _search = false;
-  final TextEditingController _searchController = TextEditingController();
-  //SEARCH EN-/DISABLE
-  void _setSearch(bool enabled)
-  {
-    _search = enabled;
-    _searchController.clear();
-    _loadItems();
-  }
 
   //ADD ITEM POPUP
   void _addItem() async {
@@ -215,7 +195,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     int existingDBid = 0;
-    final List<Map> allItems = await DatabaseCommunicator.getItems();
     if(input.toString().isNotEmpty) {
       bool alreadyExists = false;
       for(Item element in _items){
