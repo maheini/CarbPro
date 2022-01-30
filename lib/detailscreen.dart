@@ -1,13 +1,8 @@
-import 'dart:core';
-
-import 'package:carbpro/databasecommunicator.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart' as Path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'datamodels/item.dart';
 import 'datamodels/itemchild.dart';
@@ -28,7 +23,6 @@ class _DetailScreenState extends State<DetailScreen> {
   Item _item = Item (0 ,'');
   List<ItemChild> _itemChildren = [];
 
-  List<Map> _content = [];
   List<Widget> _generatedContentItems = [];
 
   @override
@@ -99,20 +93,18 @@ class _DetailScreenState extends State<DetailScreen> {
     {
       _tempContentList.add(await _createListTile(_itemChildren[x], hasStorageAccess));
     }
-    _generatedContentItems = _tempContentList;
+    return _tempContentList;
 
   }
 
   //CREATE LIST TILE
   Future<Widget> _createListTile(ItemChild item, bool hasImageReadPermission) async{
-
-    Directory dir = await getExternalStorageDirectory() ?? Directory('');
+    Directory dir = await locator<StorageHandler>().getExternalStorageDirectory() ?? Directory('');
 
     File file = File('${dir.path}/${item.imagepath}');
-    if(!await file.exists()){
+    if(!await locator<StorageHandler>().exists(file)){
       hasImageReadPermission = false;
     }
-
 
     return Container(
         decoration: BoxDecoration(
@@ -121,9 +113,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         margin: const EdgeInsets.all(7),
         child: InkWell(
-            onTap: () => _itemEditor(
-                id: item.id,
-                description: item.description,
+            onTap: () => _itemEditor(itemChild: item,
                 image: hasImageReadPermission ?  Image.file(file, fit: BoxFit.cover,) : null),
             onLongPress: () async {
               bool remove = await showDialog(
@@ -147,7 +137,7 @@ class _DetailScreenState extends State<DetailScreen> {
               );
 
               if(remove){
-                if(hasImageReadPermission && await file.exists()){
+                if(hasImageReadPermission && await locator<StorageHandler>().exists(file)){
                   await locator<StorageHandler>().deleteFile(file.path);
                 }
                 await locator<DatabaseHandler>().deleteItemChild(item);
@@ -184,121 +174,84 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Future<bool> _getPermission(Permission permission) async{
-    PermissionStatus status = await permission.status;
-    if(status.isGranted){
-      return true;
-    }
-    else if (await permission.request().isGranted){
-      return true;
-    }
-    return false;
-  }
-
-  //EDIT ITEM
-  void _itemEditor({int? id, Image? image, String description = ''}) async {
-    TextEditingController itemNameController = TextEditingController(text: description);
+  // Item editor
+  void _itemEditor({ItemChild? itemChild, Image? image}) async {
+    itemChild ??= ItemChild(0, widget.id, '', '');
+    File? newImageFile;
+    TextEditingController itemNameController = TextEditingController(text: itemChild.description);
     bool textEmptyError = false;
-    bool nameEditingLocked = true;
-
-    File? newFile;
 
     await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    InkWell(
-                      onTap: () {_pickImage().then((file) {
-                        if(file != null){
-                          newFile = file;
-                          setState(() => image = Image.file(file, fit: BoxFit.cover,));
-                        }
-                      });},
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: image ?? Center(child: CircleAvatar(
-                            radius: 45,
-                            backgroundColor: Colors.black.withOpacity(0.1),
-                            child: const Icon(Icons.add_photo_alternate_outlined,
-                              size: 50,),),)
-                        )
-                      ),
-                    ),
-                    TextField(
-                      autofocus: true,
-                      readOnly: nameEditingLocked,
-                      controller: itemNameController,
-                      decoration: InputDecoration(
-                        hintText: 'Beschreibung',
-                        errorText: textEmptyError ? 'Beschreibung ist leer' : null,
-                        suffixIcon: IconButton(
-                          onPressed: () => setState(() {
-                          if(nameEditingLocked){
-                            itemNameController.selection = TextSelection(baseOffset: 0, extentOffset: itemNameController.value.text.length);
-                          } else {
-                            itemNameController.selection = const TextSelection(baseOffset: 0, extentOffset: 0);
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return AlertDialog(
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: () {_pickImage().then((file) {
+                          if(file != null){
+                            newImageFile = file;
+                            setState(() => image = Image.file(file, fit: BoxFit.cover,));
                           }
-                          nameEditingLocked = !nameEditingLocked;
-                          }),
-                          icon: Icon(nameEditingLocked?Icons.edit:Icons.done),
+                        });},
+                        child: AspectRatio(
+                            aspectRatio: 1,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: image ?? Center(child: CircleAvatar(
+                                  radius: 45,
+                                  backgroundColor: Colors.black.withOpacity(0.1),
+                                  child: const Icon(Icons.add_photo_alternate_outlined,
+                                    size: 50,),),)
+                            )
                         ),
                       ),
-                      onChanged: (String input) {
-                        if(itemNameController.text.isEmpty) {
-                          setState(() {textEmptyError = true;});
-                        }
-                        else if (textEmptyError) {
-                          setState(() {textEmptyError = false;});
-                        }
-                      },
-                      onSubmitted: (String text) => setState(() => nameEditingLocked = !nameEditingLocked),
-                    ),
-                  ],
+                      TextField(
+                        controller: itemNameController,
+                        decoration: InputDecoration(
+                          hintText: 'Beschreibung',
+                          errorText: textEmptyError ? 'Beschreibung ist leer' : null,
+                        ),
+                        onChanged: (String input) {
+                          if(itemNameController.text.isEmpty) {
+                            setState(() {textEmptyError = true;});
+                          }
+                          else if (textEmptyError) {
+                            setState(() {textEmptyError = false;});
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('ABBRECHEN')
-                ),
-                TextButton(
-                    onPressed: () {
-                      if (itemNameController.text.isEmpty && image == null) {
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('ABBRECHEN'),
+                    onPressed: () => Navigator.pop(context, false),
+                  ),
+                  TextButton(
+                    child: const Text('SPEICHERN'),
+                    onPressed: () async {
+                      if (itemNameController.text.isEmpty
+                          && image == null) {
                         Navigator.pop(context, false);
                       }
                       else {
-                        if(id == null){
-                          DatabaseCommunicator.addItemContent(
-                            parentId: widget.id,
-                            name: itemNameController.text,
-                            tempImage: newFile
-                          ).then((value) => Navigator.pop(context, value));
-                        }
-                        else {
-                          DatabaseCommunicator.updateItemContent(
-                            id: id,
-                            name: itemNameController.text,
-                            tempImage: newFile
-                          ).then((value) => Navigator.pop(context, value));
-                        }
+                        await _setItemChild(itemChild: itemChild!, newImagePath: newImageFile?.path);
+                        Navigator.pop(context, true);
                       }
                     },
-                    child: const Text('SPEICHERN')
-                ),
-              ],
-            );
-          },
-        );
-      }
-    ).then((value) {
+                  ),
+                ],
+              );
+            },
+          );
+        }
+    ).then((value) async {
       if(value){
         await _loadItemChildren();
         _generatedContentItems = await _buildList();
@@ -316,28 +269,27 @@ class _DetailScreenState extends State<DetailScreen> {
       if (!await locator<StorageHandler>()
           .getPermission(Permission.storage, PlatformWrapper())) return false;
 
-      Directory? dirPrefix = await getExternalStorageDirectory();
+      Directory? dirPrefix = await locator<StorageHandler>().getExternalStorageDirectory();
       if(dirPrefix == null) return false;
 
       final String filename = Path.basename(newImagePath);
 
-      if (!await    // copy file and check if new file exists
-        (await locator<StorageHandler>().copyFile(newImagePath, '$dirPrefix/$filename'))
-          .exists()) return false;
+      File copyFile = await locator<StorageHandler>().copyFile(newImagePath, '${dirPrefix.path}/$filename');
+      if(!await locator<StorageHandler>().exists(copyFile)) return false;
 
       itemChild.imagepath = filename;
     }
     if(itemChild.id == 0){
-      if (await locator<DatabaseHandler>().updateItemChild(itemChild) > 0) return true;
+      if (await locator<DatabaseHandler>().addItemChild(itemChild) > 0) return true;
     }
     else {
-      if (await locator<DatabaseHandler>().addItemChild(itemChild) > 0) return true;
+      if (await locator<DatabaseHandler>().updateItemChild(itemChild) > 0) return true;
     }
     return false;
   }
 
   Future<File?> _pickImage() async{
-    XFile? pickedFile = await ImagePicker().pickImage(
+    XFile? pickedFile = await locator<ImagePicker>().pickImage(
       source: ImageSource.camera,
       maxHeight: 1600,
       maxWidth: 1600,
@@ -375,19 +327,19 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               actions: <Widget>[
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('ABBRECHEN')
+                  child: const Text('ABBRECHEN'),
+                  onPressed: () => Navigator.pop(context),
                 ),
                 TextButton(
-                    onPressed: () {
-                      if (_controller.text.isEmpty) {
-                        setState(() => textEmptyError = true);
-                      }
-                      else {
-                        Navigator.pop(context, _controller.text);
-                      }
-                    },
-                    child: const Text('SPEICHERN')
+                  child: const Text('SPEICHERN'),
+                  onPressed: () {
+                    if (_controller.text.isEmpty) {
+                      setState(() => textEmptyError = true);
+                    }
+                    else {
+                      Navigator.pop(context, _controller.text);
+                    }
+                  },
                 ),
               ],
             );
