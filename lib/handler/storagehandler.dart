@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class FileAccessWrapper{
   // This is a wrapper class for file operations -> designed for unit testing
@@ -26,6 +27,10 @@ class PlatformWrapper{
 class StorageHandler {
   late final FileAccessWrapper _fileAccessWrapper;
   StorageHandler(this._fileAccessWrapper);
+
+  Future<Directory?> getExternalStorageDirectory() async {
+    return await path_provider.getExternalStorageDirectory();
+  }
 
   Future<Image> getImage(String filepath) async{
     File file= File(filepath);
