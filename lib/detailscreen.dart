@@ -71,7 +71,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Future<List<Widget>> _buildList() async
   {
     final bool hasStorageAccess = await locator<StorageHandler>().getPermission(Permission.storage, PlatformWrapper());
-    if(hasStorageAccess){
+    if(!hasStorageAccess){
       if(!_permissionWarningShowed){
         _permissionWarningShowed = true;
         ScaffoldMessenger.of(context).showSnackBar(
