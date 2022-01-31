@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: () => setState(() => _search = true), icon: const Icon(Icons.search, color: Colors.white,)),
           ],
         ),
-        body: _isLoading? const CircularProgressIndicator()
+        body: _isLoading? const Center(child: CircularProgressIndicator())
           : _itemList(list: _items, filter: _search? _searchController.text: null),
         floatingActionButton: _isLoading ? null : FloatingActionButton(
           onPressed: _addItem,
