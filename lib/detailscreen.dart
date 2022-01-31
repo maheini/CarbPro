@@ -242,6 +242,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         Navigator.pop(context, false);
                       }
                       else {
+                        itemChild?.description = itemNameController.text;
                         await _setItemChild(itemChild: itemChild!, newImagePath: newImageFile?.path);
                         Navigator.pop(context, true);
                       }
