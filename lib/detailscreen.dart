@@ -29,6 +29,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @protected
   @mustCallSuper
   void initState() {
+    if(!locator.isRegistered<ImagePicker>()) locator.registerLazySingleton<ImagePicker>(() => ImagePicker());
     super.initState();
     _loadFullContent();
   }

@@ -162,9 +162,14 @@ void main() {
       // tap add-item button
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
       await tester.pump();
-      
-      // Pick image and enter name
+
+      // Replace ImagePicker locator with mock ImagePicker
+      expect(locator.isRegistered<ImagePicker>(), true);
+      locator.allowReassignment = true;
       locator.registerLazySingleton<ImagePicker>(() => imagePicker);
+      locator.allowReassignment = false;
+
+      // Pick image and enter name
       await tester.tap(find.byIcon(Icons.add_photo_alternate_outlined));
       await tester.enterText(find.byType(TextField), 'ItemChild');
       await tester.pump();
