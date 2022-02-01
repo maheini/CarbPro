@@ -77,7 +77,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Berechtigung für Speicher abgelehnt'),
-            duration: Duration(seconds: 3),
+            duration: Duration(seconds: 5),
           ),
         );
       }
