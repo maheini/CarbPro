@@ -75,10 +75,15 @@ class _DetailScreenState extends State<DetailScreen> {
       if(!_permissionWarningShowed){
         _permissionWarningShowed = true;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Berechtigung für Speicher abgelehnt'),
-            duration: Duration(seconds: 5),
-          ),
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: const Text('Berechtigung für Speicher abgelehnt'),
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'ok',
+              onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            ),
+          )
         );
       }
     }
