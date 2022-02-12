@@ -28,7 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   image_picker: ^0.8.4+4
-  path_provider: ^2.0.8
+  path_provider: ^2.0.9
   permission_handler: ^8.1.4+2
   sqflite: ^2.0.1
   get_it: ^7.2.0
