@@ -7,12 +7,9 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 @GenerateMocks([Database])
-void main(){
-
+void main() {
   group('Test Classes Item and ItemChild', () {
-
     test('Test Item -> Set Values and get them all back', () {
       // Arrange
       Item item = Item(5, 'Name');
@@ -27,7 +24,7 @@ void main(){
     });
     test('Test ItemChild -> Set Values and get them all back', () {
       // Arrange
-      ItemChild item = ItemChild(1, 2,'description', 'imagepath');
+      ItemChild item = ItemChild(1, 2, 'description', 'imagepath');
 
       // Act
       final int id = item.id;
@@ -41,16 +38,19 @@ void main(){
       expect(description, 'description');
       expect(imagepath, 'imagepath');
     });
-
   }); // Finished Class testing of Item and ItemChild
 
   group('Testing all Item methods', () {
     //Testing getItems method
-    test('DatabaseHandler method getItems should return 2 valid Items', () async{
+    test('DatabaseHandler method getItems should return 2 valid Items',
+        () async {
       // Arrange
       MockDatabase database = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(database);
-      final future = Future.value([{'id': 1, 'name': 'name'},{'id': 2, 'name': 'name2'}]);
+      final future = Future.value([
+        {'id': 1, 'name': 'name'},
+        {'id': 2, 'name': 'name2'}
+      ]);
       when(database.rawQuery('SELECT * FROM items'))
           .thenAnswer((_) async => future);
 
@@ -60,12 +60,17 @@ void main(){
       // Assert
       expect(actual.length, 2);
     });
-    test('This time, getItems should return 1 item inside the List, '
-        'because the Database is returning a invalid item in the first row data', () async{
+    test(
+        'This time, getItems should return 1 item inside the List, '
+        'because the Database is returning a invalid item in the first row data',
+        () async {
       // Arrange
       MockDatabase database = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(database);
-      final future = Future.value([{'id': 1}, {'id': 2, 'name': 'hi'}]);
+      final future = Future.value([
+        {'id': 1},
+        {'id': 2, 'name': 'hi'}
+      ]);
       when(database.rawQuery('SELECT * FROM items'))
           .thenAnswer((_) async => future);
 
@@ -77,11 +82,13 @@ void main(){
     });
 
     //Testing getItem method
-    test('DatabaseHandler method getItem should return 1 valid Item', () async{
+    test('DatabaseHandler method getItem should return 1 valid Item', () async {
       // Arrange
       MockDatabase database = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(database);
-      final future = Future.value([{'id': 1, 'name': 'name'}]);
+      final future = Future.value([
+        {'id': 1, 'name': 'name'}
+      ]);
       when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
           .thenAnswer((_) async => future);
 
@@ -92,12 +99,16 @@ void main(){
       expect(actual.id, 1);
       expect(actual.name, 'name');
     });
-    test('This time, getItem should return 1 invalid item, '
-        'because the Database is returning a invalid item in the first row data', () async{
+    test(
+        'This time, getItem should return 1 invalid item, '
+        'because the Database is returning a invalid item in the first row data',
+        () async {
       // Arrange
       MockDatabase database = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(database);
-      final future = Future.value([{'id': 1}]);
+      final future = Future.value([
+        {'id': 1}
+      ]);
       when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
           .thenAnswer((_) async => future);
 
@@ -114,7 +125,9 @@ void main(){
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName'])).thenAnswer((_) => Future.value(1));
+      when(mockDatabase
+              .rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName']))
+          .thenAnswer((_) => Future.value(1));
 
       // Act
       final rowsAffected = await databaseHandler.addItem('TestName');
@@ -122,11 +135,15 @@ void main(){
       // Assert
       expect(rowsAffected, 1);
     });
-    test('addItem should return a value of 0 row affected (fake return from DB)', () async {
+    test(
+        'addItem should return a value of 0 row affected (fake return from DB)',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName'])).thenAnswer((_) => Future.value(0));
+      when(mockDatabase
+              .rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName']))
+          .thenAnswer((_) => Future.value(0));
 
       // Act
       final rowsAffected = await databaseHandler.addItem('TestName');
@@ -140,7 +157,8 @@ void main(){
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [1])).thenAnswer((_) => Future.value(1));
+      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [1]))
+          .thenAnswer((_) => Future.value(1));
 
       // Act
       final rowsAffected = await databaseHandler.deleteItem(1);
@@ -148,11 +166,13 @@ void main(){
       // Assert
       expect(rowsAffected, 1);
     });
-    test('deleteItem should return 0 row affected because there id no id = 0', () async {
+    test('deleteItem should return 0 row affected because there id no id = 0',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [0])).thenAnswer((_) => Future.value(0));
+      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [0]))
+          .thenAnswer((_) => Future.value(0));
 
       // Act
       final rowsAffected = await databaseHandler.deleteItem(0);
@@ -160,17 +180,18 @@ void main(){
       // Assert
       expect(rowsAffected, 0);
     });
-    
+
     // test deleteAllChildren
     test('This test should return 3 affected rows', () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [1])).thenAnswer((_) => Future.value(3));
+      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [1]))
+          .thenAnswer((_) => Future.value(3));
 
       // Act
       final int rowsAffected = await databaseHandler.deleteAllChildren(1);
-      
+
       // Assert
       expect(rowsAffected, 3);
     });
@@ -178,7 +199,8 @@ void main(){
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [2])).thenAnswer((_) => Future.value(0));
+      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [2]))
+          .thenAnswer((_) => Future.value(0));
 
       // Act
       final int rowsAffected = await databaseHandler.deleteAllChildren(2);
@@ -188,44 +210,64 @@ void main(){
     });
 
     //test changeItemName
-    test('This test should run a query to change the item name and return all affected rows (1)', () async {
+    test(
+        'This test should run a query to change the item name and return all affected rows (1)',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawUpdate('UPDATE items SET name = ? WHERE id = ?', ['TestName', 1])).thenAnswer((_) => Future.value(1));
+      when(mockDatabase.rawUpdate(
+              'UPDATE items SET name = ? WHERE id = ?', ['TestName', 1]))
+          .thenAnswer((_) => Future.value(1));
 
       // Act
-      final int rowsAffected = await databaseHandler.changeItemName(1, 'TestName');
+      final int rowsAffected =
+          await databaseHandler.changeItemName(1, 'TestName');
 
       // Assert
       expect(rowsAffected, 1);
     });
-    test('This test should run a query to change the item name and return all affected rows (0, because there is no id 0)', () async {
+    test(
+        'This test should run a query to change the item name and return all affected rows (0, because there is no id 0)',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawUpdate('UPDATE items SET name = ? WHERE id = ?', ['TestName', 0])).thenAnswer((_) => Future.value(0));
+      when(mockDatabase.rawUpdate(
+              'UPDATE items SET name = ? WHERE id = ?', ['TestName', 0]))
+          .thenAnswer((_) => Future.value(0));
 
       // Act
-      final int rowsAffected = await databaseHandler.changeItemName(0, 'TestName');
+      final int rowsAffected =
+          await databaseHandler.changeItemName(0, 'TestName');
 
       // Assert
       expect(rowsAffected, 0);
     });
-
   }); // End of Item Tests in DatabaseHandler
 
   group('Testing all the Children Methods in DatabaseHandler', () {
-
     // Test getChildren
     test('Should return 2 Children from the Database', () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       final databaseValue = Future.value([
-        {'id': 1, 'parent': 3, 'description': 'Description', 'imageurl': 'emptypath'},
-        {'id': 2, 'parent': 3, 'description': 'Description2', 'imageurl': 'emptypath2'}]);
-      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3])).thenAnswer((realInvocation) async => databaseValue);
+        {
+          'id': 1,
+          'parent': 3,
+          'description': 'Description',
+          'imageurl': 'emptypath'
+        },
+        {
+          'id': 2,
+          'parent': 3,
+          'description': 'Description2',
+          'imageurl': 'emptypath2'
+        }
+      ]);
+      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
+          .thenAnswer((realInvocation) async => databaseValue);
 
       // Act
       final List<ItemChild> result = await databaseHandler.getChildren(3);
@@ -238,14 +280,23 @@ void main(){
       expect(child.description, 'Description');
       expect(child.imagepath, 'emptypath');
     });
-    test('Should return 1 Child from the Database, because the DB column description is missing', () async {
+    test(
+        'Should return 1 Child from the Database, because the DB column description is missing',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       final databaseValue = Future.value([
-        {'id': 1, 'parent': 3, 'description': 'Description', 'imageurl': 'emptypath'},
-        {'id': 2, 'parent': 3, 'imageurl': 'emptypath2'}]);    //Missing column here :)
-      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3])).thenAnswer((realInvocation) async => databaseValue);
+        {
+          'id': 1,
+          'parent': 3,
+          'description': 'Description',
+          'imageurl': 'emptypath'
+        },
+        {'id': 2, 'parent': 3, 'imageurl': 'emptypath2'}
+      ]); //Missing column here :)
+      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
+          .thenAnswer((realInvocation) async => databaseValue);
 
       // Act
       final List<ItemChild> result = await databaseHandler.getChildren(3);
@@ -265,8 +316,13 @@ void main(){
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
-      when(mockDatabase.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)', [1, 'description', 'imagepath']))
-          .thenAnswer((realInvocation) async => Future.value(5));
+      when(mockDatabase.rawInsert(
+          'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
+          [
+            1,
+            'description',
+            'imagepath'
+          ])).thenAnswer((realInvocation) async => Future.value(5));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
@@ -274,13 +330,19 @@ void main(){
       //Assert
       expect(id, 5);
     });
-    test('addItemChild should return no id -> Item couldn\'t be inserted', () async {
+    test('addItemChild should return no id -> Item couldn\'t be inserted',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
-      when(mockDatabase.rawInsert('INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)', [1, 'description', 'imagepath']))
-          .thenAnswer((realInvocation) async => Future.value(0));
+      when(mockDatabase.rawInsert(
+          'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
+          [
+            1,
+            'description',
+            'imagepath'
+          ])).thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
@@ -290,7 +352,9 @@ void main(){
     });
 
     // Test deleteItemChild
-    test('Testing deleteItemChild -> wich should return 1 (means 1 affected row)', () async {
+    test(
+        'Testing deleteItemChild -> wich should return 1 (means 1 affected row)',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
@@ -304,7 +368,9 @@ void main(){
       //Assert
       expect(affectedRows, 1);
     });
-    test('Testing deleteItemChild -> wich should return 0 (means 0 affected rows)', () async {
+    test(
+        'Testing deleteItemChild -> wich should return 0 (means 0 affected rows)',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
@@ -320,12 +386,16 @@ void main(){
     });
 
     // Testing updateItemChild
-    test('Make sure rawupdate gets called with the right values and 1 row got affected', () async {
+    test(
+        'Make sure rawupdate gets called with the right values and 1 row got affected',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(1, 2, 'newDescription', 'newImagepath');
-      when(mockDatabase.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', ['newDescription', 'newImagepath', 1]))
+      when(mockDatabase.rawUpdate(
+              'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
+              ['newDescription', 'newImagepath', 1]))
           .thenAnswer((realInvocation) async => Future.value(1));
 
       // Act
@@ -334,12 +404,16 @@ void main(){
       //Assert
       expect(affectedRows, 1);
     });
-    test('Make sure rawupdate gets called with the right values and 0 row got affected -> with faked DB return', () async {
+    test(
+        'Make sure rawupdate gets called with the right values and 0 row got affected -> with faked DB return',
+        () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 2, 'newDescription', 'newImagepath');
-      when(mockDatabase.rawUpdate('UPDATE content SET description = ?, imageurl = ? WHERE id = ?', ['newDescription', 'newImagepath', 0]))
+      when(mockDatabase.rawUpdate(
+              'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
+              ['newDescription', 'newImagepath', 0]))
           .thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
@@ -348,7 +422,5 @@ void main(){
       //Assert
       expect(affectedRows, 0);
     });
-
   }); // End of all Children Tests in DatabaseHandler
 }
-
