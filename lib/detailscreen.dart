@@ -147,7 +147,9 @@ class _DetailScreenState extends State<DetailScreen> {
                   await locator<StorageHandler>().deleteFile(file.path);
                 }
                 await locator<DatabaseHandler>().deleteItemChild(item);
-                setState(() { });
+                await _loadItemChildren();
+                _generatedContentItems = await _buildList();
+                setState(() {});
               }
             },
             child: Container(   //CONTENT
