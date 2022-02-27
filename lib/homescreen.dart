@@ -152,7 +152,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     centerTitle: true,
                     actions: <Widget>[
                       IconButton(
-                          onPressed: () => setState(() => _search = true),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _search = true);
+                          },
                           icon: const Icon(
                             Icons.search,
                             color: Colors.white,
