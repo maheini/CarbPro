@@ -71,9 +71,9 @@ void main() {
 
   group('Test search functionality', () {
     testWidgets(
-        ''
         'Test if Search bar appear, and filtering List items. '
-        'Also test if Search bar disappear after clear icon got pressed',
+        'Also test if Search bar disappear after clear icon got pressed '
+        'And make sure search bar is clear after if gets opened again',
         (WidgetTester tester) async {
       // Setup all dependencies
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
@@ -127,6 +127,11 @@ void main() {
       expect(find.text('CarbPro'), findsOneWidget);
       expect(find.text('Item1'), findsOneWidget);
       expect(find.text('Item2'), findsOneWidget);
+
+      // tap search Icon again and check if searchbar got cleaned
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pump();
+      expect(find.text('2'), findsNothing);
 
       locator.resetScope(dispose: true);
     });
