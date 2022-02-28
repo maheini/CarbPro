@@ -17,13 +17,17 @@ import 'homescreen_test.mocks.dart';
 // flutter pub run build_runner build --delete-conflicting-outputs
 
 @GenerateMocks([DatabaseHandler, StorageHandler])
-void main(){
+void main() {
   group('App startup', () {
-    testWidgets('Open App and check if Circular Progress is visisible while opening the database', (WidgetTester tester) async{
+    testWidgets(
+        'Open App and check if Circular Progress is visisible while opening the database',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1,'Item1')]));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
 
-      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<StorageHandler>(
+          StorageHandler(FileAccessWrapper()));
       locator.registerSingletonAsync<DatabaseHandler>(() async {
         await Future.delayed(const Duration(milliseconds: 3));
         return databaseHandler;
@@ -31,7 +35,7 @@ void main(){
 
       await tester.pumpWidget(const CarbPro());
 
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('CarbPro'), findsOneWidget);
       expect(find.byIcon(Icons.add), findsNothing);
       expect(find.byIcon(Icons.search), findsNothing);
@@ -41,17 +45,21 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
-    testWidgets('Return one fake Item from the Database -> Home should list this '
-        'and show add+search button without warning and progress indicator', (WidgetTester tester) async {
+    testWidgets(
+        'Return one fake Item from the Database -> Home should list this '
+        'and show add+search button without warning and progress indicator',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<StorageHandler>(
+          StorageHandler(FileAccessWrapper()));
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
 
       await tester.pumpWidget(const CarbPro());
       await tester.pump();
 
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('CarbPro'), findsOneWidget);
       expect(find.text('Item1'), findsOneWidget);
       expect(find.byIcon(Icons.add), findsOneWidget);
@@ -62,26 +70,27 @@ void main(){
   });
 
   group('Test search functionality', () {
-
-    testWidgets(''
+    testWidgets(
         'Test if Search bar appear, and filtering List items. '
-        'Also test if Search bar disappear after clear icon got pressed',
-            (WidgetTester tester) async {
+        'Also test if Search bar disappear after clear icon got pressed '
+        'And make sure search bar is clear after if gets opened again',
+        (WidgetTester tester) async {
       // Setup all dependencies
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<StorageHandler>(
+          StorageHandler(FileAccessWrapper()));
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([
-        Item(1, 'Item1'),
-        Item(2, 'Item2'),
-      ]));
+            Item(1, 'Item1'),
+            Item(2, 'Item2'),
+          ]));
 
       // start Widget
       await tester.pumpWidget(const CarbPro());
       await tester.pump();
 
       // Check if AppBar contains Search bar Icon and title and List is unfiltered
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.clear), findsNothing);
       expect(find.byIcon(Icons.search), findsOneWidget);
@@ -111,7 +120,7 @@ void main(){
       await tester.pump();
 
       // Check if Search bar has disappeared and Items are unfiltered
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.clear), findsNothing);
       expect(find.byIcon(Icons.search), findsOneWidget);
@@ -119,29 +128,35 @@ void main(){
       expect(find.text('Item1'), findsOneWidget);
       expect(find.text('Item2'), findsOneWidget);
 
+      // tap search Icon again and check if searchbar got cleaned
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pump();
+      expect(find.text('2'), findsNothing);
+
       locator.resetScope(dispose: true);
     });
 
-
-    testWidgets(''
+    testWidgets(
+        ''
         'Test if Search bar appear, and filtering List items. '
         'Also test if Search bar disappear after back button got pressed',
-            (WidgetTester tester) async {
+        (WidgetTester tester) async {
       // Setup all dependencies
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<StorageHandler>(
+          StorageHandler(FileAccessWrapper()));
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([
-        Item(1, 'Item1'),
-        Item(2, 'Item2'),
-      ]));
+            Item(1, 'Item1'),
+            Item(2, 'Item2'),
+          ]));
 
       // start Widget
       await tester.pumpWidget(const CarbPro());
       await tester.pump();
 
       // Check if AppBar contains Search bar Icon and title and List is unfiltered
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.clear), findsNothing);
       expect(find.byIcon(Icons.search), findsOneWidget);
@@ -172,13 +187,14 @@ void main(){
       expect(find.text('CarbPro'), findsNothing);
 
       // Close Search bar by simulating a back button pressed
-      final ByteData message = const JSONMethodCodec().encodeMethodCall(const MethodCall('popRoute'));
+      final ByteData message = const JSONMethodCodec()
+          .encodeMethodCall(const MethodCall('popRoute'));
       await ServicesBinding.instance!.defaultBinaryMessenger
-          .handlePlatformMessage('flutter/navigation', message, (_) { });
+          .handlePlatformMessage('flutter/navigation', message, (_) {});
       await tester.pump();
 
       // Check if Search bar has disappeared and Items are unfiltered
-      expect(find.byType (AlertDialog), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.clear), findsNothing);
       expect(find.byIcon(Icons.search), findsOneWidget);
@@ -188,26 +204,26 @@ void main(){
 
       locator.resetScope(dispose: true);
     });
-
   });
 
   group('Test Item List', () {
-    testWidgets('DetailScreen should be loaded after a click onto a Item', (WidgetTester tester) async{
+    testWidgets('DetailScreen should be loaded after a click onto a Item',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
-      locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+      locator.registerSingleton<StorageHandler>(
+          StorageHandler(FileAccessWrapper()));
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
       RouteSettings? routeSettings;
 
-      await tester.pumpWidget(MaterialApp(
-        onGenerateRoute: (settings) {
-          routeSettings = settings;
-          if(settings.name == '/' || settings.name == '/details'){
-            return MaterialPageRoute(builder: (_) => const HomeScreen());
-          }
-          return null;
+      await tester.pumpWidget(MaterialApp(onGenerateRoute: (settings) {
+        routeSettings = settings;
+        if (settings.name == '/' || settings.name == '/details') {
+          return MaterialPageRoute(builder: (_) => const HomeScreen());
         }
-      ));
+        return null;
+      }));
       await tester.pump();
 
       // tap item1
@@ -220,15 +236,18 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
-    testWidgets('A Popup should appear after lonPressing on an Item'
+    testWidgets(
+        'A Popup should appear after lonPressing on an Item'
         '-After tapping the cancel button, everything should be canceled'
-        '-After pressing confirm, the item should disappear', (WidgetTester tester) async {
+        '-After pressing confirm, the item should disappear',
+        (WidgetTester tester) async {
       // prepare dependencies
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
       MockStorageHandler storageHandler = MockStorageHandler();
       locator.registerSingleton<StorageHandler>(storageHandler);
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
 
       // load widget
       await tester.pumpWidget(const CarbPro());
@@ -252,8 +271,8 @@ void main(){
       expect(find.byType(AlertDialog), findsNothing);
 
       // Prepare mocks for removing the Item
-      when(databaseHandler.getChildren(1))
-          .thenAnswer((realInvocation) => Future.value([ItemChild(11,1,'', 'path')]));
+      when(databaseHandler.getChildren(1)).thenAnswer(
+          (realInvocation) => Future.value([ItemChild(11, 1, '', 'path')]));
       when(databaseHandler.getItems())
           .thenAnswer((realInvocation) => Future.value([]));
       when(databaseHandler.deleteAllChildren(1))
@@ -292,15 +311,18 @@ void main(){
   });
 
   group('Test the add button', () {
-
-    testWidgets('-After pressing the Add Button, there should appear a popup, '
+    testWidgets(
+        '-After pressing the Add Button, there should appear a popup, '
         'including a Textfield, ´ABBRECHEN´ and ´ERSTELLEN´ Button'
         '-An empty line Item shouldn´t be added'
-        '-After pressing ´ABBRECHEN´, the popup should disappear', (WidgetTester tester) async {
+        '-After pressing ´ABBRECHEN´, the popup should disappear',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.addItem('nameDoesntExists')).thenAnswer((_) async => Future.value(1));
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExists')]));
+      when(databaseHandler.addItem('nameDoesntExists'))
+          .thenAnswer((_) async => Future.value(1));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'NameDoesExists')]));
 
       // Start App
       await tester.pumpWidget(const CarbPro());
@@ -321,7 +343,6 @@ void main(){
       verifyNever(databaseHandler.addItem(any));
       await tester.pump();
 
-
       // Tap cancel, popup should disappear
       await tester.tap(find.text('ABBRECHEN'));
       await tester.pump();
@@ -333,27 +354,29 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
-    testWidgets('After entering existing item name, the existing item should be opened.', (WidgetTester tester) async {
+    testWidgets(
+        'After entering existing item name, the existing item should be opened.',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.addItem('nameDoesntExist')).thenAnswer((_) async => Future.value(1));
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
+      when(databaseHandler.addItem('nameDoesntExist'))
+          .thenAnswer((_) async => Future.value(1));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
 
       Object? previousArgument;
 
-      await tester.pumpWidget(MaterialApp(
-          onGenerateRoute: (settings) {
-            previousArgument = settings.arguments;
-            if(settings.name == '/details'){
-              previousArgument = settings.arguments;
-              return MaterialPageRoute(builder: (_) => const HomeScreen());
-            }
-            if(settings.name == '/'){
-              return MaterialPageRoute(builder: (_) => const HomeScreen());
-            }
-            return null;
-          }
-      ));
+      await tester.pumpWidget(MaterialApp(onGenerateRoute: (settings) {
+        previousArgument = settings.arguments;
+        if (settings.name == '/details') {
+          previousArgument = settings.arguments;
+          return MaterialPageRoute(builder: (_) => const HomeScreen());
+        }
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (_) => const HomeScreen());
+        }
+        return null;
+      }));
       await tester.pumpAndSettle();
 
       // Press add button
@@ -373,28 +396,34 @@ void main(){
       locator.resetScope(dispose: true);
     });
 
-    testWidgets('After creating a new item name, one should be generated and opened', (WidgetTester tester) async {
+    testWidgets(
+        'After creating a new item name, one should be generated and opened',
+        (WidgetTester tester) async {
       MockDatabaseHandler databaseHandler = MockDatabaseHandler();
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
-      when(databaseHandler.getItems()).thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
+      when(databaseHandler.getItems())
+          .thenAnswer((_) async => Future.value([Item(1, 'NameDoesExist')]));
 
       Object? previousArgument;
 
-      await tester.pumpWidget(MaterialApp(
-          onGenerateRoute: (settings) {
-            previousArgument = settings.arguments;
-            if(settings.name == '/details'){
-              previousArgument = settings.arguments;
-              return MaterialPageRoute(builder: (BuildContext context) =>
-                  Scaffold(appBar: AppBar(title: TextButton(child: const Text('return'),
-                    onPressed: () => Navigator.of(context).pop(),),)));
-            }
-            if(settings.name == '/'){
-              return MaterialPageRoute(builder: (_) => const HomeScreen());
-            }
-            return null;
-          }
-      ));
+      await tester.pumpWidget(MaterialApp(onGenerateRoute: (settings) {
+        previousArgument = settings.arguments;
+        if (settings.name == '/details') {
+          previousArgument = settings.arguments;
+          return MaterialPageRoute(
+              builder: (BuildContext context) => Scaffold(
+                      appBar: AppBar(
+                    title: TextButton(
+                      child: const Text('return'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  )));
+        }
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (_) => const HomeScreen());
+        }
+        return null;
+      }));
       await tester.pumpAndSettle();
 
       // Press add button
@@ -402,7 +431,8 @@ void main(){
       await tester.pump();
 
       // Prepare DB for inserting item
-      when(databaseHandler.addItem('nameDoesntExist')).thenAnswer((_) async => Future.value(2));
+      when(databaseHandler.addItem('nameDoesntExist'))
+          .thenAnswer((_) async => Future.value(2));
 
       // enter existing item name and press ´ERSTELLEN´ button
       await tester.enterText(find.byType(TextField), 'nameDoesntExist');
@@ -414,8 +444,8 @@ void main(){
       expect(previousArgument, 2);
 
       // ensure new Item is visible now
-      when(databaseHandler.getItems())
-          .thenAnswer((realInvocation) => Future.value([Item(1, 'NameDoesExist'), Item(2, 'nameDoesntExist')]));
+      when(databaseHandler.getItems()).thenAnswer((realInvocation) =>
+          Future.value([Item(1, 'NameDoesExist'), Item(2, 'nameDoesntExist')]));
       await tester.pumpAndSettle();
       await tester.tap(find.text('return'));
       await tester.pump();
@@ -424,6 +454,5 @@ void main(){
       // reset locator
       locator.resetScope(dispose: true);
     });
-
   });
 }

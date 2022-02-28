@@ -6,7 +6,8 @@ GetIt locator = GetIt.instance;
 
 void setupLocator() {
   // Register all Storage access services
-  locator.registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
+  locator
+      .registerSingleton<StorageHandler>(StorageHandler(FileAccessWrapper()));
 
   // Register all Database access services
   locator.registerSingletonAsync<DatabaseHandler>(() async {

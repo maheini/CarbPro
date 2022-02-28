@@ -26,9 +26,13 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(true));
     });
 
-    testWidgets('After Item got loaded, Appbar should display the Item name and a edit Icon', (WidgetTester tester) async {
-      when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
+    testWidgets(
+        'After Item got loaded, Appbar should display the Item name and a edit Icon',
+        (WidgetTester tester) async {
+      when(databaseHandler.getItem(1))
+          .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([]));
 
       // start app
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
@@ -38,10 +42,14 @@ void main() {
       expect(find.byIcon(Icons.edit), findsOneWidget);
     });
 
-    testWidgets('After pressing the edit Icon, a popup should appear. With this popup, '
-        'the name of the item should be changeable', (WidgetTester tester) async {
-      when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
+    testWidgets(
+        'After pressing the edit Icon, a popup should appear. With this popup, '
+        'the name of the item should be changeable',
+        (WidgetTester tester) async {
+      when(databaseHandler.getItem(1))
+          .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([]));
 
       // start app
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
@@ -103,24 +111,28 @@ void main() {
           .thenAnswer((realInvocation) => Future.value(true));
     });
 
-    testWidgets('Check if Addbutton is aviable -> after clicking on it, '
-        'a popup should appear with with a field of name and image', (WidgetTester tester) async {
-      when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
-      
+    testWidgets(
+        'Check if Addbutton is aviable -> after clicking on it, '
+        'a popup should appear with with a field of name and image',
+        (WidgetTester tester) async {
+      when(databaseHandler.getItem(1))
+          .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([]));
+
       await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
       await tester.pump();
-      
+
       // tap add-item button
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
       await tester.pump();
-      
+
       // expect a popup with textfield and add-image icon
       expect(find.byType(TextField), findsOneWidget);
       expect(find.byIcon(Icons.add_photo_alternate_outlined), findsOneWidget);
       expect(find.text('SPEICHERN'), findsOneWidget);
       expect(find.text('ABBRECHEN'), findsOneWidget);
-      
+
       // try pressing save -> the popup should be closed, nothing should happen
       verifyNever(databaseHandler.addItemChild(any));
       await tester.tap(find.text('SPEICHERN'));
@@ -131,7 +143,7 @@ void main() {
       expect(find.byIcon(Icons.wallpaper), findsNothing);
       expect(find.text('SPEICHERN'), findsNothing);
       expect(find.text('ABBRECHEN'), findsNothing);
-      
+
       // again add item, press ´ABBRECHEN´ this time
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
       await tester.pump();
@@ -140,15 +152,22 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('click addbutton and afterwards try to add an image & text & store them', 
-            (WidgetTester tester) async {
+    testWidgets(
+        'click addbutton and afterwards try to add an image & text & store them',
+        (WidgetTester tester) async {
       MockImagePicker imagePicker = MockImagePicker();
       when(imagePicker.pickImage(
-          source: anyNamed('source'), maxWidth: anyNamed('maxWidth'), maxHeight: anyNamed('maxHeight'),
-          imageQuality: anyNamed('imageQuality'), preferredCameraDevice:anyNamed('preferredCameraDevice')
-      )).thenAnswer((realInvocation) => Future.value(XFile('assets/storagehandler_test_image.jpg')));
-      when(databaseHandler.getItem(1)).thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1)).thenAnswer((_) async => Future.value([]));
+              source: anyNamed('source'),
+              maxWidth: anyNamed('maxWidth'),
+              maxHeight: anyNamed('maxHeight'),
+              imageQuality: anyNamed('imageQuality'),
+              preferredCameraDevice: anyNamed('preferredCameraDevice')))
+          .thenAnswer((realInvocation) =>
+              Future.value(XFile('assets/storagehandler_test_image.jpg')));
+      when(databaseHandler.getItem(1))
+          .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([]));
       when(storageHandler.getExternalStorageDirectory())
           .thenAnswer((realInvocation) => Future.value(Directory('')));
       when(storageHandler.getPermission(Permission.storage, any))
@@ -177,10 +196,10 @@ void main() {
       // save everything
       when(databaseHandler.addItemChild(any))
           .thenAnswer((realInvocation) => Future.value(2));
-      when(storageHandler.copyFile(any, any))
-          .thenAnswer((_) => Future.value(File('assets/storagehandler_test_image.jpg')));
-      when(databaseHandler.getChildren(1))
-          .thenAnswer((_) async => Future.value([ItemChild(1, 1, 'ItemChild', '')]));
+      when(storageHandler.copyFile(any, any)).thenAnswer(
+          (_) => Future.value(File('assets/storagehandler_test_image.jpg')));
+      when(databaseHandler.getChildren(1)).thenAnswer(
+          (_) async => Future.value([ItemChild(1, 1, 'ItemChild', '')]));
       expect(find.text('SPEICHERN'), findsOneWidget);
       await tester.tap(find.text('SPEICHERN'));
       await tester.pump();
@@ -198,11 +217,9 @@ void main() {
       expect(find.text('ItemChild'), findsOneWidget);
     });
 
-
     tearDown(() {
       // reset locator
       locator.resetScope(dispose: true);
     });
   });
-
 }
