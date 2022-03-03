@@ -197,7 +197,10 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   Flexible(
                     flex: 2,
-                    child: Text(item.description),
+                    child: Text(
+                      item.description,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   )
                 ],
               ),
