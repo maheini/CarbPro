@@ -1,1 +1,11 @@
-{}
+{
+    "@@locale": "de",
+    "language": "Deutsch",
+    "@________HOMESCREEN________":{},
+    "search": "Suchen",
+    "add_item": "Artikel hinzufügen",
+    "name": "Name",
+    "name_empty": "Name ist leer",
+    "cancel": "Abbrechen",
+    "add": "Hinzufügen"
+}

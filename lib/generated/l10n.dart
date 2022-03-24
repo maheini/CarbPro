@@ -49,6 +49,76 @@ class S {
   static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
+
+  /// `English`
+  String get language {
+    return Intl.message(
+      'English',
+      name: 'language',
+      desc: 'The current language',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: 'Text for search bars e.g.',
+      args: [],
+    );
+  }
+
+  /// `Add item`
+  String get add_item {
+    return Intl.message(
+      'Add item',
+      name: 'add_item',
+      desc: 'Text for adding an item',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: 'Name text ',
+      args: [],
+    );
+  }
+
+  /// `Name is empty`
+  String get name_empty {
+    return Intl.message(
+      'Name is empty',
+      name: 'name_empty',
+      desc: 'Message if name is empty',
+      args: [],
+    );
+  }
+
+  /// `cancel`
+  String get cancel {
+    return Intl.message(
+      'cancel',
+      name: 'cancel',
+      desc: 'Cancel text',
+      args: [],
+    );
+  }
+
+  /// `add`
+  String get add {
+    return Intl.message(
+      'add',
+      name: 'add',
+      desc: 'Text fot adding an Item',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -21,5 +21,13 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
+        "add_item": MessageLookupByLibrary.simpleMessage("Artikel hinzufügen"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "language": MessageLookupByLibrary.simpleMessage("Deutsch"),
+        "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "name_empty": MessageLookupByLibrary.simpleMessage("Name ist leer"),
+        "search": MessageLookupByLibrary.simpleMessage("Suchen")
+      };
 }
