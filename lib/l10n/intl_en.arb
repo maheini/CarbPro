@@ -1,1 +1,32 @@
-{}
+{
+    "@@locale": "en",
+    "language": "English",
+    "@language":{
+        "description": "The current language"
+    },
+    "@________HOMESCREEN________":{},
+    "search": "Search",
+    "@search":{
+        "description": "Text for search bars e.g."
+    },
+    "add_item": "Add item",
+    "@add_item":{
+        "description": "Text for adding an item"
+    },
+    "name": "Name",
+    "@name":{
+        "description": "Name text "
+    },
+    "name_empty": "Name is empty",
+    "@name_empty":{
+        "description": "Message if name is empty"
+    },
+    "cancel": "cancel",
+    "@cancel":{
+        "description": "Cancel text"
+    },
+    "add": "add",
+    "@add":{
+        "description": "Text fot adding an Item"
+    }
+}
