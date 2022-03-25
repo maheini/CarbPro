@@ -5,6 +5,10 @@
         "description": "The current language"
     },
     "@________HOMESCREEN________":{},
+    "confirm": "Confirm",
+    "@confirm":{
+        "description": "Text title to confirm anything..."
+    },
     "search": "Search",
     "@search":{
         "description": "Text for search bars e.g."
@@ -21,12 +25,20 @@
     "@name_empty":{
         "description": "Message if name is empty"
     },
-    "cancel": "cancel",
+    "warning_confirm_remove": "Do you really want to remove the item?",
+    "@warning_confirm_remove":{
+        "description": "Warning text which is shown before removing an item"
+    },
+    "cancel": "Cancel",
     "@cancel":{
         "description": "Cancel text"
     },
-    "add": "add",
+    "add": "Add",
     "@add":{
-        "description": "Text fot adding an Item"
+        "description": "Text fot adding an item"
+    },
+    "remove": "Remove",
+    "@remove":{
+        "description": "Button text to remove a something"
     }
 }
