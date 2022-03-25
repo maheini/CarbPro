@@ -5,6 +5,7 @@ import 'locator/locator.dart';
 import 'datamodels/item.dart';
 import 'datamodels/itemchild.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:carbpro/generated/l10n.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -53,17 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Bestätigen"),
-                content:
-                    const Text("Möchtest du des Element wirklich entfernen?"),
+                title: Text(S.of(context).confirm),
+                content: Text(S.of(context).warning_confirm_remove),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("ABBRECHEN"),
+                    child: Text(S.of(context).cancel.toUpperCase()),
                   ),
                   TextButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text("ENTFERNEN")),
+                      child: Text(S.of(context).remove.toUpperCase())),
                 ],
               );
             },
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               onPressed: () => setState(() => _search = false),
                             ),
-                            hintText: 'Suchen',
+                            hintText: S.of(context).search,
                             border: InputBorder.none),
                       ),
                     ),
@@ -187,19 +187,19 @@ class _HomeScreenState extends State<HomeScreen> {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return AlertDialog(
-                title: const Text('Artikel einfügen'),
+                title: Text(S.of(context).add_item),
                 content: TextField(
                   autofocus: true,
                   controller: _controller,
                   decoration: InputDecoration(
-                    hintText: 'Name',
-                    errorText: textEmptyError ? 'Name ist leer' : null,
+                    hintText: S.of(context).name,
+                    errorText: textEmptyError ? S.of(context).name_empty : null,
                   ),
                 ),
                 actions: <Widget>[
                   TextButton(
                       onPressed: () => Navigator.pop(context, _controller.text),
-                      child: const Text('ABBRECHEN')),
+                      child: Text(S.of(context).cancel.toUpperCase())),
                   TextButton(
                       onPressed: () {
                         if (_controller.text.isEmpty) {
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.pop(context, _controller.text);
                         }
                       },
-                      child: const Text('ERSTELLEN')),
+                      child: Text(S.of(context).add)),
                 ],
               );
             },

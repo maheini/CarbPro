@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: 'Text title to confirm anything...',
+      args: [],
+    );
+  }
+
   /// `Search`
   String get search {
     return Intl.message(
@@ -100,22 +110,42 @@ class S {
     );
   }
 
-  /// `cancel`
+  /// `Do you really want to remove the item?`
+  String get warning_confirm_remove {
+    return Intl.message(
+      'Do you really want to remove the item?',
+      name: 'warning_confirm_remove',
+      desc: 'Warning text which is shown before removing an item',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      'cancel',
+      'Cancel',
       name: 'cancel',
       desc: 'Cancel text',
       args: [],
     );
   }
 
-  /// `add`
+  /// `Add`
   String get add {
     return Intl.message(
-      'add',
+      'Add',
       name: 'add',
-      desc: 'Text fot adding an Item',
+      desc: 'Text fot adding an item',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get remove {
+    return Intl.message(
+      'Remove',
+      name: 'remove',
+      desc: 'Button text to remove a something',
       args: [],
     );
   }
