@@ -2,10 +2,13 @@
     "@@locale": "de",
     "language": "Deutsch",
     "@________HOMESCREEN________":{},
+    "confirm": "Bestätigen",
     "search": "Suchen",
     "add_item": "Artikel hinzufügen",
     "name": "Name",
     "name_empty": "Name ist leer",
+    "warning_confirm_remove": "Möchtest du des Element wirklich entfernen?",
     "cancel": "Abbrechen",
-    "add": "Hinzufügen"
+    "add": "Hinzufügen",
+    "remove": "Entfernen"
 }

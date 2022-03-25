@@ -25,9 +25,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
         "add_item": MessageLookupByLibrary.simpleMessage("Artikel hinzufügen"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
         "language": MessageLookupByLibrary.simpleMessage("Deutsch"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "name_empty": MessageLookupByLibrary.simpleMessage("Name ist leer"),
-        "search": MessageLookupByLibrary.simpleMessage("Suchen")
+        "remove": MessageLookupByLibrary.simpleMessage("Entfernen"),
+        "search": MessageLookupByLibrary.simpleMessage("Suchen"),
+        "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
+            "Möchtest du des Element wirklich entfernen?")
       };
 }
