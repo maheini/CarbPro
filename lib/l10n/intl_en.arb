@@ -40,5 +40,30 @@
     "remove": "Remove",
     "@remove":{
         "description": "Button text to remove a something"
+    },
+    "@________DETAILSCREEN________":{},
+    "storage_permission_missing": "Storage access not granted",
+    "@storage_permission_missing":{
+        "description": "Error message if there is no storage access granted"
+    },
+    "description": "Description",
+    "@description":{
+        "description": "Translation for description :)"
+    },
+    "description_empty": "Description is empty",
+    "@description_empty":{
+        "description": "Message if description is empty"
+    },
+    "edit_item": "Edit item",
+    "@edit_item":{
+        "description": "Text displayed for edit item buttons"
+    },
+    "save": "Save",
+    "@save":{
+        "description": "Text for save button"
+    },
+    "ok": "Ok",
+    "@ok":{
+        "description": "Text for ok button"
     }
 }

@@ -26,11 +26,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_item": MessageLookupByLibrary.simpleMessage("Add item"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "description": MessageLookupByLibrary.simpleMessage("Description"),
+        "description_empty":
+            MessageLookupByLibrary.simpleMessage("Description is empty"),
+        "edit_item": MessageLookupByLibrary.simpleMessage("Edit item"),
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "name_empty": MessageLookupByLibrary.simpleMessage("Name is empty"),
+        "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "storage_permission_missing":
+            MessageLookupByLibrary.simpleMessage("Storage access not granted"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Do you really want to remove the item?")
       };
