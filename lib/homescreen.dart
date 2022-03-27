@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.pop(context, _controller.text);
                         }
                       },
-                      child: Text(S.of(context).add)),
+                      child: Text(S.of(context).add.toUpperCase())),
                 ],
               );
             },
