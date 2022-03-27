@@ -9,6 +9,7 @@ import 'datamodels/itemchild.dart';
 import 'locator/locator.dart';
 import 'handler/databasehandler.dart';
 import 'handler/storagehandler.dart';
+import 'package:carbpro/generated/l10n.dart';
 
 class DetailScreen extends StatefulWidget {
   final int id;
@@ -89,10 +90,10 @@ class _DetailScreenState extends State<DetailScreen> {
         _permissionWarningShowed = true;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.redAccent,
-          content: const Text('Berechtigung für Speicher abgelehnt'),
+          content: Text(S.of(context).storage_permission_missing),
           duration: const Duration(seconds: 5),
           action: SnackBarAction(
-            label: 'ok',
+            label: S.of(context).ok.toUpperCase(),
             onPressed: () =>
                 ScaffoldMessenger.of(context).hideCurrentSnackBar(),
           ),
@@ -143,17 +144,16 @@ class _DetailScreenState extends State<DetailScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("Bestätigen"),
-                    content: const Text(
-                        "Möchtest du den Eintrag wirklich entfernen?"),
+                    title: Text(S.of(context).confirm),
+                    content: Text(S.of(context).warning_confirm_remove),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text("ABBRECHEN"),
+                        child: Text(S.of(context).cancel.toUpperCase()),
                       ),
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text("ENTFERNEN")),
+                          child: Text(S.of(context).remove.toUpperCase())),
                     ],
                   );
                 },
@@ -257,9 +257,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       TextField(
                         controller: itemNameController,
                         decoration: InputDecoration(
-                          hintText: 'Beschreibung',
-                          errorText:
-                              textEmptyError ? 'Beschreibung ist leer' : null,
+                          hintText: S.of(context).description,
+                          errorText: textEmptyError
+                              ? S.of(context).description_empty
+                              : null,
                         ),
                         onChanged: (String input) {
                           if (itemNameController.text.isEmpty) {
@@ -278,11 +279,11 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('ABBRECHEN'),
+                    child: Text(S.of(context).cancel.toUpperCase()),
                     onPressed: () => Navigator.pop(context, false),
                   ),
                   TextButton(
-                    child: const Text('SPEICHERN'),
+                    child: Text(S.of(context).save.toUpperCase()),
                     onPressed: () async {
                       if (itemNameController.text.isEmpty && image == null) {
                         Navigator.pop(context, false);
@@ -368,22 +369,22 @@ class _DetailScreenState extends State<DetailScreen> {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return AlertDialog(
-                title: const Text('Artikel bearbeiten'),
+                title: Text(S.of(context).edit_item),
                 content: TextField(
                   autofocus: true,
                   controller: _controller,
                   decoration: InputDecoration(
-                    hintText: 'Name',
-                    errorText: textEmptyError ? 'Name ist leer' : null,
+                    hintText: S.of(context).name,
+                    errorText: textEmptyError ? S.of(context).name_empty : null,
                   ),
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('ABBRECHEN'),
+                    child: Text(S.of(context).cancel.toUpperCase()),
                     onPressed: () => Navigator.pop(context),
                   ),
                   TextButton(
-                    child: const Text('SPEICHERN'),
+                    child: Text(S.of(context).save.toUpperCase()),
                     onPressed: () {
                       if (_controller.text.isEmpty) {
                         setState(() => textEmptyError = true);
