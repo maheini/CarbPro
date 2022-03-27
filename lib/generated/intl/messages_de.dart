@@ -26,11 +26,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_item": MessageLookupByLibrary.simpleMessage("Artikel hinzufügen"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
+        "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
+        "description_empty":
+            MessageLookupByLibrary.simpleMessage("Beschreibung ist leer"),
+        "edit_item": MessageLookupByLibrary.simpleMessage("Element bearbeiten"),
         "language": MessageLookupByLibrary.simpleMessage("Deutsch"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "name_empty": MessageLookupByLibrary.simpleMessage("Name ist leer"),
+        "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "remove": MessageLookupByLibrary.simpleMessage("Entfernen"),
+        "save": MessageLookupByLibrary.simpleMessage("Speichern"),
         "search": MessageLookupByLibrary.simpleMessage("Suchen"),
+        "storage_permission_missing": MessageLookupByLibrary.simpleMessage(
+            "Fehlende Berechtigung für den Speicher"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Möchtest du des Element wirklich entfernen?")
       };

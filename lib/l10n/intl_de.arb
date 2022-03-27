@@ -10,5 +10,12 @@
     "warning_confirm_remove": "Möchtest du des Element wirklich entfernen?",
     "cancel": "Abbrechen",
     "add": "Hinzufügen",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "@________DETAILSCREEN________":{},
+    "storage_permission_missing": "Fehlende Berechtigung für den Speicher",
+    "description": "Beschreibung",
+    "description_empty": "Beschreibung ist leer",
+    "edit_item": "Element bearbeiten",
+    "save": "Speichern",
+    "ok": "Ok"
 }

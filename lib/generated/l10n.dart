@@ -149,6 +149,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Storage access not granted`
+  String get storage_permission_missing {
+    return Intl.message(
+      'Storage access not granted',
+      name: 'storage_permission_missing',
+      desc: 'Error message if there is no storage access granted',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get description {
+    return Intl.message(
+      'Description',
+      name: 'description',
+      desc: 'Translation for description :)',
+      args: [],
+    );
+  }
+
+  /// `Description is empty`
+  String get description_empty {
+    return Intl.message(
+      'Description is empty',
+      name: 'description_empty',
+      desc: 'Message if description is empty',
+      args: [],
+    );
+  }
+
+  /// `Edit item`
+  String get edit_item {
+    return Intl.message(
+      'Edit item',
+      name: 'edit_item',
+      desc: 'Text displayed for edit item buttons',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: 'Text for save button',
+      args: [],
+    );
+  }
+
+  /// `Ok`
+  String get ok {
+    return Intl.message(
+      'Ok',
+      name: 'ok',
+      desc: 'Text for ok button',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
