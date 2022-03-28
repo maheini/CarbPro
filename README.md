@@ -12,6 +12,10 @@ An Android app written in Dart with Flutter. CarbPro is a great tool to create c
 
 If you have the possibility to deploy this app on iOS and publish it to the App Store I would highly support that. If you face any problems, just contact me :)
 
+## Supported languages
+
+Carbpro has english and german language support. Feel free if you like to add one more :)
+
 ## Feature requested or Issue found?
 
 Every idea is welcome. Feel free to contribute via creating issues or pulling requests.
@@ -21,5 +25,5 @@ Every idea is welcome. Feel free to contribute via creating issues or pulling re
 All the developers of Nightscout, AndroidAPS and Loop - you rock! I got diabetes myself in march 2020 and all those things made it so much easier. With this app, I would like to give something back to the community.
 
 ## License & copyright
- 
+
 Licensed under the [GPLv3 License](LICENSE).
