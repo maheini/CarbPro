@@ -11,6 +11,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:carbpro/generated/l10n.dart';
 
 import 'homescreen_test.mocks.dart';
 
@@ -34,6 +36,7 @@ void main() {
       });
 
       await tester.pumpWidget(const CarbPro());
+      await tester.pump();
 
       expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('CarbPro'), findsOneWidget);
@@ -57,7 +60,7 @@ void main() {
           .thenAnswer((_) async => Future.value([Item(1, 'Item1')]));
 
       await tester.pumpWidget(const CarbPro());
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('CarbPro'), findsOneWidget);
@@ -87,7 +90,7 @@ void main() {
 
       // start Widget
       await tester.pumpWidget(const CarbPro());
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Check if AppBar contains Search bar Icon and title and List is unfiltered
       expect(find.byType(AlertDialog), findsNothing);
@@ -153,7 +156,7 @@ void main() {
 
       // start Widget
       await tester.pumpWidget(const CarbPro());
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Check if AppBar contains Search bar Icon and title and List is unfiltered
       expect(find.byType(AlertDialog), findsNothing);
@@ -251,7 +254,7 @@ void main() {
 
       // load widget
       await tester.pumpWidget(const CarbPro());
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // longPress item1
       await tester.longPress(find.text('Item1'));
@@ -259,11 +262,11 @@ void main() {
 
       // expect a Alertdialog containing a text with a 'ABBRECHEN' or 'ENTFERNEN' option
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.text('ENTFERNEN'), findsOneWidget);
-      expect(find.text('ABBRECHEN'), findsOneWidget);
+      expect(find.text(S.current.remove.toUpperCase()), findsOneWidget);
+      expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
 
       // press 'ABBRECHEN'
-      await tester.tap(find.text('ABBRECHEN'));
+      await tester.tap(find.text(S.current.cancel.toUpperCase()));
       await tester.pump();
 
       // Expect the initial list, containing all items as before and no alert dialog
@@ -289,7 +292,7 @@ void main() {
       await tester.pump();
 
       // press 'ENTFERNEN'
-      await tester.tap(find.text('ENTFERNEN'));
+      await tester.tap(find.text(S.current.remove.toUpperCase()));
 
       // check if every necessary function get called
       verify(storageHandler.getPermission(Permission.storage, any)).called(1);
@@ -334,21 +337,21 @@ void main() {
 
       // Check if Popup is visible
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('ERSTELLEN'), findsOneWidget);
-      expect(find.text('ABBRECHEN'), findsOneWidget);
+      expect(find.text(S.current.add.toUpperCase()), findsOneWidget);
+      expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
 
       // tap ´ERSTELLEN´ button
       // -> there shouldn't be any call to DatabaseHandler.addItem, because text is empty
-      await tester.tap(find.text('ERSTELLEN'));
+      await tester.tap(find.text(S.current.add.toUpperCase()));
       verifyNever(databaseHandler.addItem(any));
       await tester.pump();
 
       // Tap cancel, popup should disappear
-      await tester.tap(find.text('ABBRECHEN'));
+      await tester.tap(find.text(S.current.cancel.toUpperCase()));
       await tester.pump();
       expect(find.byType(TextField), findsNothing);
-      expect(find.text('ERSTELLEN'), findsNothing);
-      expect(find.text('ABBRECHEN'), findsNothing);
+      expect(find.text(S.current.add.toUpperCase()), findsNothing);
+      expect(find.text(S.current.cancel.toUpperCase()), findsNothing);
 
       // reset locator
       locator.resetScope(dispose: true);
@@ -366,17 +369,28 @@ void main() {
 
       Object? previousArgument;
 
-      await tester.pumpWidget(MaterialApp(onGenerateRoute: (settings) {
-        previousArgument = settings.arguments;
-        if (settings.name == '/details') {
-          previousArgument = settings.arguments;
-          return MaterialPageRoute(builder: (_) => const HomeScreen());
-        }
-        if (settings.name == '/') {
-          return MaterialPageRoute(builder: (_) => const HomeScreen());
-        }
-        return null;
-      }));
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          onGenerateRoute: (settings) {
+            previousArgument = settings.arguments;
+            if (settings.name == '/details') {
+              previousArgument = settings.arguments;
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            if (settings.name == '/') {
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            return null;
+          },
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Press add button
@@ -385,7 +399,7 @@ void main() {
 
       // enter existing item name and press ´ERSTELLEN´ button
       await tester.enterText(find.byType(TextField), 'NameDoesExist');
-      await tester.tap(find.text('ERSTELLEN'));
+      await tester.tap(find.text(S.current.add.toUpperCase()));
       await tester.pump();
 
       // expect db never called and new screen called with existing id
@@ -406,24 +420,35 @@ void main() {
 
       Object? previousArgument;
 
-      await tester.pumpWidget(MaterialApp(onGenerateRoute: (settings) {
-        previousArgument = settings.arguments;
-        if (settings.name == '/details') {
-          previousArgument = settings.arguments;
-          return MaterialPageRoute(
-              builder: (BuildContext context) => Scaffold(
-                      appBar: AppBar(
-                    title: TextButton(
-                      child: const Text('return'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  )));
-        }
-        if (settings.name == '/') {
-          return MaterialPageRoute(builder: (_) => const HomeScreen());
-        }
-        return null;
-      }));
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          onGenerateRoute: (settings) {
+            previousArgument = settings.arguments;
+            if (settings.name == '/details') {
+              previousArgument = settings.arguments;
+              return MaterialPageRoute(
+                  builder: (BuildContext context) => Scaffold(
+                          appBar: AppBar(
+                        title: TextButton(
+                          child: const Text('return'),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      )));
+            }
+            if (settings.name == '/') {
+              return MaterialPageRoute(builder: (_) => const HomeScreen());
+            }
+            return null;
+          },
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Press add button
@@ -436,7 +461,7 @@ void main() {
 
       // enter existing item name and press ´ERSTELLEN´ button
       await tester.enterText(find.byType(TextField), 'nameDoesntExist');
-      await tester.tap(find.text('ERSTELLEN'));
+      await tester.tap(find.text(S.current.add.toUpperCase()));
       await tester.pump();
 
       // expect db to be called and new screen called with new id
