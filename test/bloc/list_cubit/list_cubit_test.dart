@@ -30,4 +30,48 @@ void main() {
     },
   );
 
+  group(
+    'Test Loading behaviour of ListCubit',
+    () {
+      final DatabaseHandler databaseHandler = MockDatabaseHandler();
+      final Item item1 = Item(1, 'Item1');
+      final Item item2 = Item(2, 'Item2');
+
+      when(databaseHandler.getItems()).thenAnswer(
+        (_) => Future.value([item1, item2]),
+      );
+      ListCubit cubit = ListCubit(databaseHandler);
+
+      test(
+        'The initial state of ListCubit is ListLoading',
+        () {
+          expect(cubit.state, ListLoading());
+        },
+      );
+
+      test(
+        'After loading the items, there should ListLoaded should be emitted, containing the items',
+        () async {
+          cubit.loadItems();
+
+          await expectLater(
+            cubit.stream,
+            emits(
+              ListLoaded([item1, item2], const []),
+            ),
+          );
+        },
+      );
+
+      test(
+        'When the items are reloaded, the state should switch back to ListLoading',
+        () async {
+          expect(cubit.state, ListLoaded([item1, item2], const []));
+          cubit.loadItems();
+          expect(cubit.state, ListLoading());
+          expect(cubit.stream, emits(ListLoaded([item1, item2], const [])));
+        },
+      );
+    },
+  );
 }
