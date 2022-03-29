@@ -32,6 +32,8 @@ dependencies:
   permission_handler: ^8.1.4+2
   sqflite: ^2.0.1
   get_it: ^7.2.0
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.3
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
@@ -44,6 +46,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  bloc_test: ^9.0.3
   mockito: ^5.0.17
   flutter_test:
     sdk: flutter
