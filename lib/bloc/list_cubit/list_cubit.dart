@@ -9,7 +9,7 @@ part 'list_state.dart';
 class ListCubit extends Cubit<ListState> {
   ListCubit(this.databaseHandler) : super(ListLoading());
   List<Item> _items = [];
-  List<int> _selectedItems = [];
+  final List<int> _selectedItems = [];
 
   final DatabaseHandler databaseHandler;
 
@@ -20,7 +20,17 @@ class ListCubit extends Cubit<ListState> {
     emit(ListLoaded(_items, _selectedItems));
   }
 
-  itemPressed(int index) async {}
-
-  List<Object> get props => [_items, _selectedItems];
+  itemPressed(int index) {
+    if (_selectedItems.remove(index)) {
+      if (_selectedItems.isEmpty) {
+        emit(ListLoaded(_items, _selectedItems));
+      } else {
+        emit(ListSelection(_items, _selectedItems));
+      }
+      return;
+    } else if (index < _items.length) {
+      _selectedItems.add(index);
+      emit(ListSelection(_items, _selectedItems));
+    }
+  }
 }
