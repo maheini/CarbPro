@@ -54,6 +54,21 @@ void main() {
         ],
       );
 
+      blocTest(
+        'When the items are reloaded, the state should switch back to ListLoading',
+        build: () => ListCubit(databaseHandler),
+        act: (ListCubit cubit) async {
+          await cubit.loadItems();
+          cubit.loadItems();
+        },
+        expect: () => [
+          ListLoading(),
+          ListLoaded(items, const []),
+          ListLoading(),
+          ListLoaded(items, const []),
+        ],
+  );
+    },
   );
       );
       ListCubit cubit = ListCubit(databaseHandler);
