@@ -70,8 +70,30 @@ void main() {
   );
     },
   );
+
+  group(
+    'Test ListCubit Selection behaviour',
+    () {
+      final DatabaseHandler databaseHandler = MockDatabaseHandler();
+      final Item item1 = Item(1, 'Item1');
+      final Item item2 = Item(2, 'Item2');
+      List<Item> items = [item1, item2];
+
+      when(databaseHandler.getItems()).thenAnswer(
+        (_) => Future.value(items),
       );
       ListCubit cubit = ListCubit(databaseHandler);
+      blocTest(
+        'load',
+        build: () => cubit,
+        act: (ListCubit bloc) {
+          bloc.loadItems();
+        },
+        verify: (ListCubit cu) => cu.state == ListLoading(),
+        expect: () => [
+          ListLoaded(items, const []),
+        ],
+      );
 
       test(
         'The initial state of ListCubit is ListLoading',
