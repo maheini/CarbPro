@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/handler/databasehandler.dart';
@@ -35,9 +36,25 @@ void main() {
       final DatabaseHandler databaseHandler = MockDatabaseHandler();
       final Item item1 = Item(1, 'Item1');
       final Item item2 = Item(2, 'Item2');
+      final List<Item> items = [item1, item2];
 
       when(databaseHandler.getItems()).thenAnswer(
-        (_) => Future.value([item1, item2]),
+        (_) => Future.value(items),
+      );
+
+      blocTest(
+        'After loading of the Items, ListLoaded should be emitted',
+        build: () => ListCubit(databaseHandler),
+        act: (ListCubit cubit) async {
+          cubit.loadItems();
+        },
+        expect: () => [
+          ListLoading(),
+          ListLoaded(items, const []),
+        ],
+      );
+
+  );
       );
       ListCubit cubit = ListCubit(databaseHandler);
 
