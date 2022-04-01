@@ -119,15 +119,29 @@ void main() {
       );
 
       test(
-        'After loading the items, there should ListLoaded should be emitted, containing the items',
+        'After re-selecting the same item, the state should switch back to ListLoaded',
         () async {
-          cubit.loadItems();
+          final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          final Item item1 = Item(1, 'Item1');
+          final Item item2 = Item(2, 'Item2');
+          List<Item> items = [item1, item2];
 
-          await expectLater(
-            cubit.stream,
-            emits(
-              ListLoaded([item1, item2], const []),
-            ),
+          when(databaseHandler.getItems()).thenAnswer(
+            (_) => Future.value(items),
+          );
+          ListCubit cubit = ListCubit(databaseHandler);
+
+          // load items
+          cubit.loadItems();
+          await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
+
+          // select item 0
+          cubit.itemPressed(0);
+          expect(cubit.state, ListSelection(items, const [0]));
+
+          cubit.itemPressed(0);
+          expect(cubit.state, ListLoaded(items, const []));
+        },
           );
         },
       );
