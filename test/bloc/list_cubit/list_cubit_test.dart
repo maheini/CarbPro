@@ -171,12 +171,34 @@ void main() {
       );
 
       test(
-        'When the items are reloaded, the state should switch back to ListLoading',
+        'Failing test: If an Index out of range is selected, nothing should change',
         () async {
-          expect(cubit.state, ListLoaded([item1, item2], const []));
-          cubit.loadItems();
-          expect(cubit.state, ListLoading());
-          expect(cubit.stream, emits(ListLoaded([item1, item2], const [])));
+          final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          final Item item1 = Item(1, 'Item1');
+          final Item item2 = Item(2, 'Item2');
+          List<Item> items = [item1, item2];
+
+          when(databaseHandler.getItems()).thenAnswer(
+            (_) => Future.value(items),
+          );
+          ListCubit cubit = ListCubit(databaseHandler);
+
+          // load items
+          expectLater(
+            cubit.stream,
+            emitsInOrder(
+              [
+                ListLoading(),
+                ListLoaded(items, const []),
+              ],
+            ),
+          );
+          await cubit.loadItems();
+          // await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
+
+          // select item out of range
+          await cubit.itemPressed(5);
+          expect(cubit.state, ListLoaded(items, const []));
         },
       );
     },
