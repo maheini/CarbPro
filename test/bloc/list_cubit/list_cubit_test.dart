@@ -143,6 +143,30 @@ void main() {
           expect(cubit.state, ListLoaded(items, const []));
         },
           );
+
+      test(
+        'Multiple (different) selection should change the selection and not the state',
+        () async {
+          final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          final Item item1 = Item(1, 'Item1');
+          final Item item2 = Item(2, 'Item2');
+          List<Item> items = [item1, item2];
+
+          when(databaseHandler.getItems()).thenAnswer(
+            (_) => Future.value(items),
+          );
+          ListCubit cubit = ListCubit(databaseHandler);
+
+          // load items
+          cubit.loadItems();
+          await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
+
+          // select item 0
+          cubit.itemPressed(0);
+          expect(cubit.state, ListSelection(items, const [0]));
+
+          cubit.itemPressed(1);
+          expect(cubit.state, ListSelection(items, const [0, 1]));
         },
       );
 
