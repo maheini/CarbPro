@@ -67,7 +67,7 @@ void main() {
           ListLoading(),
           ListLoaded(items, const []),
         ],
-  );
+      );
     },
   );
 
@@ -142,7 +142,7 @@ void main() {
           cubit.itemPressed(0);
           expect(cubit.state, ListLoaded(items, const []));
         },
-          );
+      );
 
       test(
         'Multiple (different) selection should change the selection and not the state',
