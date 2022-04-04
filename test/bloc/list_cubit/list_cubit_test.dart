@@ -91,6 +91,7 @@ void main() {
         },
         verify: (ListCubit cu) => cu.state == ListLoading(),
         expect: () => [
+          ListLoading(),
           ListLoaded(items, const []),
         ],
       );
