@@ -181,6 +181,29 @@ void main() {
           expect(finder, findsOneWidget);
         },
       );
+
+      testWidgets(
+        'cubit.itemPressed() should be called after a tap on a selected item',
+        (WidgetTester tester) async {
+          when(() => listCubit.state).thenReturn(listSelection);
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider(
+                create: (_) => listCubit,
+                child: const ItemList(),
+              ),
+            ),
+          );
+
+          Finder finder =
+              find.byWidgetPredicate((w) => w is ListTile && w.selected);
+          expect(finder, findsOneWidget);
+
+          await tester.tap(finder);
+          verify(() => listCubit.itemPressed(0)).called(1);
+        },
+      );
     },
   );
 }
