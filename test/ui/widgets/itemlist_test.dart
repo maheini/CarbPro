@@ -110,6 +110,41 @@ void main() {
         },
       );
 
+      testWidgets(
+        'listCubit.itemPressed should be called after lon-pressing an item',
+        (WidgetTester tester) async {
+          when(() => listCubit.state).thenReturn(
+            ListLoaded(
+              [Item(0, 'item1'), Item(1, 'item2')],
+              const [],
+            ),
+          );
+
+          bool settingsOpened = false;
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider(
+                create: (_) => listCubit,
+                child: const ItemList(),
+              ),
+              onGenerateRoute: (settings) {
+                if (settings.name == '/details') {
+                  settingsOpened = true;
+                  return MaterialPageRoute(
+                      builder: (_) =>
+                          DetailScreen(id: settings.arguments as int));
+                }
+                return null; // Let `onUnknownRoute` handle this behavior.
+              },
+            ),
+          );
+
+          await tester.longPress(find.text('item1'));
+
+          verify(() => listCubit.itemPressed(0)).called(1);
+          expect(settingsOpened, false);
+        },
+      );
     },
   );
 
