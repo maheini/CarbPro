@@ -64,6 +64,55 @@ void main() {
       });
     },
   );
+
+  group(
+    'List Tap / LongPress behaviour',
+    () {
+      late ListCubit listCubit;
+
+      setUp(() {
+        listCubit = MockListCubit();
+      });
+
+      testWidgets(
+        'ItemList should call Navigator.push when an item is tapped',
+        (WidgetTester tester) async {
+          when(() => listCubit.state).thenReturn(
+            ListLoaded(
+              [Item(0, 'item1'), Item(1, 'item2')],
+              const [],
+            ),
+          );
+
+          bool settingsOpened = false;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider(
+                create: (_) => listCubit,
+                child: const ItemList(),
+              ),
+              onGenerateRoute: (settings) {
+                if (settings.name == '/details') {
+                  settingsOpened = true;
+                  return MaterialPageRoute(
+                      builder: (_) =>
+                          DetailScreen(id: settings.arguments as int));
+                }
+                return null; // Let `onUnknownRoute` handle this behavior.
+              },
+            ),
+          );
+
+          await tester.tap(find.text('item1'));
+          expect(settingsOpened, true);
+          verifyNever(() => listCubit.itemPressed(any()));
+        },
+      );
+
+    },
+  );
+
     },
   );
 }
