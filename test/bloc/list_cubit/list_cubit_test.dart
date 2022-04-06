@@ -18,6 +18,8 @@ void main() {
         'Listcubitstate should be initially stat=Loading and nothing should really load',
         () {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
           when(() => databaseHandler.getItems())
               .thenAnswer((_) => Future.value([]));
 
@@ -36,6 +38,7 @@ void main() {
     'Test Loading behaviour of ListCubit',
     () {
       final DatabaseHandler databaseHandler = MockDatabaseHandler();
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
       final Item item1 = Item(1, 'Item1');
       final Item item2 = Item(2, 'Item2');
       final List<Item> items = [item1, item2];
@@ -48,7 +51,7 @@ void main() {
         'After loading of the Items, ListLoaded should be emitted',
         build: () => ListCubit(databaseHandler),
         act: (ListCubit cubit) async {
-          cubit.loadItems();
+          await cubit.loadItems();
         },
         expect: () => [
           ListLoading(),
@@ -77,6 +80,7 @@ void main() {
     'Test ListCubit Selection behaviour',
     () {
       final DatabaseHandler databaseHandler = MockDatabaseHandler();
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
       final Item item1 = Item(1, 'Item1');
       final Item item2 = Item(2, 'Item2');
       List<Item> items = [item1, item2];
@@ -102,6 +106,8 @@ void main() {
         'After selecting a Item, the State should change to ListSelection',
         () async {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
           final Item item1 = Item(1, 'Item1');
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
@@ -125,6 +131,8 @@ void main() {
         'After re-selecting the same item, the state should switch back to ListLoaded',
         () async {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
           final Item item1 = Item(1, 'Item1');
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
@@ -151,6 +159,8 @@ void main() {
         'Multiple (different) selection should change the selection and not the state',
         () async {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
           final Item item1 = Item(1, 'Item1');
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
@@ -177,6 +187,8 @@ void main() {
         'Failing test: If an Index out of range is selected, nothing should change',
         () async {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
           final Item item1 = Item(1, 'Item1');
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
@@ -197,7 +209,6 @@ void main() {
             ),
           );
           await cubit.loadItems();
-          // await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
 
           // select item out of range
           await cubit.itemPressed(5);
