@@ -4,11 +4,12 @@ import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'list_cubit_test.mocks.dart';
+import 'package:mocktail/mocktail.dart';
 
-@GenerateMocks([DatabaseHandler, StorageHandler])
+class MockDatabaseHandler extends Mock implements DatabaseHandler {}
+
+class MockStorageHandler extends Mock implements StorageHandler {}
+
 void main() {
   group(
     'Test Loading state of Listcubit',
@@ -17,11 +18,12 @@ void main() {
         'Listcubitstate should be initially stat=Loading and nothing should really load',
         () {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
-          when(databaseHandler.getItems()).thenAnswer((_) => Future.value([]));
+          when(() => databaseHandler.getItems())
+              .thenAnswer((_) => Future.value([]));
 
           ListCubit cubit = ListCubit(databaseHandler);
 
-          verifyNever(databaseHandler.getItems());
+          verifyNever(() => databaseHandler.getItems());
           expect(cubit.state is ListLoading, true);
           expect(cubit.state.items.length, 0);
           expect(cubit.state.selectedItems.length, 0);
@@ -38,7 +40,7 @@ void main() {
       final Item item2 = Item(2, 'Item2');
       final List<Item> items = [item1, item2];
 
-      when(databaseHandler.getItems()).thenAnswer(
+      when(() => databaseHandler.getItems()).thenAnswer(
         (_) => Future.value(items),
       );
 
@@ -79,7 +81,7 @@ void main() {
       final Item item2 = Item(2, 'Item2');
       List<Item> items = [item1, item2];
 
-      when(databaseHandler.getItems()).thenAnswer(
+      when(() => databaseHandler.getItems()).thenAnswer(
         (_) => Future.value(items),
       );
       ListCubit cubit = ListCubit(databaseHandler);
@@ -104,7 +106,7 @@ void main() {
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
 
-          when(databaseHandler.getItems()).thenAnswer(
+          when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
           ListCubit cubit = ListCubit(databaseHandler);
@@ -127,7 +129,7 @@ void main() {
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
 
-          when(databaseHandler.getItems()).thenAnswer(
+          when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
           ListCubit cubit = ListCubit(databaseHandler);
@@ -153,7 +155,7 @@ void main() {
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
 
-          when(databaseHandler.getItems()).thenAnswer(
+          when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
           ListCubit cubit = ListCubit(databaseHandler);
@@ -179,7 +181,7 @@ void main() {
           final Item item2 = Item(2, 'Item2');
           List<Item> items = [item1, item2];
 
-          when(databaseHandler.getItems()).thenAnswer(
+          when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
           ListCubit cubit = ListCubit(databaseHandler);
