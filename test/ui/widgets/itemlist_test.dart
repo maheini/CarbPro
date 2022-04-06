@@ -148,6 +148,39 @@ void main() {
     },
   );
 
+  group(
+    'List Selection (display & unselect)',
+    () {
+      late ListCubit listCubit;
+      late ListSelection listSelection;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        listSelection = ListSelection(
+          [Item(0, 'item1'), Item(1, 'item2')],
+          const [0],
+        );
+      });
+
+      testWidgets(
+        'Check if one item is selected',
+        (WidgetTester tester) async {
+          when(() => listCubit.state).thenReturn(listSelection);
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider(
+                create: (_) => listCubit,
+                child: const ItemList(),
+              ),
+            ),
+          );
+
+          Finder finder =
+              find.byWidgetPredicate((w) => w is ListTile && w.selected);
+          expect(finder, findsOneWidget);
+        },
+      );
     },
   );
 }
