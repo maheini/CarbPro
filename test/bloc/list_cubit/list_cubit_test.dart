@@ -15,20 +15,21 @@ void main() {
     'Test Loading state of Listcubit',
     () {
       test(
-        'Listcubitstate should be initially stat=Loading and nothing should really load',
-        () {
+        'Listcubitstate should be initially stat=Loading and nothing should really load, '
+        'but DatabaseHandler.loadDatabase should be called',
+        () async {
           final DatabaseHandler databaseHandler = MockDatabaseHandler();
           when(() => databaseHandler.loadDatabase())
               .thenAnswer((_) async => true);
           when(() => databaseHandler.getItems())
               .thenAnswer((_) => Future.value([]));
-
           ListCubit cubit = ListCubit(databaseHandler);
 
-          verifyNever(() => databaseHandler.getItems());
           expect(cubit.state is ListLoading, true);
           expect(cubit.state.items.length, 0);
           expect(cubit.state.selectedItems.length, 0);
+          verifyNever(() => databaseHandler.getItems());
+          verify(() => databaseHandler.loadDatabase()).called(1);
         },
       );
     },
