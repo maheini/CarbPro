@@ -13,6 +13,7 @@ class ListCubit extends Cubit<ListState> {
   List<Item> _items = [];
   List<int> _selectedItems = [];
   bool _databaseLoaded = false;
+  String _filter = '';
 
   final DatabaseHandler databaseHandler;
 
@@ -22,6 +23,7 @@ class ListCubit extends Cubit<ListState> {
     while (_databaseLoaded == false) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    _selectedItems = [];
     _items = await databaseHandler.getItems();
     emit(ListLoaded(_items, _selectedItems));
   }
@@ -39,5 +41,24 @@ class ListCubit extends Cubit<ListState> {
       _selectedItems = [..._selectedItems, index];
       emit(ListSelection(_items, _selectedItems));
     }
+  }
+
+  /// Filter all loaded [Items] by [filter]
+  void setFilter(String filter) {
+    if (state is ListLoading || filter.toLowerCase() == _filter) {
+      return;
+    }
+    _filter = filter.toLowerCase();
+    _selectedItems = [];
+    List<Item> filteredItems = _items
+        .where((element) => element.name.toLowerCase().contains(_filter))
+        .toList();
+    emit(ListFiltered(_filter, filteredItems, _selectedItems));
+  }
+
+  /// Clear the filter and load all [Items]
+  void disableFilter() {
+    _filter = '';
+    emit(ListLoaded(_items, _selectedItems));
   }
 }

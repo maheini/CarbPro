@@ -21,6 +21,15 @@ class ListLoaded extends ListState {
   List<Object> get props => [super.items, super.selectedItems];
 }
 
+class ListFiltered extends ListState {
+  const ListFiltered(this.filter, List<Item> items, List<int> selectedItems)
+      : super(items, selectedItems);
+
+  final String filter;
+  @override
+  List<Object> get props => [filter, super.items, super.selectedItems];
+}
+
 class ListSelection extends ListState {
   const ListSelection(List<Item> items, List<int> selectedItems)
       : super(items, selectedItems);
