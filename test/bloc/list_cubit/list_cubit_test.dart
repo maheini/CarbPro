@@ -265,5 +265,20 @@ void main() {
       ],
     );
 
+    blocTest(
+      'After disabling Filter, all Items should get loaded again',
+      build: () => ListCubit(databaseHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.setFilter('item1');
+        cubit.disableFilter();
+      },
+      expect: () => [
+        ListLoading(),
+        ListLoaded(items, const []),
+        ListFiltered('item1', [items.first], const []),
+        ListLoaded(items, const []),
+      ],
+    );
   });
 }
