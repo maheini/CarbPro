@@ -249,5 +249,21 @@ void main() {
         ListFiltered('item1', [items.first], const []),
       ],
     );
+
+    blocTest(
+      'when Filter hasn\'t changed, ListFiltered should not be emitted',
+      build: () => ListCubit(databaseHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.setFilter('item1');
+        cubit.setFilter('item1');
+      },
+      expect: () => [
+        ListLoading(),
+        ListLoaded(items, const []),
+        ListFiltered('item1', [items.first], const []),
+      ],
+    );
+
   });
 }
