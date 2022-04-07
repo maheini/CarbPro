@@ -218,4 +218,22 @@ void main() {
       );
     },
   );
+  group('Test filtering Function of ListCubit', () {
+    late DatabaseHandler databaseHandler;
+    final List<Item> items = [Item(0, 'item1'), Item(1, 'item2')];
+    setUp(() {
+      databaseHandler = MockDatabaseHandler();
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+      when(() => databaseHandler.getItems())
+          .thenAnswer((_) => Future.value(items));
+    });
+
+    blocTest(
+      'ListFiltered should not be emitted if State == ListLoading',
+      build: () => ListCubit(databaseHandler),
+      act: (ListCubit cubit) => cubit.setFilter('test'),
+      wait: const Duration(seconds: 2),
+      expect: () => [],
+    );
+  });
 }
