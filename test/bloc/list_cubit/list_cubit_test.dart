@@ -235,5 +235,19 @@ void main() {
       wait: const Duration(seconds: 2),
       expect: () => [],
     );
+
+    blocTest(
+      'After filtering ListCubit, ListFiltered should be emitted with one item',
+      build: () => ListCubit(databaseHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.setFilter('item1');
+      },
+      expect: () => [
+        ListLoading(),
+        ListLoaded(items, const []),
+        ListFiltered('item1', [items.first], const []),
+      ],
+    );
   });
 }
