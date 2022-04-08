@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `An unknown error occurred`
+  String get unknown_error {
+    return Intl.message(
+      'An unknown error occurred',
+      name: 'unknown_error',
+      desc: 'Text for unknown errors',
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(

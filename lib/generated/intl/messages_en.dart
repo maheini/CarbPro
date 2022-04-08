@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "storage_permission_missing":
             MessageLookupByLibrary.simpleMessage("Storage access not granted"),
+        "unknown_error":
+            MessageLookupByLibrary.simpleMessage("An unknown error occurred"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Do you really want to remove the item?")
       };

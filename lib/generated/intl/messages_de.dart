@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Suchen"),
         "storage_permission_missing": MessageLookupByLibrary.simpleMessage(
             "Fehlende Berechtigung für den Speicher"),
+        "unknown_error": MessageLookupByLibrary.simpleMessage(
+            "Ein unbekannter Fehler trat auf"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Möchtest du des Element wirklich entfernen?")
       };

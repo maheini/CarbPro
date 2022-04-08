@@ -2,6 +2,7 @@
     "@@locale": "de",
     "language": "Deutsch",
     "@________HOMESCREEN________":{},
+    "unknown_error": "Ein unbekannter Fehler trat auf",
     "confirm": "Bestätigen",
     "search": "Suchen",
     "add_item": "Artikel hinzufügen",

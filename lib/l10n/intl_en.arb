@@ -5,6 +5,10 @@
         "description": "The current language"
     },
     "@________HOMESCREEN________":{},
+    "unknown_error": "An unknown error occurred",
+    "@unknown_error":{
+        "description": "Text for unknown errors"
+    },
     "confirm": "Confirm",
     "@confirm":{
         "description": "Text title to confirm anything..."
