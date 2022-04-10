@@ -228,6 +228,36 @@ void main() {
           expect(cubit.state, ListLoaded(items, const []));
         },
       );
+
+      blocTest(
+        'After calling ListCubit.clearSelection in ListSelection State, '
+        'the selection should be cleared',
+        build: () => cubit,
+        act: (ListCubit bloc) async {
+          await bloc.loadItems();
+          bloc.itemPressed(0);
+          bloc.clearSelection();
+        },
+        verify: (ListCubit cu) => cu.state == ListLoading(),
+        expect: () => [
+          ListLoading(),
+          ListLoaded(items, const []),
+          ListSelection(items, const [0]),
+          ListLoaded(items, const []),
+        ],
+      );
+
+      blocTest(
+        'After calling ListCubit.clearSelection in any other state than ListSelection, '
+        'nothing should happen',
+        build: () => cubit,
+        act: (ListCubit bloc) async {
+          bloc.clearSelection();
+        },
+        wait: const Duration(seconds: 2),
+        verify: (ListCubit cu) => cu.state == ListLoading(),
+        expect: () => [],
+      );
     },
   );
   group('Test filtering Function of ListCubit', () {
