@@ -36,6 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
               if (context.read<ListCubit>().state is ListFiltered) {
                 context.read<ListCubit>().disableFilter();
                 return false;
+              } else if (context.read<ListCubit>().state is ListSelection) {
+                context.read<ListCubit>().clearSelection();
+                return false;
               } else {
                 return true;
               }
@@ -74,6 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else if (state is ListFiltered) {
             return _buildSearchBar(context);
+          } else if (state is ListSelection) {
+            return _buildSelectBar(context);
           } else {
             return _buildDefaultBar(context);
           }
@@ -126,10 +131,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // TODO: Implement add functionality
-  void _addItem() {}
+  AppBar _buildSelectBar(BuildContext context) {
+    return AppBar(
+      title: Text(
+        S.of(context).items_selected(
+            context.read<ListCubit>().state.selectedItems.length),
+      ),
+      actions: <Widget>[
+        IconButton(
+          onPressed: () {
+            // TODO: Add delete function
+          },
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
 
-  // TODO: Add delete functionality
-  // TODO final: Add export functionality
+  void _addItem() {
+    // TODO: Implement add functionality
+  }
+
   // TODO: clean up code
 }
