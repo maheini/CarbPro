@@ -8,32 +8,43 @@ import 'package:carbpro/locator/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:carbpro/generated/l10n.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'detailscreen_test.mocks.dart';
+class MockDatabaseHandler extends Mock implements DatabaseHandler {}
 
-@GenerateMocks([DatabaseHandler, StorageHandler, ImagePicker])
+class MockStorageHandler extends Mock implements StorageHandler {}
+
+class MockImagePicker extends Mock implements ImagePicker {}
+
 void main() {
+  setUpAll(
+    () {
+      registerFallbackValue(PlatformWrapper());
+      registerFallbackValue(ItemChild(0, 0, '', ''));
+      registerFallbackValue(ImageSource.camera);
+      registerFallbackValue(CameraDevice.front);
+      registerFallbackValue(File('d'));
+    },
+  );
   group('Test Detailscreen AppBar', () {
     MockDatabaseHandler databaseHandler = MockDatabaseHandler();
     MockStorageHandler storageHandler = MockStorageHandler();
     setUp(() {
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       locator.registerSingleton<StorageHandler>(storageHandler);
-      when(storageHandler.getPermission(Permission.storage, any))
+      when(() => storageHandler.getPermission(Permission.storage, any()))
           .thenAnswer((realInvocation) => Future.value(true));
     });
 
     testWidgets(
         'After Item got loaded, Appbar should display the Item name and a edit Icon',
         (WidgetTester tester) async {
-      when(databaseHandler.getItem(1))
+      when(() => databaseHandler.getItem(1))
           .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1))
+      when(() => databaseHandler.getChildren(1))
           .thenAnswer((_) async => Future.value([]));
 
       // start app
@@ -48,9 +59,9 @@ void main() {
         'After pressing the edit Icon, a popup should appear. With this popup, '
         'the name of the item should be changeable',
         (WidgetTester tester) async {
-      when(databaseHandler.getItem(1))
+      when(() => databaseHandler.getItem(1))
           .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1))
+      when(() => databaseHandler.getChildren(1))
           .thenAnswer((_) async => Future.value([]));
 
       // start app
@@ -91,16 +102,16 @@ void main() {
       // clear text and try to save (should not save)
       await tester.enterText(find.byType(TextField), '');
       await tester.tap(find.text(S.current.save.toUpperCase()));
-      verifyNever(databaseHandler.changeItemName(any, any));
+      verifyNever(() => databaseHandler.changeItemName(any(), any()));
 
       // change name
-      when(databaseHandler.changeItemName(1, 'NewItemName'))
+      when(() => databaseHandler.changeItemName(1, 'NewItemName'))
           .thenAnswer((realInvocation) => Future.value(1));
-      when(databaseHandler.getItem(1))
+      when(() => databaseHandler.getItem(1))
           .thenAnswer((realInvocation) => Future.value(Item(1, 'NewItemName')));
       await tester.enterText(find.byType(TextField), 'NewItemName');
       await tester.tap(find.text(S.current.save.toUpperCase()));
-      verify(databaseHandler.changeItemName(1, 'NewItemName')).called(1);
+      verify(() => databaseHandler.changeItemName(1, 'NewItemName')).called(1);
       await tester.pump();
 
       expect(find.byType(TextField), findsNothing);
@@ -120,7 +131,7 @@ void main() {
     setUp(() {
       locator.registerSingleton<DatabaseHandler>(databaseHandler);
       locator.registerSingleton<StorageHandler>(storageHandler);
-      when(storageHandler.getPermission(Permission.storage, any))
+      when(() => storageHandler.getPermission(Permission.storage, any()))
           .thenAnswer((realInvocation) => Future.value(true));
     });
 
@@ -128,9 +139,9 @@ void main() {
         'Check if Addbutton is aviable -> after clicking on it, '
         'a popup should appear with with a field of name and image',
         (WidgetTester tester) async {
-      when(databaseHandler.getItem(1))
+      when(() => databaseHandler.getItem(1))
           .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1))
+      when(() => databaseHandler.getChildren(1))
           .thenAnswer((_) async => Future.value([]));
 
       await tester.pumpWidget(
@@ -158,7 +169,7 @@ void main() {
       expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
 
       // try pressing save -> the popup should be closed, nothing should happen
-      verifyNever(databaseHandler.addItemChild(any));
+      verifyNever(() => databaseHandler.addItemChild(any()));
       await tester.tap(find.text(S.current.save.toUpperCase()));
       await tester.pump();
 
@@ -171,7 +182,7 @@ void main() {
       // again add item, press ´ABBRECHEN´ this time
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
       await tester.pump();
-      verifyNever(databaseHandler.addItemChild(any));
+      verifyNever(() => databaseHandler.addItemChild(any()));
       await tester.tap(find.text(S.current.cancel.toUpperCase()));
       await tester.pump();
     });
@@ -180,23 +191,24 @@ void main() {
         'click addbutton and afterwards try to add an image & text & store them',
         (WidgetTester tester) async {
       MockImagePicker imagePicker = MockImagePicker();
-      when(imagePicker.pickImage(
-              source: anyNamed('source'),
-              maxWidth: anyNamed('maxWidth'),
-              maxHeight: anyNamed('maxHeight'),
-              imageQuality: anyNamed('imageQuality'),
-              preferredCameraDevice: anyNamed('preferredCameraDevice')))
+      when(() => imagePicker.pickImage(
+                source: any(named: "source"),
+                maxWidth: any(named: "maxWidth"),
+                maxHeight: any(named: "maxHeight"),
+                imageQuality: any(named: "imageQuality"),
+                preferredCameraDevice: any(named: "preferredCameraDevice"),
+              ))
           .thenAnswer((realInvocation) =>
               Future.value(XFile('assets/storagehandler_test_image.jpg')));
-      when(databaseHandler.getItem(1))
+      when(() => databaseHandler.getItem(1))
           .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
-      when(databaseHandler.getChildren(1))
+      when(() => databaseHandler.getChildren(1))
           .thenAnswer((_) async => Future.value([]));
-      when(storageHandler.getExternalStorageDirectory())
+      when(() => storageHandler.getExternalStorageDirectory())
           .thenAnswer((realInvocation) => Future.value(Directory('')));
-      when(storageHandler.getPermission(Permission.storage, any))
+      when(() => storageHandler.getPermission(Permission.storage, any()))
           .thenAnswer((realInvocation) => Future.value(true));
-      when(storageHandler.exists(any))
+      when(() => storageHandler.exists(any()))
           .thenAnswer((realInvocation) => Future.value(true));
 
       await tester.pumpWidget(
@@ -229,17 +241,17 @@ void main() {
       await tester.pump();
 
       // save everything
-      when(databaseHandler.addItemChild(any))
+      when(() => databaseHandler.addItemChild(any()))
           .thenAnswer((realInvocation) => Future.value(2));
-      when(storageHandler.copyFile(any, any)).thenAnswer(
+      when(() => storageHandler.copyFile(any(), any())).thenAnswer(
           (_) => Future.value(File('assets/storagehandler_test_image.jpg')));
-      when(databaseHandler.getChildren(1)).thenAnswer(
+      when(() => databaseHandler.getChildren(1)).thenAnswer(
           (_) async => Future.value([ItemChild(1, 1, 'ItemChild', '')]));
       expect(find.text(S.current.save.toUpperCase()), findsOneWidget);
       await tester.tap(find.text(S.current.save.toUpperCase()));
       await tester.pump();
-      verify(storageHandler.copyFile(any, any)).called(1);
-      verify(databaseHandler.addItemChild(any)).called(1);
+      verify(() => storageHandler.copyFile(any(), any())).called(1);
+      verify(() => databaseHandler.addItemChild(any())).called(1);
 
       // let the ui reload all items and new stub
       await tester.pumpAndSettle();
