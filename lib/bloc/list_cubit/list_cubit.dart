@@ -44,6 +44,14 @@ class ListCubit extends Cubit<ListState> {
     }
   }
 
+  /// clear current selection
+  void clearSelection() {
+    if (state is ListSelection) {
+      _selectedItems = [];
+      emit(ListLoaded(_items, _selectedItems));
+    }
+  }
+
   /// Filter all loaded [Items] by [filter]
   void setFilter(String filter) {
     if (state is ListLoading || filter.toLowerCase() == _filter) {
