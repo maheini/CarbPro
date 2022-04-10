@@ -21,7 +21,9 @@ class _ItemListState extends State<ItemList> {
       //    -> selection only affects single tiles, so nothing to do then
       buildWhen: (previous, current) => (current is! ListSelection),
       builder: (context, state) {
-        if (state is ListLoaded || state is ListSelection) {
+        if (state is ListLoaded ||
+            state is ListSelection ||
+            state is ListFiltered) {
           // update state, because state of buildwhen isn't accurate
           state = context.read<ListCubit>().state;
           return Material(

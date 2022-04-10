@@ -206,4 +206,39 @@ void main() {
       );
     },
   );
+
+  group(
+    'List filtering',
+    () {
+      late ListCubit listCubit;
+      late ListFiltered listFiltered;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        listFiltered = ListFiltered(
+          'item1',
+          [Item(0, 'item1')],
+          const [0],
+        );
+      });
+      testWidgets(
+        'When ListFiltered is emitted, onyl filtered Items shoulb be visible',
+        (WidgetTester tester) async {
+          when(() => listCubit.state).thenReturn(listFiltered);
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: BlocProvider(
+                create: (_) => listCubit,
+                child: const ItemList(),
+              ),
+            ),
+          );
+
+          expect(find.text('item1'), findsOneWidget);
+          expect(find.text('item2'), findsNothing);
+        },
+      );
+    },
+  );
 }
