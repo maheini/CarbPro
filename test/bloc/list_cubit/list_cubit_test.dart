@@ -212,7 +212,7 @@ void main() {
           await cubit.loadItems();
 
           // select item out of range
-          await cubit.itemPressed(5);
+          cubit.itemPressed(5);
           expect(cubit.state, ListLoaded(items, const []));
         },
       );

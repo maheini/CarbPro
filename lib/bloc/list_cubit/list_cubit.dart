@@ -28,7 +28,8 @@ class ListCubit extends Cubit<ListState> {
     emit(ListLoaded(_items, _selectedItems));
   }
 
-  itemPressed(int index) {
+  /// add or remove [Item] from current selection
+  void itemPressed(int index) {
     if (_selectedItems.contains(index)) {
       _selectedItems = [..._selectedItems]..remove(index);
       if (_selectedItems.isEmpty) {
