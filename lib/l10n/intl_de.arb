@@ -12,6 +12,7 @@
     "cancel": "Abbrechen",
     "add": "Hinzufügen",
     "remove": "Entfernen",
+    "items_selected": "{howMany, plural, one{1 Element} other{{howMany} Elemente}}",
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Fehlende Berechtigung für den Speicher",
     "description": "Beschreibung",

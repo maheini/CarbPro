@@ -160,6 +160,18 @@ class S {
     );
   }
 
+  /// `{howMany, plural, one{1 Item} other{{howMany} Items}}`
+  String items_selected(num howMany) {
+    return Intl.plural(
+      howMany,
+      one: '1 Item',
+      other: '$howMany Items',
+      name: 'items_selected',
+      desc: 'Text to display selected items',
+      args: [howMany],
+    );
+  }
+
   /// `Storage access not granted`
   String get storage_permission_missing {
     return Intl.message(

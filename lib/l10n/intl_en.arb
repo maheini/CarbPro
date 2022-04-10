@@ -45,6 +45,10 @@
     "@remove":{
         "description": "Button text to remove a something"
     },
+    "items_selected": "{howMany, plural, one{1 Item} other{{howMany} Items}}",
+    "@items_selected":{
+        "description": "Text to display selected items"
+    },
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Storage access not granted",
     "@storage_permission_missing":{
