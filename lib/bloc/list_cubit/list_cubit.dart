@@ -13,7 +13,7 @@ class ListCubit extends Cubit<ListState> {
   List<Item> _items = [];
   List<int> _selectedItems = [];
   bool _databaseLoaded = false;
-  String _filter = '';
+  String? _filter;
 
   final DatabaseHandler databaseHandler;
 
@@ -51,14 +51,14 @@ class ListCubit extends Cubit<ListState> {
     _filter = filter.toLowerCase();
     _selectedItems = [];
     List<Item> filteredItems = _items
-        .where((element) => element.name.toLowerCase().contains(_filter))
+        .where((element) => element.name.toLowerCase().contains(_filter ?? ''))
         .toList();
-    emit(ListFiltered(_filter, filteredItems, _selectedItems));
+    emit(ListFiltered(_filter ?? '', filteredItems, _selectedItems));
   }
 
   /// Clear the filter and load all [Items]
   void disableFilter() {
-    _filter = '';
+    _filter = null;
     emit(ListLoaded(_items, _selectedItems));
   }
 }
