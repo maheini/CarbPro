@@ -2,12 +2,11 @@ import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'databasehandler_test.mocks.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:sqflite/sqflite.dart';
 
-@GenerateMocks([Database])
+class MockDatabase extends Mock implements Database {}
+
 void main() {
   group('Test Classes Item and ItemChild', () {
     test('Test Item -> Set Values and get them all back', () {
@@ -51,7 +50,7 @@ void main() {
         {'id': 1, 'name': 'name'},
         {'id': 2, 'name': 'name2'}
       ]);
-      when(database.rawQuery('SELECT * FROM items'))
+      when(() => database.rawQuery('SELECT * FROM items'))
           .thenAnswer((_) async => future);
 
       // Act
@@ -71,7 +70,7 @@ void main() {
         {'id': 1},
         {'id': 2, 'name': 'hi'}
       ]);
-      when(database.rawQuery('SELECT * FROM items'))
+      when(() => database.rawQuery('SELECT * FROM items'))
           .thenAnswer((_) async => future);
 
       // Act
@@ -89,7 +88,7 @@ void main() {
       final future = Future.value([
         {'id': 1, 'name': 'name'}
       ]);
-      when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
+      when(() => database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
           .thenAnswer((_) async => future);
 
       // Act
@@ -109,7 +108,7 @@ void main() {
       final future = Future.value([
         {'id': 1}
       ]);
-      when(database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
+      when(() => database.rawQuery('SELECT * FROM items WHERE id = ?', [1]))
           .thenAnswer((_) async => future);
 
       // Act
@@ -125,7 +124,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase
+      when(() => mockDatabase
               .rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName']))
           .thenAnswer((_) => Future.value(1));
 
@@ -141,7 +140,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase
+      when(() => mockDatabase
               .rawInsert('INSERT INTO items (name) VALUES (?)', ['TestName']))
           .thenAnswer((_) => Future.value(0));
 
@@ -157,7 +156,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [1]))
+      when(() => mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [1]))
           .thenAnswer((_) => Future.value(1));
 
       // Act
@@ -171,7 +170,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [0]))
+      when(() => mockDatabase.rawDelete('DELETE FROM items WHERE id = ?', [0]))
           .thenAnswer((_) => Future.value(0));
 
       // Act
@@ -186,7 +185,8 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [1]))
+      when(() => mockDatabase
+              .rawDelete('DELETE FROM content WHERE parent = ?', [1]))
           .thenAnswer((_) => Future.value(3));
 
       // Act
@@ -199,7 +199,8 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE parent = ?', [2]))
+      when(() => mockDatabase
+              .rawDelete('DELETE FROM content WHERE parent = ?', [2]))
           .thenAnswer((_) => Future.value(0));
 
       // Act
@@ -216,7 +217,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawUpdate(
+      when(() => mockDatabase.rawUpdate(
               'UPDATE items SET name = ? WHERE id = ?', ['TestName', 1]))
           .thenAnswer((_) => Future.value(1));
 
@@ -233,7 +234,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      when(mockDatabase.rawUpdate(
+      when(() => mockDatabase.rawUpdate(
               'UPDATE items SET name = ? WHERE id = ?', ['TestName', 0]))
           .thenAnswer((_) => Future.value(0));
 
@@ -266,7 +267,8 @@ void main() {
           'imageurl': 'emptypath2'
         }
       ]);
-      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
+      when(() => mockDatabase
+              .rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
           .thenAnswer((realInvocation) async => databaseValue);
 
       // Act
@@ -295,7 +297,8 @@ void main() {
         },
         {'id': 2, 'parent': 3, 'imageurl': 'emptypath2'}
       ]); //Missing column here :)
-      when(mockDatabase.rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
+      when(() => mockDatabase
+              .rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
           .thenAnswer((realInvocation) async => databaseValue);
 
       // Act
@@ -316,13 +319,10 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
-      when(mockDatabase.rawInsert(
-          'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
-          [
-            1,
-            'description',
-            'imagepath'
-          ])).thenAnswer((realInvocation) async => Future.value(5));
+      when(() => mockDatabase.rawInsert(
+              'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
+              [1, 'description', 'imagepath']))
+          .thenAnswer((realInvocation) async => Future.value(5));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
@@ -336,13 +336,10 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
-      when(mockDatabase.rawInsert(
-          'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
-          [
-            1,
-            'description',
-            'imagepath'
-          ])).thenAnswer((realInvocation) async => Future.value(0));
+      when(() => mockDatabase.rawInsert(
+              'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
+              [1, 'description', 'imagepath']))
+          .thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
@@ -359,7 +356,8 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(1, 1, 'description', 'imagepath');
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [1]))
+      when(() =>
+              mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [1]))
           .thenAnswer((realInvocation) async => Future.value(1));
 
       // Act
@@ -375,7 +373,8 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
-      when(mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [0]))
+      when(() =>
+              mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [0]))
           .thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
@@ -393,7 +392,7 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(1, 2, 'newDescription', 'newImagepath');
-      when(mockDatabase.rawUpdate(
+      when(() => mockDatabase.rawUpdate(
               'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
               ['newDescription', 'newImagepath', 1]))
           .thenAnswer((realInvocation) async => Future.value(1));
@@ -411,7 +410,7 @@ void main() {
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
       ItemChild itemChild = ItemChild(0, 2, 'newDescription', 'newImagepath');
-      when(mockDatabase.rawUpdate(
+      when(() => mockDatabase.rawUpdate(
               'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
               ['newDescription', 'newImagepath', 0]))
           .thenAnswer((realInvocation) async => Future.value(0));
