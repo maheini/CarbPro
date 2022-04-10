@@ -80,16 +80,28 @@ void main() {
   group(
     'Test ListCubit Selection behaviour',
     () {
-      final DatabaseHandler databaseHandler = MockDatabaseHandler();
-      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+      late DatabaseHandler databaseHandler;
+      late ListCubit cubit;
       final Item item1 = Item(1, 'Item1');
       final Item item2 = Item(2, 'Item2');
       List<Item> items = [item1, item2];
 
-      when(() => databaseHandler.getItems()).thenAnswer(
-        (_) => Future.value(items),
+      setUp(
+        () {
+          databaseHandler = MockDatabaseHandler();
+          when(() => databaseHandler.loadDatabase())
+              .thenAnswer((_) async => true);
+          when(() => databaseHandler.getItems()).thenAnswer(
+            (_) => Future.value(items),
+          );
+          when(() => databaseHandler.getItems()).thenAnswer(
+            (_) => Future.value(items),
+          );
+
+          cubit = ListCubit(databaseHandler);
+        },
       );
-      ListCubit cubit = ListCubit(databaseHandler);
+
       blocTest(
         'load',
         build: () => cubit,
