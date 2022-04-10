@@ -1,16 +1,23 @@
 import 'dart:io';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'storagehandler_test.mocks.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-@GenerateMocks([FileAccessWrapper, PlatformWrapper])
+class MockFileAccessWrapper extends Mock implements FileAccessWrapper {}
+
+class MockPlatformWrapper extends Mock implements PlatformWrapper {}
+
 void main() {
   group('Test File Access', () {
-    // todo: add failing tests and implement exception handling
+    // TODO: add failing tests and implement exception handling
+
+    setUp(
+      () {
+        registerFallbackValue(File('d'));
+      },
+    );
 
     // getImage
     test('Open Image: Should return a valid Image', () async {
@@ -18,9 +25,8 @@ void main() {
       File imageFile = File('assets/storagehandler_test_image.jpg');
       Future<RandomAccessFile> returnValue = imageFile.open();
       MockFileAccessWrapper mockFileAccessWrapper = MockFileAccessWrapper();
-      when(mockFileAccessWrapper.openFile(any)).thenAnswer((invocation) {
-        return returnValue;
-      });
+      when(() => mockFileAccessWrapper.openFile(any()))
+          .thenAnswer((_) async => returnValue);
       StorageHandler handler = StorageHandler(mockFileAccessWrapper);
       final String expected = Image.file(imageFile).toString();
 
@@ -38,7 +44,7 @@ void main() {
       // Arrange
       File returnedFile = File('newFile');
       MockFileAccessWrapper mockFileAccessWrapper = MockFileAccessWrapper();
-      when(mockFileAccessWrapper.copyFile(any, 'newPath'))
+      when(() => mockFileAccessWrapper.copyFile(any(), 'newPath'))
           .thenAnswer((invocation) => Future.value(returnedFile));
       StorageHandler handler = StorageHandler(mockFileAccessWrapper);
 
@@ -56,8 +62,10 @@ void main() {
     test('Delete File: Delete method should be called', () async {
       // Arrange
       MockFileAccessWrapper mockFileAccessWrapper = MockFileAccessWrapper();
-      when(mockFileAccessWrapper.deleteFile(any)).thenAnswer(
+      when(() => mockFileAccessWrapper.deleteFile(any())).thenAnswer(
           (invocation) => Future.value(File('placeholder_irrelevant')));
+      // when(mockFileAccessWrapper.deleteFile(any)).thenAnswer(
+      //     (invocation) => Future.value(File('placeholder_irrelevant')));
       StorageHandler handler = StorageHandler(mockFileAccessWrapper);
 
       // Act
@@ -65,17 +73,24 @@ void main() {
       // final String actual = await handler.copyFile(File('assets/storagehandler_test_image.jpg').path, 'newPath').then((value) => value.path);
 
       // Assert
-      verify(mockFileAccessWrapper.deleteFile(any)).called(1);
+      verify(() => mockFileAccessWrapper.deleteFile(any())).called(1);
+      // verify(mockFileAccessWrapper.deleteFile(any)).called(1);
     });
   });
 
   group('Test Permission requests and granting', () {
-    test('getPermission should return true -> Permission earlier granted...',
+    setUp(
+      () {
+        registerFallbackValue(Permission.storage);
+      },
+    );
+
+    test('getPermission should return true. Simulating permission granted',
         () async {
       // Arrange
       MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
-      when(mockPlatformWrapper.isGranted(Permission.storage))
-          .thenAnswer((realInvocation) => Future.value(true));
+      when(() => mockPlatformWrapper.isGranted(any()))
+          .thenAnswer((_) async => true);
       StorageHandler storageHandler = StorageHandler(FileAccessWrapper());
 
       // Act
@@ -84,16 +99,16 @@ void main() {
 
       // Assert
       expect(actual, true);
-      verifyNever(mockPlatformWrapper.request(any));
+      verifyNever(() => mockPlatformWrapper.request(any()));
     });
     test(
-        'getPermission should request permission after checking for it -> and then return false',
-        () async {
+        'getPermission should request permission after checking for it '
+        '- and then return false', () async {
       // Arrange
       MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
-      when(mockPlatformWrapper.isGranted(Permission.storage))
+      when(() => mockPlatformWrapper.isGranted(Permission.storage))
           .thenAnswer((realInvocation) => Future.value(false));
-      when(mockPlatformWrapper.request(Permission.storage)).thenAnswer(
+      when(() => mockPlatformWrapper.request(Permission.storage)).thenAnswer(
           (realInvocation) => Future.value(
               PermissionStatus.denied)); // <-Permission denied by user
       StorageHandler storageHandler = StorageHandler(FileAccessWrapper());
@@ -106,13 +121,13 @@ void main() {
       expect(actual, false);
     });
     test(
-        'getPermission should request permission after checking for it -> and then return true (granted)',
+        'getPermission should request permission after checking for it - and then return true (granted)',
         () async {
       // Arrange
       MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
-      when(mockPlatformWrapper.isGranted(Permission.storage))
+      when(() => mockPlatformWrapper.isGranted(Permission.storage))
           .thenAnswer((realInvocation) => Future.value(false));
-      when(mockPlatformWrapper.request(Permission.storage)).thenAnswer(
+      when(() => mockPlatformWrapper.request(Permission.storage)).thenAnswer(
           (realInvocation) => Future.value(
               PermissionStatus.granted)); // <-Permission granted by user
       StorageHandler storageHandler = StorageHandler(FileAccessWrapper());
