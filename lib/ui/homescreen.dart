@@ -16,90 +16,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late ListCubit listCubit;
+  late ListCubit _listCubit;
 
   @override
   void initState() {
-    listCubit = widget.listCubit ?? ListCubit(locator<DatabaseHandler>());
-    listCubit.loadItems();
+    _listCubit = widget.listCubit ?? ListCubit(locator<DatabaseHandler>());
+    _listCubit.loadItems();
     super.initState();
   }
-
-  bool _search = false;
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => listCubit,
+      create: (context) => _listCubit,
       child: Builder(
         builder: (context) {
           return WillPopScope(
             onWillPop: () async {
-              if (_search) {
-                setState(() => _search = false);
+              if (context.read<ListCubit>().state is ListFiltered) {
+                context.read<ListCubit>().disableFilter();
                 return false;
               } else {
                 return true;
               }
             },
             child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(AppBar().preferredSize.height),
-                child: BlocBuilder<ListCubit, ListState>(
-                  builder: (context, state) {
-                    if (state is ListLoading) {
-                      return AppBar(
-                        title: const Text('CarbPro'),
-                      );
-                    } else {
-                      return _search
-                          ? AppBar(
-                              title: Container(
-                                width: double.infinity,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3)),
-                                child: Center(
-                                  child: TextField(
-                                    autofocus: true,
-                                    onChanged: (_) => setState(() {}),
-                                    controller: _searchController,
-                                    decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                          icon: const Icon(
-                                            Icons.clear,
-                                            color: Colors.blueGrey,
-                                          ),
-                                          onPressed: () =>
-                                              setState(() => _search = false),
-                                        ),
-                                        hintText: S.of(context).search,
-                                        border: InputBorder.none),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : AppBar(
-                              title: const Text('CarbPro'),
-                              centerTitle: true,
-                              actions: <Widget>[
-                                IconButton(
-                                  onPressed: () {
-                                    _searchController.clear();
-                                    setState(() => _search = true);
-                                  },
-                                  icon: const Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            );
-                    }
-                  },
-                ),
-              ),
+              appBar: _appBar(context),
               body: const ItemList(),
               floatingActionButton: BlocBuilder<ListCubit, ListState>(
                 builder: (context, state) {
@@ -121,5 +63,73 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  PreferredSize _appBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(AppBar().preferredSize.height),
+      child: BlocBuilder<ListCubit, ListState>(
+        builder: (context, state) {
+          if (state is ListLoading) {
+            return AppBar(
+              title: const Text('CarbPro'),
+            );
+          } else if (state is ListFiltered) {
+            return _buildSearchBar(context);
+          } else {
+            return _buildDefaultBar(context);
+          }
+        },
+      ),
+    );
+  }
+
+  AppBar _buildDefaultBar(BuildContext context) {
+    return AppBar(
+      title: const Text('CarbPro'),
+      centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          onPressed: () {
+            context.read<ListCubit>().setFilter('');
+          },
+          icon: const Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  AppBar _buildSearchBar(BuildContext context) {
+    return AppBar(
+      title: Container(
+        width: double.infinity,
+        height: 40,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(3)),
+        child: Center(
+          child: TextField(
+            autofocus: true,
+            onChanged: (text) => context.read<ListCubit>().setFilter(text),
+            decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: const Icon(
+                    Icons.clear,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: () => context.read<ListCubit>().disableFilter(),
+                ),
+                hintText: S.of(context).search,
+                border: InputBorder.none),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // TODO: Implement add functionality
   void _addItem() {}
+
+  // TODO: Add delete functionality
+  // TODO final: Add export functionality
+  // TODO: clean up code
 }
