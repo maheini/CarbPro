@@ -54,6 +54,33 @@ class ListCubit extends Cubit<ListState> {
     }
   }
 
+  /// remove all selected [Item]
+  /// Calls loadItems() to reload the list after deletion
+  Future<void> deleteSelection() async {
+    if (state is ListSelection) {
+      if (!await storageHandler.getPermission(
+          Permission.storage, PlatformWrapper())) return;
+
+      Directory dir =
+          await storageHandler.getExternalStorageDirectory() ?? Directory('');
+
+      for (var element in _selectedItems) {
+        final parentID = _items[element].id;
+
+        List<ItemChild> children = await databaseHandler.getChildren(parentID);
+        if (children.isNotEmpty) {
+          for (var child in children) {
+            final String filepath = '${dir.path}/${child.imagepath}';
+            await storageHandler.deleteFile(filepath);
+          }
+          await databaseHandler.deleteAllChildren(parentID);
+        }
+        await databaseHandler.deleteItem(parentID);
+      }
+    }
+    loadItems();
+  }
+
   /// Filter all loaded [Items] by [filter]
   void setFilter(String filter) {
     if (state is ListLoading || filter.toLowerCase() == _filter) {
