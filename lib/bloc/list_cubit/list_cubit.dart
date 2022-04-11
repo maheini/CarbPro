@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:carbpro/handler/databasehandler.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 import 'package:meta/meta.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:equatable/equatable.dart';
@@ -7,7 +8,7 @@ import 'package:equatable/equatable.dart';
 part 'list_state.dart';
 
 class ListCubit extends Cubit<ListState> {
-  ListCubit(this.databaseHandler) : super(ListLoading()) {
+  ListCubit(this.databaseHandler, this.storageHandler) : super(ListLoading()) {
     databaseHandler.loadDatabase().then((_) => _databaseLoaded = true);
   }
   List<Item> _items = [];
@@ -16,6 +17,7 @@ class ListCubit extends Cubit<ListState> {
   String? _filter;
 
   final DatabaseHandler databaseHandler;
+  final StorageHandler storageHandler;
 
   /// load List
   Future<void> loadItems() async {

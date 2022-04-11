@@ -23,7 +23,7 @@ void main() {
               .thenAnswer((_) async => true);
           when(() => databaseHandler.getItems())
               .thenAnswer((_) => Future.value([]));
-          ListCubit cubit = ListCubit(databaseHandler);
+          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
 
           expect(cubit.state is ListLoading, true);
           expect(cubit.state.items.length, 0);
@@ -50,7 +50,7 @@ void main() {
 
       blocTest(
         'After loading of the Items, ListLoaded should be emitted',
-        build: () => ListCubit(databaseHandler),
+        build: () => ListCubit(databaseHandler, MockStorageHandler()),
         act: (ListCubit cubit) async {
           await cubit.loadItems();
         },
@@ -62,7 +62,7 @@ void main() {
 
       blocTest(
         'When the items are reloaded, the state should switch back to ListLoading',
-        build: () => ListCubit(databaseHandler),
+        build: () => ListCubit(databaseHandler, MockStorageHandler()),
         act: (ListCubit cubit) async {
           await cubit.loadItems();
           cubit.loadItems();
@@ -98,7 +98,7 @@ void main() {
             (_) => Future.value(items),
           );
 
-          cubit = ListCubit(databaseHandler);
+          cubit = ListCubit(databaseHandler, MockStorageHandler());
         },
       );
 
@@ -128,7 +128,7 @@ void main() {
           when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
-          ListCubit cubit = ListCubit(databaseHandler);
+          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
 
           // load items
           cubit.loadItems();
@@ -153,7 +153,7 @@ void main() {
           when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
-          ListCubit cubit = ListCubit(databaseHandler);
+          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
 
           // load items
           cubit.loadItems();
@@ -181,7 +181,7 @@ void main() {
           when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
-          ListCubit cubit = ListCubit(databaseHandler);
+          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
 
           // load items
           cubit.loadItems();
@@ -209,7 +209,7 @@ void main() {
           when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
-          ListCubit cubit = ListCubit(databaseHandler);
+          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
 
           // load items
           expectLater(
@@ -272,7 +272,7 @@ void main() {
 
     blocTest(
       'ListFiltered should not be emitted if State == ListLoading',
-      build: () => ListCubit(databaseHandler),
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
       act: (ListCubit cubit) => cubit.setFilter('test'),
       wait: const Duration(seconds: 2),
       expect: () => [],
@@ -280,7 +280,7 @@ void main() {
 
     blocTest(
       'After filtering ListCubit, ListFiltered should be emitted with one item',
-      build: () => ListCubit(databaseHandler),
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
       act: (ListCubit cubit) async {
         await cubit.loadItems();
         cubit.setFilter('item1');
@@ -294,7 +294,7 @@ void main() {
 
     blocTest(
       'when Filter hasn\'t changed, ListFiltered should not be emitted',
-      build: () => ListCubit(databaseHandler),
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
       act: (ListCubit cubit) async {
         await cubit.loadItems();
         cubit.setFilter('item1');
@@ -309,7 +309,7 @@ void main() {
 
     blocTest(
       'After disabling Filter, all Items should get loaded again',
-      build: () => ListCubit(databaseHandler),
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
       act: (ListCubit cubit) async {
         await cubit.loadItems();
         cubit.setFilter('item1');

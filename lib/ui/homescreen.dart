@@ -1,4 +1,5 @@
 import 'package:carbpro/handler/databasehandler.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 import 'package:carbpro/ui/widgets/itemlist.dart';
 import 'package:flutter/material.dart';
 import 'package:carbpro/locator/locator.dart';
@@ -20,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _listCubit = widget.listCubit ?? ListCubit(locator<DatabaseHandler>());
+    _listCubit = widget.listCubit ??
+        ListCubit(locator<DatabaseHandler>(), locator<StorageHandler>());
     _listCubit.loadItems();
     super.initState();
   }
