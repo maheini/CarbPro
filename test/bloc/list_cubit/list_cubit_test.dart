@@ -357,6 +357,24 @@ void main() {
       verify: (_) => verifyNever(() => databaseHandler.addItem(any())),
     );
 
+    blocTest(
+      'It the Item already exists, cubit should return the id',
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        expect(await cubit.addItem('ITem7'), 7);
+      },
+      verify: (_) => verifyNever(() => databaseHandler.addItem(any())),
+    );
+
+    blocTest(
+      'It the Item doesn\'t exist, DatabaseHandler.addItem should be called',
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        expect(await cubit.addItem('test'), 1);
+      },
+      verify: (_) => verify(() => databaseHandler.addItem('test')).called(1),
     );
   });
 
