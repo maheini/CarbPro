@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:meta/meta.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:equatable/equatable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 part 'list_state.dart';
 
@@ -52,6 +55,23 @@ class ListCubit extends Cubit<ListState> {
       _selectedItems = [];
       emit(ListLoaded(_items, _selectedItems));
     }
+  }
+
+  /// Adds a new [Item] to the Database if there is none with the same name
+  /// !Important: This method is now loading the new [Item] into the list!
+  Future<int?> addItem(String name) async {
+    if (name.isEmpty) {
+      return null;
+    }
+    if (_items
+        .where((element) => element.name.toLowerCase() == name.toLowerCase())
+        .isNotEmpty) {
+      return _items
+          .where((element) => element.name.toLowerCase() == name.toLowerCase())
+          .first
+          .id;
+    }
+    return await databaseHandler.addItem(name);
   }
 
   /// remove all selected [Item]
