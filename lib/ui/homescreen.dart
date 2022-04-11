@@ -141,8 +141,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       actions: <Widget>[
         IconButton(
-          onPressed: () {
-            // TODO: Add delete function
+          onPressed: () async {
+            if (!await context.read<ListCubit>().deleteSelection()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(S.of(context).error_deleting_item),
+                  duration: const Duration(seconds: 4),
+                ),
+              );
+            }
           },
           icon: const Icon(
             Icons.delete,
