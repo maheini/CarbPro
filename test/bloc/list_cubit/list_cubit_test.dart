@@ -1,16 +1,28 @@
+import 'dart:io';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
 import 'package:carbpro/datamodels/item.dart';
+import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../storagehandler_test.dart';
 
 class MockDatabaseHandler extends Mock implements DatabaseHandler {}
 
 class MockStorageHandler extends Mock implements StorageHandler {}
 
 void main() {
+  setUpAll(
+    () {
+      registerFallbackValue(Permission.storage);
+      registerFallbackValue(Permission);
+      registerFallbackValue(MockPlatformWrapper());
+    },
+  );
+
   group(
     'Test Loading state of Listcubit',
     () {
@@ -322,5 +334,33 @@ void main() {
         ListLoaded(items, const []),
       ],
     );
+  });
+
+  group('Test the addItem function', () {
+    late MockDatabaseHandler databaseHandler;
+
+    setUp(() {
+      databaseHandler = MockDatabaseHandler();
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+      when(() => databaseHandler.getItems())
+          .thenAnswer((_) async => [Item(7, 'item7')]);
+      when(() => databaseHandler.addItem(any())).thenAnswer((_) async => 1);
+    });
+
+    blocTest(
+      'If the text is empty, DatabaseHandler.addItem should not be called',
+      build: () => ListCubit(databaseHandler, MockStorageHandler()),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        await cubit.addItem('');
+      },
+      verify: (_) => verifyNever(() => databaseHandler.addItem(any())),
+    );
+
+    );
+  });
+
+  });
+
   });
 }
