@@ -403,5 +403,16 @@ void main() {
           .thenAnswer((_) async => true);
     });
 
+    blocTest(
+      'If the state is not ListSelection, false should be returned '
+      'and nothing should happen',
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        expect(await cubit.deleteSelection(), false);
+      },
+      verify: (_) =>
+          verifyNever(() => storageHandler.getPermission(any(), any())),
+    );
   });
 }
