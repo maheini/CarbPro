@@ -378,7 +378,30 @@ void main() {
     );
   });
 
-  });
+  group('Test the deleteSelection function', () {
+    List<Item> items = [Item(0, 'item1'), Item(1, 'item2')];
+    List<ItemChild> child = [ItemChild(0, 1, '', 'imagepath')];
+    late MockDatabaseHandler databaseHandler;
+    late MockStorageHandler storageHandler;
+
+    setUp(() {
+      databaseHandler = MockDatabaseHandler();
+      storageHandler = MockStorageHandler();
+
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+      when(() => databaseHandler.getItems()).thenAnswer((_) async => items);
+      when(() => databaseHandler.getChildren(1)).thenAnswer((_) async => child);
+      when(() => databaseHandler.deleteAllChildren(1))
+          .thenAnswer((_) async => 1);
+      when(() => databaseHandler.deleteItem(1)).thenAnswer((_) async => 1);
+
+      when(() => storageHandler.getPermission(any(), any()))
+          .thenAnswer((_) async => true);
+      when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((_) async => Directory('hi'));
+      when(() => storageHandler.deleteFile(any()))
+          .thenAnswer((_) async => true);
+    });
 
   });
 }
