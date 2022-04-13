@@ -414,5 +414,30 @@ void main() {
       verify: (_) =>
           verifyNever(() => storageHandler.getPermission(any(), any())),
     );
+
+    blocTest(
+      'Multiple functions should get called if the state is ListSelection',
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(await cubit.deleteSelection(), true);
+      },
+      verify: (_) {
+        verify(() => storageHandler.getPermission(any(), any())).called(1);
+        verify(() => storageHandler.getExternalStorageDirectory()).called(1);
+        verify(() => storageHandler.deleteFile('hi/imagepath')).called(1);
+        verify(() => databaseHandler.getChildren(1)).called(1);
+        verify(() => databaseHandler.deleteAllChildren(1)).called(1);
+        verify(() => databaseHandler.deleteItem(1)).called(1);
+      },
+      expect: () => [
+        ListLoading(),
+        ListLoaded(items, const []),
+        ListSelection(items, const [1]),
+        ListLoading(),
+        ListLoaded(items, const []),
+      ],
+    );
   });
 }
