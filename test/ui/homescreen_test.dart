@@ -77,3 +77,23 @@ void main() {
         },
       );
 
+      testWidgets(
+        'After tapping the search button, ListCubit.enableFilter should be called',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          expect(find.byIcon(Icons.search), findsOneWidget);
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+
+          await tester.tap(find.byIcon(Icons.search));
+          verify(() => listCubit.setFilter('')).called(1);
+        },
+      );
+    },
+  );
+
