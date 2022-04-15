@@ -73,45 +73,6 @@ class _ItemListState extends State<ItemList> {
           onLongPress: () {
             context.read<ListCubit>().itemPressed(index);
           },
-          // onLongPress: () => showDialog(
-          //       context: context,
-          //       builder: (BuildContext context) {
-          //         return AlertDialog(
-          //           title: Text(S.of(context).confirm),
-          //           content: Text(S.of(context).warning_confirm_remove),
-          //           actions: <Widget>[
-          //             TextButton(
-          //               onPressed: () => Navigator.of(context).pop(false),
-          //               child: Text(S.of(context).cancel.toUpperCase()),
-          //             ),
-          //             TextButton(
-          //                 onPressed: () => Navigator.of(context).pop(true),
-          //                 child: Text(S.of(context).remove.toUpperCase())),
-          //           ],
-          //         );
-          //       },
-          //     )
-          // .then((removeConfirmation) async {
-          //   if (removeConfirmation) {
-          //     final parentID = items[index].id;
-          //     List<ItemChild> images =
-          //         await locator<DatabaseHandler>().getChildren(parentID);
-          //     if (images.isNotEmpty) {
-          //       if (!await locator<StorageHandler>()
-          //           .getPermission(Permission.storage, PlatformWrapper())) {
-          //         // todo: add alertdialog
-          //         return;
-          //       } else {
-          //         for (var element in images) {
-          //           locator<StorageHandler>().deleteFile(element.imagepath);
-          //         }
-          //         await locator<DatabaseHandler>().deleteAllChildren(parentID);
-          //       }
-          //     }
-          //     await locator<DatabaseHandler>().deleteItem(parentID);
-          //     _loadAndDisplayItems();
-          //   }
-          // }),
         );
       },
     );
