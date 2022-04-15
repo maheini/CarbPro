@@ -53,3 +53,27 @@ void main() {
     });
   });
 
+  group(
+    'Test Homescreen behaviour in ListLoaded state',
+    () {
+      late ListCubit listCubit;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        when(() => listCubit.state).thenReturn(const ListLoaded([], []));
+        when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+      });
+
+      testWidgets(
+        'Homescreen should display a search & Add Button in ListLoaded state',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(MaterialApp(
+            home: HomeScreen(
+              listCubit: listCubit,
+            ),
+          ));
+          expect(find.byIcon(Icons.search), findsOneWidget);
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+        },
+      );
+
