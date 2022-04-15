@@ -34,3 +34,22 @@ void main() {
       ));
       verify(() => listCubit.loadItems()).called(1);
     });
+
+    testWidgets(
+        'ListLoading: UI should only contain Appbar with title and ItemList'
+        'And ItemList should display a ProgressIndicator if ListCubit is successfully registered.',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: HomeScreen(
+          listCubit: listCubit,
+        ),
+      ));
+      expect(find.text('CarbPro'), findsOneWidget);
+      expect(find.byType(ItemList), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      expect(find.byIcon(Icons.search), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+  });
+
