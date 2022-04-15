@@ -97,3 +97,40 @@ void main() {
     },
   );
 
+  group(
+    'Test Homescreen in ListFiltered state',
+    () {
+      late ListCubit listCubit;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        when(() => listCubit.state).thenReturn(const ListFiltered('', [], []));
+        when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+      });
+
+      testWidgets(
+        'Homescreen should display a floatingActionButton, searchBar & clear Button '
+        'and no filter Button in ListFiltered state',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+          expect(find.byIcon(Icons.search), findsNothing);
+          expect(find.byIcon(Icons.clear), findsOneWidget);
+          expect(find.byType(TextField), findsOneWidget);
+          expect(find.text(S.current.search), findsOneWidget);
+        },
+      );
