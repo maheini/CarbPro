@@ -157,3 +157,26 @@ void main() {
           verify(() => listCubit.setFilter('2')).called(1);
         },
       );
+
+      testWidgets(
+        'A tap on clear button should call ListCubit.disableFilter',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+          await tester.tap(find.byIcon(Icons.clear));
+          verify(() => listCubit.disableFilter()).called(1);
+        },
+      );
