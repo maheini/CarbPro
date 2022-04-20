@@ -134,3 +134,26 @@ void main() {
           expect(find.text(S.current.search), findsOneWidget);
         },
       );
+
+      testWidgets(
+        'A change on SearchBar should call ListCubit.setFilter',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+          await tester.enterText(find.byType(TextField), '2');
+          verify(() => listCubit.setFilter('2')).called(1);
+        },
+      );
