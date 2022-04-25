@@ -213,3 +213,43 @@ void main() {
     },
   );
 
+  group(
+    'Test Homescreen in ListSelection state',
+    () {
+      late ListCubit listCubit;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        // simulate 1 loaded and 1 selected item
+        when(() => listCubit.state)
+            .thenReturn(ListSelection([Item(0, 'item1')], const [0]));
+        when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+        when(() => listCubit.deleteSelection()).thenAnswer((_) async => true);
+      });
+
+      testWidgets(
+        'Homescreen should display a floatingActionButton, '
+        'delete icon and a text, counting the selected items',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+          expect(find.byIcon(Icons.delete), findsOneWidget);
+          expect(find.text(S.current.items_selected(1)), findsOneWidget);
+        },
+      );
+
