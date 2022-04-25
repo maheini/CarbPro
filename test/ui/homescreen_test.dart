@@ -307,3 +307,32 @@ void main() {
         },
       );
 
+      testWidgets(
+        'If ListCubit.deleteSelection returns false, a snackbar should be displayed',
+        (WidgetTester tester) async {
+          when(() => listCubit.deleteSelection())
+              .thenAnswer((_) async => false);
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+          await tester.tap(find.byIcon(Icons.delete));
+          await tester.pump();
+
+          expect(find.text(S.current.error_deleting_item), findsOneWidget);
+        },
+      );
+    },
+  );
+
