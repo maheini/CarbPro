@@ -180,3 +180,36 @@ void main() {
           verify(() => listCubit.disableFilter()).called(1);
         },
       );
+
+      testWidgets(
+        'A simulated back button press should lead to a disableFilter call',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          // Close Search bar by simulating a back button pressed
+          final ByteData message = const JSONMethodCodec()
+              .encodeMethodCall(const MethodCall('popRoute'));
+          await ServicesBinding.instance!.defaultBinaryMessenger
+              .handlePlatformMessage('flutter/navigation', message, (_) {});
+
+          expect(find.byType(TextField), findsOneWidget);
+          verify(() => listCubit.disableFilter()).called(1);
+        },
+      );
+    },
+  );
+
