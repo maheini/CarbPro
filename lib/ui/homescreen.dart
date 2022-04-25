@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const SizedBox();
                   } else {
                     return FloatingActionButton(
-                      onPressed: _addItem,
+                      onPressed: () => _addItem(context),
                       child: const Icon(Icons.add, color: Colors.white),
                       backgroundColor: Colors.indigo,
                     );
@@ -160,8 +160,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _addItem() {
-    // TODO: Implement add functionality
+  void _addItem(BuildContext context) async {
+    TextEditingController _controller = TextEditingController();
+    bool textEmptyError = false;
+    final input = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(S.of(context).add_item),
+              content: TextField(
+                autofocus: true,
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: S.of(context).name,
+                  errorText: textEmptyError ? S.of(context).name_empty : null,
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () => Navigator.pop(context, _controller.text),
+                    child: Text(S.of(context).cancel.toUpperCase())),
+                TextButton(
+                  onPressed: () {
+                    if (_controller.text.isEmpty) {
+                      setState(() => textEmptyError = true);
+                    } else {
+                      Navigator.pop(context, _controller.text);
+                    }
+                  },
+                  child: Text(S.of(context).add.toUpperCase()),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (input.toString().isNotEmpty) {
+      final int? id = await context.read<ListCubit>().addItem(input);
+      if (id != null) {
+        Navigator.pushNamed(context, '/details', arguments: id)
+            .then((value) => context.read<ListCubit>().loadItems());
+      }
+    }
   }
 
   // TODO: clean up code
