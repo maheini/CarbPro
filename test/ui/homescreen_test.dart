@@ -253,3 +253,32 @@ void main() {
         },
       );
 
+      testWidgets(
+        'A simulated back button press should lead to a cleared Selection',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          // Close Search bar by simulating a back button pressed
+          final ByteData message = const JSONMethodCodec()
+              .encodeMethodCall(const MethodCall('popRoute'));
+          await ServicesBinding.instance!.defaultBinaryMessenger
+              .handlePlatformMessage('flutter/navigation', message, (_) {});
+
+          expect(find.text(S.current.items_selected(1)), findsOneWidget);
+          verify(() => listCubit.clearSelection()).called(1);
+        },
+      );
