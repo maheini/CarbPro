@@ -282,3 +282,28 @@ void main() {
           verify(() => listCubit.clearSelection()).called(1);
         },
       );
+
+      testWidgets(
+        'After pressing the delete Icon, ListCubit.deleteSelection should be called',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          await tester.tap(find.byIcon(Icons.delete));
+          verify(() => listCubit.deleteSelection()).called(1);
+        },
+      );
+
