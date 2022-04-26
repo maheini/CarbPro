@@ -378,3 +378,33 @@ void main() {
         },
       );
 
+      testWidgets(
+        'After a tap on Cancel inside the popup, the popup should be closed',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          await tester.tap(find.byIcon(Icons.add));
+          await tester.pump();
+          await tester.tap(find.text(S.current.cancel.toUpperCase()));
+          await tester.pump();
+
+          expect(find.byType(TextField), findsNothing);
+          expect(find.text(S.current.add.toUpperCase()), findsNothing);
+          expect(find.text(S.current.cancel.toUpperCase()), findsNothing);
+          verifyNever(() => listCubit.addItem(any()));
+        },
+      );
