@@ -336,3 +336,45 @@ void main() {
     },
   );
 
+  group(
+    'Test AddItem function of Homescreen',
+    () {
+      late ListCubit listCubit;
+
+      setUp(() {
+        listCubit = MockListCubit();
+        // simulate 1 loaded item
+        when(() => listCubit.state)
+            .thenReturn(ListSelection([Item(1, 'item1')], const [0]));
+        when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+      });
+
+      testWidgets(
+        'After a tap on Add, a Popup should appear, '
+        'containing a Textfield and two buttons: add and cancel',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          await tester.tap(find.byIcon(Icons.add));
+          await tester.pump();
+
+          expect(find.byType(TextField), findsOneWidget);
+          expect(find.text(S.current.add.toUpperCase()), findsOneWidget);
+          expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
+        },
+      );
+
