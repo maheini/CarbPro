@@ -41,12 +41,8 @@ class _ItemListState extends State<ItemList> {
                 },
                 itemCount: state.items.length),
           );
-        } else if (state is ListLoading) {
-          return const Center(child: CircularProgressIndicator());
         } else {
-          return Center(
-            child: Text(S.current.unknown_error),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
