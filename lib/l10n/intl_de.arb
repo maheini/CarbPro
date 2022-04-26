@@ -2,6 +2,7 @@
     "@@locale": "de",
     "language": "Deutsch",
     "@________HOMESCREEN________":{},
+    "error_deleting_item": "Fehler beim Löschen der Einträge",
     "unknown_error": "Ein unbekannter Fehler trat auf",
     "confirm": "Bestätigen",
     "search": "Suchen",

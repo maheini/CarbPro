@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "description_empty":
             MessageLookupByLibrary.simpleMessage("Beschreibung ist leer"),
         "edit_item": MessageLookupByLibrary.simpleMessage("Element bearbeiten"),
+        "error_deleting_item": MessageLookupByLibrary.simpleMessage(
+            "Fehler beim Löschen der Einträge"),
         "items_selected": m0,
         "language": MessageLookupByLibrary.simpleMessage("Deutsch"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),

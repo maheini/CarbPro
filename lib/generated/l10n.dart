@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `Error deleting item(s)`
+  String get error_deleting_item {
+    return Intl.message(
+      'Error deleting item(s)',
+      name: 'error_deleting_item',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `An unknown error occurred`
   String get unknown_error {
     return Intl.message(

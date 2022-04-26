@@ -5,6 +5,7 @@
         "description": "The current language"
     },
     "@________HOMESCREEN________":{},
+    "error_deleting_item": "Error deleting item(s)",
     "unknown_error": "An unknown error occurred",
     "@unknown_error":{
         "description": "Text for unknown errors"
