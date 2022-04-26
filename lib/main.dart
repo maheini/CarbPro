@@ -1,7 +1,7 @@
 import 'package:carbpro/locator/locator.dart';
 import 'package:flutter/material.dart';
 import 'detailscreen.dart';
-import 'homescreen.dart';
+import 'package:carbpro/ui/homescreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:carbpro/generated/l10n.dart';
 
