@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:carbpro/generated/l10n.dart';
 
 import '../../datamodels/item.dart';
 
@@ -63,7 +62,8 @@ class _ItemListState extends State<ItemList> {
             if (context.read<ListCubit>().state is ListSelection) {
               context.read<ListCubit>().itemPressed(index);
             } else {
-              Navigator.pushNamed(context, '/details', arguments: item.id);
+              Navigator.pushNamed(context, '/details', arguments: item.id)
+                  .then((value) => context.read<ListCubit>().loadItems());
             }
           },
           onLongPress: () {
