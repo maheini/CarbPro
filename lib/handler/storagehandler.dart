@@ -86,7 +86,7 @@ class StorageHandler {
       }
 
       encoder ??= TarFileEncoder();
-      Directory dir = Directory('storage/emulated/0/Downlad/');
+      Directory dir = Directory('storage/emulated/0/Download/');
       if (!await _fileAccessWrapper.existsDir(dir)) return false;
 
       encoder.create(('/storage/emulated/0/Download/carbpro_export.tar'));
