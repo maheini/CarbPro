@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -7,6 +8,7 @@ class FileAccessWrapper {
   // This is a wrapper class for file operations -> designed for unit testing
 
   Future<bool> exists(File file) async => file.exists();
+  Future<bool> existsDir(Directory dir) async => dir.exists();
   Future<RandomAccessFile> openFile(File file) async => file.open();
   Future<File> copyFile(File file, String newPath) async => file.copy(newPath);
   Future<FileSystemEntity> deleteFile(File file) async => file.delete();
@@ -57,6 +59,29 @@ class StorageHandler {
     } else {
       final bool status = await wrapper.request(permission).isGranted;
       return status;
+    }
+  }
+
+  Future<bool> exportItems(
+      File json, List<File> images, PlatformWrapper platformWrapper,
+      {TarFileEncoder? encoder}) async {
+    try {
+      if (!await platformWrapper.isGranted(Permission.manageExternalStorage)) {
+        return false;
+      }
+      encoder ??= TarFileEncoder();
+      Directory dir = Directory('storage/emulated/0/Downlad/');
+      if (!await _fileAccessWrapper.existsDir(dir)) return false;
+
+      encoder.create(('/storage/emulated/0/Download/carbpro_export.tar'));
+      for (File image in images) {
+        await encoder.addFile(image, image.path.split('/').last);
+      }
+      await encoder.addFile(json, json.path.split('/').last);
+      await encoder.close();
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }
