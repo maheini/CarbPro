@@ -223,4 +223,26 @@ void main() {
           verify(() => mocktarFileEncoder.close()).called(1);
         },
       );
+
+      test(
+        'On error, false should be returned',
+        () async {
+          File image = File('image');
+          File json = File('json');
+          StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
+          when(() => mocktarFileEncoder.create(any())).thenThrow(Exception());
+
+          when(() => mockFileAccessWrapper.existsDir(any()))
+              .thenAnswer((realInvocation) => Future.value(true));
+
+          expect(
+              await storageHandler.exportItems(
+                  json, [image], mockPlatformWrapper,
+                  encoder: mocktarFileEncoder),
+              false);
+          verify(() => mocktarFileEncoder.create(any())).called(1);
+        },
+      );
+    },
+  );
 }
