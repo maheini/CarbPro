@@ -443,3 +443,55 @@ void main() {
         },
       );
 
+      testWidgets(
+        'If an Item is added, ListCubit.addItem should be called, '
+        'then DetailScreen and lastly a reload should be triggered',
+        (WidgetTester tester) async {
+          when(() => listCubit.addItem(any())).thenAnswer((_) async => 1);
+          when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+
+          int settingsId = 0;
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+              onGenerateRoute: (settings) {
+                if (settings.name == '/details') {
+                  settingsId = settings.arguments as int;
+                  return MaterialPageRoute(
+                    builder: (_) => Scaffold(appBar: AppBar()),
+                  );
+                }
+                return null; // Let `onUnknownRoute` handle this behavior.
+              },
+            ),
+          );
+          await tester.pump();
+
+          await tester.tap(find.byIcon(Icons.add));
+          await tester.pump();
+          await tester.enterText(find.byType(TextField), 'item1');
+          await tester.tap(find.text(S.current.add.toUpperCase()));
+          await tester.pump();
+
+          // Return back
+          final NavigatorState navigator = tester.state(find.byType(Navigator));
+          navigator.pop();
+          await tester.pump();
+
+          expect(settingsId, 1);
+          verify(() => listCubit.addItem('item1')).called(1);
+          verify(() => listCubit.loadItems()).called(2);
+        },
+      );
+    },
+  );
+}
