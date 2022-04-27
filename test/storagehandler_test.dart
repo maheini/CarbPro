@@ -14,8 +14,6 @@ class MockTarFileEncoder extends Mock implements TarFileEncoder {}
 
 void main() {
   group('Test File Access', () {
-    // TODO: add failing tests and implement exception handling
-
     setUp(
       () {
         registerFallbackValue(File('d'));
@@ -238,7 +236,6 @@ void main() {
         'On error, false should be returned',
         () async {
           File image = File('image');
-          File json = File('json');
           StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
           when(() => mocktarFileEncoder.create(any())).thenThrow(Exception());
 
