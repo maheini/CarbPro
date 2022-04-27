@@ -410,3 +410,36 @@ void main() {
           verifyNever(() => listCubit.addItem(any()));
         },
       );
+
+      testWidgets(
+        'After a tap on Add inside the popup when there is no text, a warning should be displayed',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: HomeScreen(
+                listCubit: listCubit,
+              ),
+            ),
+          );
+          await tester.pump();
+
+          await tester.tap(find.byIcon(Icons.add));
+          await tester.pump();
+          await tester.tap(find.text(S.current.add.toUpperCase()));
+          await tester.pump();
+
+          expect(find.byType(TextField), findsOneWidget);
+          expect(find.text(S.current.name_empty), findsOneWidget);
+          expect(find.text(S.current.add.toUpperCase()), findsOneWidget);
+          expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
+          verifyNever(() => listCubit.addItem(any()));
+        },
+      );
+
