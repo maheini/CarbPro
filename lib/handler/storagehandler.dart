@@ -9,6 +9,15 @@ class FileAccessWrapper {
 
   Future<bool> exists(File file) async => file.exists();
   Future<bool> existsDir(Directory dir) async => dir.exists();
+  Future<bool> writeFile(File file, String content) async {
+    try {
+      await file.writeAsString(content);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<RandomAccessFile> openFile(File file) async => file.open();
   Future<File> copyFile(File file, String newPath) async => file.copy(newPath);
   Future<FileSystemEntity> deleteFile(File file) async => file.delete();
@@ -62,13 +71,20 @@ class StorageHandler {
     }
   }
 
-  Future<bool> exportItems(
-      File json, List<File> images, PlatformWrapper platformWrapper,
+  Future<bool> exportItems(String json, String externalStorageDir,
+      List<File> images, PlatformWrapper platformWrapper,
       {TarFileEncoder? encoder}) async {
     try {
       if (!await platformWrapper.isGranted(Permission.manageExternalStorage)) {
         return false;
       }
+
+      // Write json file
+      File output = File(externalStorageDir + '/items.json');
+      if (!await _fileAccessWrapper.writeFile(output, json)) {
+        return false;
+      }
+
       encoder ??= TarFileEncoder();
       Directory dir = Directory('storage/emulated/0/Downlad/');
       if (!await _fileAccessWrapper.existsDir(dir)) return false;
@@ -77,7 +93,7 @@ class StorageHandler {
       for (File image in images) {
         await encoder.addFile(image, image.path.split('/').last);
       }
-      await encoder.addFile(json, json.path.split('/').last);
+      await encoder.addFile(output, output.path.split('/').last);
       await encoder.close();
       return true;
     } catch (e) {

@@ -160,8 +160,10 @@ void main() {
 
         when(() =>
                 mockPlatformWrapper.isGranted(Permission.manageExternalStorage))
-            .thenAnswer((realInvocation) => Future.value(true));
+            .thenAnswer((_) => Future.value(true));
         when(() => mockFileAccessWrapper.existsDir(any()))
+            .thenAnswer((_) async => true);
+        when(() => mockFileAccessWrapper.writeFile(any(), any()))
             .thenAnswer((_) async => true);
       });
 
@@ -176,7 +178,7 @@ void main() {
 
           expect(
               await storageHandler.exportItems(
-                  File('f'), [], mockPlatformWrapper),
+                  'f', 'p', [], mockPlatformWrapper),
               false);
         },
       );
@@ -191,17 +193,17 @@ void main() {
 
           expect(
               await storageHandler.exportItems(
-                  File('f'), [], mockPlatformWrapper),
+                  'f', 'p', [], mockPlatformWrapper),
               false);
         },
       );
 
       test(
-        'If everything is working as intended, the encoder shoulb be caled with.. '
+        'If everything is working as intended, the encoder should be caled with.. '
         ' encoder.create, encoder.addFile (x2) and encoder.close - true should be returned',
         () async {
           File image = File('image');
-          File json = File('json');
+          late File json;
           StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
           // ignore: void_checks
           when(() => mocktarFileEncoder.create(any())).thenReturn(true);
@@ -211,15 +213,23 @@ void main() {
 
           when(() => mockFileAccessWrapper.existsDir(any()))
               .thenAnswer((realInvocation) => Future.value(true));
+          when(() => mockFileAccessWrapper.writeFile(any(), any()))
+              .thenAnswer((gg) async {
+            json = gg.positionalArguments[0];
+            return true;
+          });
 
           expect(
               await storageHandler.exportItems(
-                  json, [image], mockPlatformWrapper,
+                  'json', 'path', [image], mockPlatformWrapper,
                   encoder: mocktarFileEncoder),
               true);
+          verify(() => mockFileAccessWrapper.writeFile(any(), 'json'))
+              .called(1);
           verify(() => mocktarFileEncoder.create(any())).called(1);
           verify(() => mocktarFileEncoder.addFile(image, 'image')).called(1);
-          verify(() => mocktarFileEncoder.addFile(json, 'json')).called(1);
+          verify(() => mocktarFileEncoder.addFile(json, 'items.json'))
+              .called(1);
           verify(() => mocktarFileEncoder.close()).called(1);
         },
       );
@@ -237,7 +247,7 @@ void main() {
 
           expect(
               await storageHandler.exportItems(
-                  json, [image], mockPlatformWrapper,
+                  'json', 'path', [image], mockPlatformWrapper,
                   encoder: mocktarFileEncoder),
               false);
           verify(() => mocktarFileEncoder.create(any())).called(1);
