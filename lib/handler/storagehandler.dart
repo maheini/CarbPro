@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -17,6 +18,8 @@ class FileAccessWrapper {
       return false;
     }
   }
+
+  Future<String?> readFile(File file) async => file.readAsString();
 
   Future<RandomAccessFile> openFile(File file) async => file.open();
   Future<File> copyFile(File file, String newPath) async => file.copy(newPath);
@@ -41,6 +44,10 @@ class StorageHandler {
 
   Future<Directory?> getExternalStorageDirectory() async {
     return await path_provider.getExternalStorageDirectory();
+  }
+
+  Future<Directory?> getTempStorageDirectory() async {
+    return await path_provider.getTemporaryDirectory();
   }
 
   Future<bool> exists(File file) => file.exists();
