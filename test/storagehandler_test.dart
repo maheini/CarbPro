@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -8,6 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 class MockFileAccessWrapper extends Mock implements FileAccessWrapper {}
 
 class MockPlatformWrapper extends Mock implements PlatformWrapper {}
+
+class MockTarFileEncoder extends Mock implements TarFileEncoder {}
 
 void main() {
   group('Test File Access', () {
@@ -140,4 +143,42 @@ void main() {
       expect(actual, true);
     });
   });
+
+  group(
+    'Test export function',
+    () {
+      late PlatformWrapper mockPlatformWrapper;
+      late TarFileEncoder mocktarFileEncoder;
+      late FileAccessWrapper mockFileAccessWrapper;
+
+      setUp(() {
+        registerFallbackValue(Directory('d'));
+        registerFallbackValue(File('d'));
+        mockPlatformWrapper = MockPlatformWrapper();
+        mocktarFileEncoder = MockTarFileEncoder();
+        mockFileAccessWrapper = MockFileAccessWrapper();
+
+        when(() =>
+                mockPlatformWrapper.isGranted(Permission.manageExternalStorage))
+            .thenAnswer((realInvocation) => Future.value(true));
+        when(() => mockFileAccessWrapper.existsDir(any()))
+            .thenAnswer((_) async => true);
+      });
+
+      test(
+        'if there is no Permission granted, the function should return false',
+        () async {
+          when(() => mockPlatformWrapper
+                  .isGranted(Permission.manageExternalStorage))
+              .thenAnswer((realInvocation) => Future.value(false));
+
+          StorageHandler storageHandler = StorageHandler(FileAccessWrapper());
+
+          expect(
+              await storageHandler.exportItems(
+                  File('f'), [], mockPlatformWrapper),
+              false);
+        },
+      );
+
 }
