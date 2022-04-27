@@ -181,4 +181,18 @@ void main() {
         },
       );
 
+      test(
+        'If the Download directory is not valid, the function should return false',
+        () async {
+          StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
+
+          when(() => mockFileAccessWrapper.existsDir(any()))
+              .thenAnswer((realInvocation) => Future.value(false));
+
+          expect(
+              await storageHandler.exportItems(
+                  File('f'), [], mockPlatformWrapper),
+              false);
+        },
+      );
 }
