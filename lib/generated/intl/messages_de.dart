@@ -35,6 +35,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_item": MessageLookupByLibrary.simpleMessage("Element bearbeiten"),
         "error_deleting_item": MessageLookupByLibrary.simpleMessage(
             "Fehler beim Löschen der Einträge"),
+        "export_failure": MessageLookupByLibrary.simpleMessage(
+            "Export fehlgeschlagen. Sind alle Berechtigungen erlaubt?"),
+        "export_success": MessageLookupByLibrary.simpleMessage(
+            "Alle Elemente wurden exportiert in den /downloads Ordner"),
+        "import_failure": MessageLookupByLibrary.simpleMessage(
+            "Import abgebrochen. Sind alle Berechtigungen erlaubt?"),
         "items_selected": m0,
         "language": MessageLookupByLibrary.simpleMessage("Deutsch"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),

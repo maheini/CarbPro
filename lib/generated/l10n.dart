@@ -182,6 +182,36 @@ class S {
     );
   }
 
+  /// `all items were exported to /Downloads folder`
+  String get export_success {
+    return Intl.message(
+      'all items were exported to /Downloads folder',
+      name: 'export_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export failed. Are all permissions granted?`
+  String get export_failure {
+    return Intl.message(
+      'Export failed. Are all permissions granted?',
+      name: 'export_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import aborted. Are all permissions granted?`
+  String get import_failure {
+    return Intl.message(
+      'Import aborted. Are all permissions granted?',
+      name: 'import_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Storage access not granted`
   String get storage_permission_missing {
     return Intl.message(
