@@ -195,4 +195,32 @@ void main() {
               false);
         },
       );
+
+      test(
+        'If everything is working as intended, the encoder shoulb be caled with.. '
+        ' encoder.create, encoder.addFile (x2) and encoder.close - true should be returned',
+        () async {
+          File image = File('image');
+          File json = File('json');
+          StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
+          // ignore: void_checks
+          when(() => mocktarFileEncoder.create(any())).thenReturn(true);
+          when(() => mocktarFileEncoder.addFile(any(), any()))
+              .thenAnswer((_) async => true);
+          when(() => mocktarFileEncoder.close()).thenAnswer((_) async => true);
+
+          when(() => mockFileAccessWrapper.existsDir(any()))
+              .thenAnswer((realInvocation) => Future.value(true));
+
+          expect(
+              await storageHandler.exportItems(
+                  json, [image], mockPlatformWrapper,
+                  encoder: mocktarFileEncoder),
+              true);
+          verify(() => mocktarFileEncoder.create(any())).called(1);
+          verify(() => mocktarFileEncoder.addFile(image, 'image')).called(1);
+          verify(() => mocktarFileEncoder.addFile(json, 'json')).called(1);
+          verify(() => mocktarFileEncoder.close()).called(1);
+        },
+      );
 }
