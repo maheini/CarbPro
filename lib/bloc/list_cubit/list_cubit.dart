@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:carbpro/datamodels/itemchild.dart';
@@ -122,5 +123,51 @@ class ListCubit extends Cubit<ListState> {
   void disableFilter() {
     _filter = null;
     emit(ListLoaded(_items, _selectedItems));
+  }
+
+  /// Exports all selected [Item] to the external storage
+  Future<bool> export() async {
+    try {
+      if (state is! ListSelection ||
+          !await storageHandler.getPermission(
+              Permission.manageExternalStorage, PlatformWrapper())) {
+        return false;
+      }
+
+      String basepath =
+          (await storageHandler.getExternalStorageDirectory())?.path ?? '';
+      List<File> files = [];
+      List<Map<String, dynamic>> itemsJson = [];
+
+      for (var element in _selectedItems) {
+        List<Map<String, dynamic>> childrenJson = [];
+        List<ItemChild> children =
+            await databaseHandler.getChildren(_items[element].id);
+
+        for (ItemChild child in children) {
+          files.add(File('$basepath/${child.imagepath}'));
+          childrenJson.add({
+            'description': child.description,
+            'imagepath': child.imagepath,
+          });
+        }
+        Map<String, dynamic> itemJson = {
+          'name': _items[element].name,
+          'children': childrenJson,
+        };
+
+        itemsJson.add(itemJson);
+      }
+
+      if (await storageHandler.exportItems(
+          jsonEncode(itemsJson), basepath, files, PlatformWrapper())) {
+        clearSelection();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }
