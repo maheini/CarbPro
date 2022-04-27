@@ -253,6 +253,22 @@ void main() {
           verify(() => mocktarFileEncoder.create(any())).called(1);
         },
       );
+
+      test(
+        'If temp json file couldnt be written, false should be returned',
+        () async {
+          StorageHandler storageHandler = StorageHandler(mockFileAccessWrapper);
+          when(() => mockFileAccessWrapper.writeFile(any(), any()))
+              .thenAnswer((_) async => false);
+
+          expect(
+              await storageHandler.exportItems(
+                  'json', 'path', [File('image')], mockPlatformWrapper,
+                  encoder: mocktarFileEncoder),
+              false);
+          verifyNever(() => mocktarFileEncoder.addFile(any(), any()));
+        },
+      );
     },
   );
 }
