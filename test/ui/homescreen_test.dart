@@ -379,7 +379,8 @@ void main() {
       );
 
       testWidgets(
-        'After a tap on Cancel inside the popup, the popup should be closed',
+        'After a tap on Cancel inside the popup, the popup should be closed '
+        'and no item should be created',
         (WidgetTester tester) async {
           await tester.pumpWidget(
             MaterialApp(
@@ -399,6 +400,7 @@ void main() {
 
           await tester.tap(find.byIcon(Icons.add));
           await tester.pump();
+          await tester.enterText(find.byType(TextField), 'Test');
           await tester.tap(find.text(S.current.cancel.toUpperCase()));
           await tester.pump();
 

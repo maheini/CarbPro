@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               actions: <Widget>[
                 TextButton(
-                    onPressed: () => Navigator.pop(context, _controller.text),
+                    onPressed: () => Navigator.pop(context, ''),
                     child: Text(S.of(context).cancel.toUpperCase())),
                 TextButton(
                   onPressed: () {
