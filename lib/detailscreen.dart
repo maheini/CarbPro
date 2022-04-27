@@ -29,8 +29,9 @@ class _DetailScreenState extends State<DetailScreen> {
   @protected
   @mustCallSuper
   void initState() {
-    if (!locator.isRegistered<ImagePicker>())
+    if (!locator.isRegistered<ImagePicker>()) {
       locator.registerLazySingleton<ImagePicker>(() => ImagePicker());
+    }
     super.initState();
     _loadFullContent();
   }
@@ -332,11 +333,13 @@ class _DetailScreenState extends State<DetailScreen> {
       itemChild.imagepath = filename;
     }
     if (itemChild.id == 0) {
-      if (await locator<DatabaseHandler>().addItemChild(itemChild) > 0)
+      if (await locator<DatabaseHandler>().addItemChild(itemChild) > 0) {
         return true;
+      }
     } else {
-      if (await locator<DatabaseHandler>().updateItemChild(itemChild) > 0)
+      if (await locator<DatabaseHandler>().updateItemChild(itemChild) > 0) {
         return true;
+      }
     }
     return false;
   }
