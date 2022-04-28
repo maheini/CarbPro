@@ -106,9 +106,6 @@ void main() {
           when(() => databaseHandler.getItems()).thenAnswer(
             (_) => Future.value(items),
           );
-          when(() => databaseHandler.getItems()).thenAnswer(
-            (_) => Future.value(items),
-          );
 
           cubit = ListCubit(databaseHandler, MockStorageHandler());
         },
@@ -152,34 +149,27 @@ void main() {
         },
       );
 
-      test(
-        'After re-selecting the same item, the state should switch back to ListLoaded',
-        () async {
-          final DatabaseHandler databaseHandler = MockDatabaseHandler();
-          when(() => databaseHandler.loadDatabase())
-              .thenAnswer((_) async => true);
-          final Item item1 = Item(1, 'Item1');
-          final Item item2 = Item(2, 'Item2');
-          List<Item> items = [item1, item2];
-
-          when(() => databaseHandler.getItems()).thenAnswer(
-            (_) => Future.value(items),
-          );
-          ListCubit cubit = ListCubit(databaseHandler, MockStorageHandler());
-
-          // load items
-          cubit.loadItems();
-          await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
-
-          // select item 0
+      blocTest(
+        'If two items are selected and one got pressed, '
+        'ListSelection should get emitted without this (unselected) item'
+        'and if nothing is selected, ListLoaded should be emitted',
+        build: () => cubit,
+        act: (ListCubit cubit) async {
+          await cubit.loadItems();
           cubit.itemPressed(0);
-          expect(cubit.state, ListSelection(items, const [0]));
-
+          cubit.itemPressed(1);
+          cubit.itemPressed(1);
           cubit.itemPressed(0);
-          expect(cubit.state, ListLoaded(items, const []));
         },
+        expect: () => [
+          ListLoading(),
+          ListLoaded(items, const []),
+          ListSelection(items, const [0]),
+          ListSelection(items, const [0, 1]),
+          ListSelection(items, const [0]),
+          ListLoaded(items, const []),
+        ],
       );
-
       test(
         'Multiple (different) selection should change the selection and not the state',
         () async {
