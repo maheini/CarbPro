@@ -170,4 +170,64 @@ class ListCubit extends Cubit<ListState> {
       return false;
     }
   }
+
+  Future<bool> import(FileAccessWrapper fileAccessWrapper) async {
+    try {
+      // Prepare (load all directorys and permissions)
+      Directory? external = await storageHandler.getExternalStorageDirectory();
+      Directory? temporary = await storageHandler.getTempStorageDirectory();
+      if (external == null || temporary == null) {
+        return false;
+      }
+
+      // Import all files. If files are null, the import failed
+      Directory? files = await storageHandler.import(external, temporary);
+      if (files == null) {
+        return false;
+      }
+
+      // Read content and check if it is a valid json & files
+      File itemsFile = File('${files.path}/items.json');
+      if (!await fileAccessWrapper.exists(itemsFile)) return false;
+      List<dynamic> content =
+          jsonDecode(await fileAccessWrapper.readFile(itemsFile) ?? '');
+      // check for existance of images
+      for (final Map<String, dynamic> item in content) {
+        List<dynamic> children = item['children'];
+        for (final Map<String, dynamic> child in children) {
+          if (await fileAccessWrapper.exists(
+            File('${external.path}/${child['imagepath']}'),
+          )) {
+            return false;
+          }
+        }
+      }
+
+      // Import all files & content to the database
+      for (final Map<String, dynamic> item in content) {
+        // Map<String, dynamic> item = jsonDecode(element);
+        final parentID = await databaseHandler.addItem(item['name']);
+        List<dynamic> children = item['children'];
+
+        for (final Map<String, dynamic> child in children) {
+          await storageHandler.copyFile('${files.path}/${child['imagepath']}',
+              '${external.path}/${child['imagepath']}');
+          await databaseHandler.addItemChild(
+            ItemChild(
+              0,
+              parentID,
+              child['description'],
+              child['imagepath'],
+            ),
+          );
+        }
+      }
+
+      // reload and finish
+      loadItems();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
