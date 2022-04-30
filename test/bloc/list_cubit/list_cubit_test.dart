@@ -581,4 +581,36 @@ void main() {
                   storageHandler.exportItems(any(), 'external', any(), any()))
               .called(1);
         });
+
+    blocTest('Cubit should return false if StorageHandler returned false',
+        setUp: () {
+          when(() => storageHandler.getPermission(any(), any()))
+              .thenAnswer((_) async => true);
+          when(() => storageHandler.getExternalStorageDirectory())
+              .thenAnswer((_) async => Directory('external'));
+          when(() => storageHandler.deleteFile(any()))
+              .thenAnswer((_) async => true);
+          // Check if the exported values are correct
+          when(() => storageHandler.exportItems(any(), any(), any(), any()))
+              .thenAnswer((Invocation input) async => false);
+        },
+        build: () => ListCubit(databaseHandler, storageHandler),
+        act: (ListCubit cubit) async {
+          await cubit.loadItems();
+          cubit.itemPressed(1);
+
+          expect(await cubit.export(), false);
+        },
+        wait: const Duration(seconds: 3),
+        expect: () => [
+              ListLoading(),
+              ListLoaded(items, const []),
+              ListSelection(items, const [1]),
+            ],
+        verify: (_) {
+          verify(() => storageHandler.exportItems(any(), any(), any(), any()))
+              .called(1);
+        });
+  });
+
 }
