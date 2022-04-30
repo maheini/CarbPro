@@ -533,4 +533,52 @@ void main() {
         expect(await cubit.export(), false);
       },
     );
+
+    late List<File> actualFiles;
+    late String actualPath;
+    late String actualJson;
+    String expectedJson =
+        '[{"name":"item2","children":[{"description":"","imagepath":"imagepath"}]}]';
+    blocTest(
+        'The export function call StorageHandler.export with appropriate arguments',
+        setUp: () {
+          when(() => storageHandler.getPermission(any(), any()))
+              .thenAnswer((_) async => true);
+          when(() => storageHandler.getExternalStorageDirectory())
+              .thenAnswer((_) async => Directory('external'));
+          when(() => storageHandler.deleteFile(any()))
+              .thenAnswer((_) async => true);
+          // Check if the exported values are correct
+          when(() => storageHandler.exportItems(any(), any(), any(), any()))
+              .thenAnswer((Invocation input) async {
+            actualFiles = input.positionalArguments[2];
+            actualPath = input.positionalArguments[1];
+            actualJson = input.positionalArguments[0];
+            return true;
+          });
+        },
+        build: () => ListCubit(databaseHandler, storageHandler),
+        act: (ListCubit cubit) async {
+          await cubit.loadItems();
+          cubit.itemPressed(1);
+
+          expect(await cubit.export(), true);
+          expect(
+              actualFiles.isNotEmpty &&
+                  actualFiles.first.path == 'external/${child.first.imagepath}',
+              true);
+          expect(actualPath, 'external');
+          expect(actualJson, expectedJson);
+        },
+        expect: () => [
+              ListLoading(),
+              ListLoaded(items, const []),
+              ListSelection(items, const [1]),
+              ListLoaded(items, const []),
+            ],
+        verify: (_) {
+          verify(() =>
+                  storageHandler.exportItems(any(), 'external', any(), any()))
+              .called(1);
+        });
 }
