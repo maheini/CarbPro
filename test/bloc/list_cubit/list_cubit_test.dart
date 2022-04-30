@@ -521,4 +521,16 @@ void main() {
         verifyNever(() => databaseHandler.deleteItem(any()));
       },
     );
+
+    blocTest(
+      'If any exception occurs, nothing should happen and false should be returned',
+      setUp: () =>
+          when(() => databaseHandler.getChildren(any())).thenThrow(Exception()),
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(await cubit.export(), false);
+      },
+    );
 }
