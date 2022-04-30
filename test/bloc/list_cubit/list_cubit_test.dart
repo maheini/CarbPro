@@ -501,4 +501,24 @@ void main() {
       verify: (_) =>
           verifyNever(() => storageHandler.getPermission(any(), any())),
     );
+
+    blocTest(
+      'If permission is not available, nothing should happen',
+      setUp: () => when(() => storageHandler.getPermission(any(), any()))
+          .thenAnswer((_) async => false),
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(await cubit.export(), false);
+      },
+      verify: (_) {
+        verify(() => storageHandler.getPermission(any(), any())).called(1);
+        verifyNever(() => storageHandler.getExternalStorageDirectory());
+        verifyNever(() => storageHandler.deleteFile(any()));
+        verifyNever(() => databaseHandler.getChildren(any()));
+        verifyNever(() => databaseHandler.deleteAllChildren(any()));
+        verifyNever(() => databaseHandler.deleteItem(any()));
+      },
+    );
 }
