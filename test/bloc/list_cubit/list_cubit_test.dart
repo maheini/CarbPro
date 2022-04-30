@@ -695,4 +695,21 @@ void main() {
         verify(() => storageHandler.getTempStorageDirectory()).called(1);
       },
     );
+
+    blocTest(
+        'There should be a call to storageHandler.import with acoording dir '
+        'and if import returns false, nothing should happen and false should be returned',
+        setUp: () {
+          when(() => storageHandler.import(any(), any()))
+              .thenAnswer((_) async => null);
+        },
+        build: () => ListCubit(databaseHandler, storageHandler),
+        act: (ListCubit cubit) async {
+          await cubit.loadItems();
+          cubit.itemPressed(1);
+          expect(await cubit.import(MockFileAccessWrapper()), false);
+        },
+        verify: (_) {
+          verify(() => storageHandler.import(external, temp)).called(1);
+        });
 }
