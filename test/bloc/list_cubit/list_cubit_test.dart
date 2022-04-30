@@ -681,4 +681,18 @@ void main() {
         verify(() => storageHandler.getExternalStorageDirectory()).called(1);
       },
     );
+    blocTest(
+      'If temporary storage returns null, nothing should happen and false should be returned',
+      setUp: () => when(() => storageHandler.getTempStorageDirectory())
+          .thenAnswer((_) async => null),
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(await cubit.import(MockFileAccessWrapper()), false);
+      },
+      verify: (_) {
+        verify(() => storageHandler.getTempStorageDirectory()).called(1);
+      },
+    );
 }
