@@ -613,4 +613,72 @@ void main() {
         });
   });
 
+  group('Test the import function', () {
+    String json =
+        '[{"name":"item1","children":[{"description":"desc","imagepath":"imagepath"}]}]';
+    List<Item> items = [Item(1, 'item1')];
+    List<ItemChild> child = [ItemChild(1, 1, '', 'imagepath')];
+    late Directory temp;
+    late Directory external;
+    late Directory import;
+    late MockDatabaseHandler databaseHandler;
+    late MockStorageHandler storageHandler;
+    late MockFileAccessWrapper fileAccessWrapper;
+
+    setUp(() {
+      registerFallbackValue(Directory(''));
+      registerFallbackValue(File(''));
+      registerFallbackValue(ItemChild(1, 0, 'description', 'imagepath'));
+
+      temp = Directory('temp');
+      external = Directory('external');
+      import = Directory('import');
+
+      databaseHandler = MockDatabaseHandler();
+      storageHandler = MockStorageHandler();
+      fileAccessWrapper = MockFileAccessWrapper();
+
+      when(() => storageHandler.getTempStorageDirectory())
+          .thenAnswer((_) async => temp);
+      when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((_) async => external);
+      when(() => storageHandler.import(any(), any()))
+          .thenAnswer((_) async => import);
+      when(() => storageHandler.copyFile(any(), any())).thenAnswer(
+          (invocation) async => File(invocation.positionalArguments[1]));
+
+      when(() => fileAccessWrapper.readFile(any())).thenAnswer((_) async =>
+          '{"name":"item2","children":[{"description":"","imagepath":"imagepath"}]}');
+      when(() => fileAccessWrapper.exists(any())).thenAnswer((val) async {
+        File file = val.positionalArguments[0];
+        // return false to simulate that the image isn't imported already
+        if (file.path == '${external.path}/imagepath') {
+          return false;
+        }
+        return true;
+      });
+      when(() => fileAccessWrapper.readFile(any()))
+          .thenAnswer((_) async => json);
+
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+      when(() => databaseHandler.getItems()).thenAnswer((_) async => items);
+      when(() => databaseHandler.addItem(any())).thenAnswer((_) async => 1);
+      when(() => databaseHandler.addItemChild(any()))
+          .thenAnswer((_) async => 1);
+    });
+
+    blocTest(
+      'If external storage returns null, nothing should happen and false should be returned',
+      setUp: () => when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((_) async => null),
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(await cubit.import(MockFileAccessWrapper()), false);
+      },
+      verify: (_) {
+        verify(() => storageHandler.getExternalStorageDirectory()).called(1);
+      },
+    );
 }
