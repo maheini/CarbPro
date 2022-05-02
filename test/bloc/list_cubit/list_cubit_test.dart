@@ -712,4 +712,32 @@ void main() {
         verify: (_) {
           verify(() => storageHandler.import(external, temp)).called(1);
         });
+
+    late bool hasCalledItemsJson;
+    blocTest(
+        'There should be a check if the items.json exists '
+        'inside the import dir',
+        setUp: () {
+          hasCalledItemsJson = false;
+          when(() => fileAccessWrapper.exists(any())).thenAnswer((val) async {
+            File file = val.positionalArguments[0];
+            if (file.path == '${import.path}/items.json') {
+              hasCalledItemsJson = true;
+            }
+            // return false to simulate that the image isn't imported already
+            if (file.path == '${external.path}/imagepath') {
+              return false;
+            }
+            return true;
+          });
+        },
+        build: () => ListCubit(databaseHandler, storageHandler),
+        act: (ListCubit cubit) async {
+          expect(await cubit.import(fileAccessWrapper), true);
+          expect(hasCalledItemsJson, true);
+        },
+        verify: (_) {
+          verify(() => fileAccessWrapper.exists(any())).called(2);
+        });
+
 }
