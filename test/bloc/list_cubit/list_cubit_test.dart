@@ -786,4 +786,19 @@ void main() {
       },
     );
 
+    blocTest(
+      'On a error in e.g. the databaseHandler, nothing should happen and false should be returned',
+      setUp: () {
+        when(() => databaseHandler.addItem(any())).thenThrow(Exception());
+      },
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        expect(await cubit.import(fileAccessWrapper), false);
+      },
+      expect: () => [],
+      verify: (_) {
+        verify(() => databaseHandler.addItem(any())).called(1);
+      },
+    );
+  });
 }
