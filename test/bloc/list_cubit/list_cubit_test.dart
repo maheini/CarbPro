@@ -764,4 +764,26 @@ void main() {
         verify(() => fileAccessWrapper.readFile(any())).called(1);
       },
     );
+
+    blocTest(
+      'After all checks, DatabaseHandler and fileAccessWrapper should now '
+      'be called multiple times and the list should be updated',
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        expect(await cubit.import(fileAccessWrapper), true);
+      },
+      expect: () => [
+        ListLoading(),
+        ListLoaded(items, const []),
+        ListLoading(),
+        isA<ListLoaded>(),
+      ],
+      verify: (_) {
+        verify(() => databaseHandler.addItem(any())).called(1);
+        verify(() => storageHandler.copyFile(any(), any())).called(1);
+        verify(() => databaseHandler.addItemChild(any())).called(1);
+      },
+    );
+
 }
