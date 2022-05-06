@@ -36,6 +36,7 @@ dependencies:
   get_it: ^7.2.0
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
+  package_info_plus: ^1.4.2
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
@@ -74,6 +75,8 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
