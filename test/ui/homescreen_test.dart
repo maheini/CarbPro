@@ -530,4 +530,26 @@ void main() {
       expect(find.byIcon(Icons.archive), findsNothing);
     });
 
+    testWidgets(
+        'If Listcubit state is ListSelection, there should be an export button',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byIcon(Icons.archive), findsOneWidget);
+    });
+
 }
