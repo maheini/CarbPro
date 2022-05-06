@@ -552,4 +552,32 @@ void main() {
       expect(find.byIcon(Icons.archive), findsOneWidget);
     });
 
+    testWidgets(
+        'After a tap on export button, ListCubit.export should be called and if successful, '
+        'and a success message should be displayed',
+        (WidgetTester tester) async {
+      when(() => listCubit.export()).thenAnswer((_) async => true);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.archive));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.current.export_success), findsOneWidget);
+      expect(find.text(S.current.export_failure), findsNothing);
+      verify(() => listCubit.export()).called(1);
+    });
 }
