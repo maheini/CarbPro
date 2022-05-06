@@ -212,6 +212,26 @@ class S {
     );
   }
 
+  /// `Import`
+  String get import {
+    return Intl.message(
+      'Import',
+      name: 'import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About CarbPro`
+  String get about {
+    return Intl.message(
+      'About CarbPro',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Storage access not granted`
   String get storage_permission_missing {
     return Intl.message(

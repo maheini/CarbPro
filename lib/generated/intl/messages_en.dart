@@ -25,6 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "about": MessageLookupByLibrary.simpleMessage("About CarbPro"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_item": MessageLookupByLibrary.simpleMessage("Add item"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -39,6 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export failed. Are all permissions granted?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "all items were exported to /Downloads folder"),
+        "import": MessageLookupByLibrary.simpleMessage("Import"),
         "import_failure": MessageLookupByLibrary.simpleMessage(
             "Import aborted. Are all permissions granted?"),
         "items_selected": m0,
