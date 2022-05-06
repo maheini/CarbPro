@@ -10,6 +10,24 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+  final ScrollController _scrollController = ScrollController();
+  late PackageInfo _packageInfo;
+  String _version = '--';
+  String _buildNumber = '--';
+
+  void _getPackageInfo() async {
+    _packageInfo = await PackageInfo.fromPlatform();
+    _version = _packageInfo.version;
+    _buildNumber = _packageInfo.buildNumber;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getPackageInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,6 +35,30 @@ class _AboutScreenState extends State<AboutScreen> {
         title: Text(S.current.about),
         centerTitle: true,
       ),
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: Image.asset(
+                'assets/adaptive_icon.png',
+                fit: BoxFit.cover,
+                width: 350,
+              ),
+            ),
+            // const SizedBox(height: 10),
+            const Text(
+              'CarbPro',
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            ),
+            _buildAppInfo(),
+            _buildAppDescription(),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildAppInfo() {
     return SizedBox(
