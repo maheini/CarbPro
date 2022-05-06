@@ -580,4 +580,33 @@ void main() {
       expect(find.text(S.current.export_failure), findsNothing);
       verify(() => listCubit.export()).called(1);
     });
+
+    testWidgets(
+        'If ListCubit is returning false, an failure message should be displayed',
+        (WidgetTester tester) async {
+      when(() => listCubit.export()).thenAnswer((_) async => false);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.archive));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.current.export_failure), findsOneWidget);
+      expect(find.text(S.current.export_success), findsNothing);
+      verify(() => listCubit.export()).called(1);
+    });
+  });
 }
