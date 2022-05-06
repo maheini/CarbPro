@@ -107,4 +107,34 @@ class StorageHandler {
       return false;
     }
   }
+
+  Future<Directory?> import(Directory externalStorage, Directory temp,
+      {FilePicker? filepicker}) async {
+    filepicker ??= FilePicker.platform;
+
+    await filepicker.clearTemporaryFiles();
+    FilePickerResult? result = await filepicker
+        .pickFiles(type: FileType.custom, allowedExtensions: ['tar']);
+
+    if (result == null) return null;
+
+    temp = Directory(temp.path + '/carbpro_import');
+    await temp.exists() ? temp.delete(recursive: true) : temp.create();
+
+    File file = File(result.files.single.path!);
+    // Read the Tar file from disk.
+    final bytes = file.readAsBytesSync();
+    // Decode the Tar file
+    final archive = TarDecoder().decodeBytes(bytes);
+    // Extract the contents of the Tar archive to disk.
+    for (final file in archive) {
+      final outputStream = OutputFileStream('${temp.path}/${file.name}');
+      // The writeContent method will decompress the file content directly to disk without
+      // storing the decompressed data in memory.
+      file.writeContent(outputStream);
+      // Make sure to close the output stream so the File is closed.
+      outputStream.close();
+    }
+    return temp;
+  }
 }
