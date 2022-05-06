@@ -156,6 +156,28 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
           ),
         ),
+        IconButton(
+          onPressed: () async {
+            context.read<ListCubit>().export().then((bool successful) {
+              if (successful) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).export_success),
+                    duration: const Duration(seconds: 4),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).export_failure),
+                    duration: const Duration(seconds: 4),
+                  ),
+                );
+              }
+            });
+          },
+          icon: const Icon(Icons.archive),
+        ),
       ],
     );
   }
