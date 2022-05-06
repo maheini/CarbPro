@@ -17,7 +17,7 @@
     "export_success": "Alle Elemente wurden exportiert in den /downloads Ordner",
     "export_failure": "Export fehlgeschlagen. Sind alle Berechtigungen erlaubt?",
     "import_failure": "Import abgebrochen. Sind alle Berechtigungen erlaubt?",
-    "import": "Importieren",
+    "import": "Elemente importieren",
     "about": "Über CarbPro",
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Fehlende Berechtigung für den Speicher",

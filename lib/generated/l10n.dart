@@ -212,10 +212,10 @@ class S {
     );
   }
 
-  /// `Import`
+  /// `Import items`
   String get import {
     return Intl.message(
-      'Import',
+      'Import items',
       name: 'import',
       desc: '',
       args: [],

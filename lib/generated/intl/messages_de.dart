@@ -40,7 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export fehlgeschlagen. Sind alle Berechtigungen erlaubt?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "Alle Elemente wurden exportiert in den /downloads Ordner"),
-        "import": MessageLookupByLibrary.simpleMessage("Importieren"),
+        "import": MessageLookupByLibrary.simpleMessage("Elemente importieren"),
         "import_failure": MessageLookupByLibrary.simpleMessage(
             "Import abgebrochen. Sind alle Berechtigungen erlaubt?"),
         "items_selected": m0,
