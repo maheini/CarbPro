@@ -345,7 +345,7 @@ void main() {
         listCubit = MockListCubit();
         // simulate 1 loaded item
         when(() => listCubit.state)
-            .thenReturn(ListSelection([Item(1, 'item1')], const [0]));
+            .thenReturn(ListLoaded([Item(1, 'item1')], const []));
         when(() => listCubit.loadItems()).thenAnswer((_) async => true);
       });
 
