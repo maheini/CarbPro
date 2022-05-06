@@ -53,6 +53,8 @@
     "export_success": "all items were exported to /Downloads folder",
     "export_failure": "Export failed. Are all permissions granted?",
     "import_failure": "Import aborted. Are all permissions granted?",
+    "import": "Import",
+    "about": "About CarbPro",
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Storage access not granted",
     "@storage_permission_missing":{
