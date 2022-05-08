@@ -28,6 +28,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "about": MessageLookupByLibrary.simpleMessage("About CarbPro"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_item": MessageLookupByLibrary.simpleMessage("Add item"),
+        "app_description": MessageLookupByLibrary.simpleMessage(
+            "Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... "),
+        "app_developer_info": MessageLookupByLibrary.simpleMessage(
+            "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development."),
+        "build": MessageLookupByLibrary.simpleMessage("Build"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "description": MessageLookupByLibrary.simpleMessage("Description"),
@@ -40,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export failed. Are all permissions granted?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "all items were exported to /Downloads folder"),
+        "github": MessageLookupByLibrary.simpleMessage("GitHub"),
         "import": MessageLookupByLibrary.simpleMessage("Import items"),
         "import_failure": MessageLookupByLibrary.simpleMessage(
             "Import aborted. Are all permissions granted?"),
@@ -55,7 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Storage access not granted"),
         "unknown_error":
             MessageLookupByLibrary.simpleMessage("An unknown error occurred"),
+        "version": MessageLookupByLibrary.simpleMessage("Version"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
-            "Do you really want to remove the item?")
+            "Do you really want to remove the item?"),
+        "website": MessageLookupByLibrary.simpleMessage("Website")
       };
 }

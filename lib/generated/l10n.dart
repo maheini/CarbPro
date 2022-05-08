@@ -291,6 +291,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Version`
+  String get version {
+    return Intl.message(
+      'Version',
+      name: 'version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Build`
+  String get build {
+    return Intl.message(
+      'Build',
+      name: 'build',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... `
+  String get app_description {
+    return Intl.message(
+      'Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... ',
+      name: 'app_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.`
+  String get app_developer_info {
+    return Intl.message(
+      'Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.',
+      name: 'app_developer_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GitHub`
+  String get github {
+    return Intl.message(
+      'GitHub',
+      name: 'github',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Website`
+  String get website {
+    return Intl.message(
+      'Website',
+      name: 'website',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

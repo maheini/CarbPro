@@ -28,6 +28,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "about": MessageLookupByLibrary.simpleMessage("Über CarbPro"),
         "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
         "add_item": MessageLookupByLibrary.simpleMessage("Artikel hinzufügen"),
+        "app_description": MessageLookupByLibrary.simpleMessage(
+            "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... "),
+        "app_developer_info": MessageLookupByLibrary.simpleMessage(
+            "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung."),
+        "build": MessageLookupByLibrary.simpleMessage("Build"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
         "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
@@ -40,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export fehlgeschlagen. Sind alle Berechtigungen erlaubt?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "Alle Elemente wurden exportiert in den /downloads Ordner"),
+        "github": MessageLookupByLibrary.simpleMessage("GitHub"),
         "import": MessageLookupByLibrary.simpleMessage("Elemente importieren"),
         "import_failure": MessageLookupByLibrary.simpleMessage(
             "Import abgebrochen. Sind alle Berechtigungen erlaubt?"),
@@ -55,7 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Fehlende Berechtigung für den Speicher"),
         "unknown_error": MessageLookupByLibrary.simpleMessage(
             "Ein unbekannter Fehler trat auf"),
+        "version": MessageLookupByLibrary.simpleMessage("Version"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
-            "Möchtest du des Element wirklich entfernen?")
+            "Möchtest du des Element wirklich entfernen?"),
+        "website": MessageLookupByLibrary.simpleMessage("Website")
       };
 }

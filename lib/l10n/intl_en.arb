@@ -79,5 +79,12 @@
     "ok": "Ok",
     "@ok":{
         "description": "Text for ok button"
-    }
+    },
+    "@________ABOUTSCREEN________":{},
+    "version": "Version",
+    "build": "Build",
+    "app_description": "Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... ",
+    "app_developer_info": "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.",
+    "github": "GitHub",
+    "website": "Website"
 }
