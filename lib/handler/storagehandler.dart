@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:url_launcher/url_launcher.dart';
 
 class FileAccessWrapper {
   // This is a wrapper class for file operations -> designed for unit testing
@@ -36,6 +37,13 @@ class PlatformWrapper {
       await permission.isGranted;
   Future<PermissionStatus> request(Permission permission) async =>
       await permission.request();
+
+  Future<bool> openUrl(String url, {bool external = false}) async {
+    Uri uri = Uri.parse(url);
+    return external
+        ? await launchUrl(uri, mode: LaunchMode.externalApplication)
+        : await launchUrl(uri);
+  }
 }
 
 class StorageHandler {
