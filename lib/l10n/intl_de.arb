@@ -25,5 +25,12 @@
     "description_empty": "Beschreibung ist leer",
     "edit_item": "Element bearbeiten",
     "save": "Speichern",
-    "ok": "Ok"
+    "ok": "Ok",
+    "@________ABOUTSCREEN________":{},
+    "version": "Version",
+    "build": "Build",
+    "app_description": "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... ",
+    "app_developer_info": "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung.",
+    "github": "GitHub",
+    "website": "Website"
 }
