@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
           ),
         ),
+        _popupMenu(context),
       ],
     );
   }
@@ -228,6 +229,52 @@ class _HomeScreenState extends State<HomeScreen> {
             .then((value) => context.read<ListCubit>().loadItems());
       }
     }
+  }
+
+  Widget _popupMenu(BuildContext context) {
+    return PopupMenuButton(
+      onSelected: (result) async {
+        if (result == 1) {
+          context.read<ListCubit>().import(FileAccessWrapper()).then(
+            (value) {
+              if (!value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).import_failure),
+                    duration: const Duration(seconds: 4),
+                  ),
+                );
+              }
+            },
+          );
+        } else if (result == 2) {
+          Navigator.pushNamed(context, '/about');
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: _buildPopupItem(Icons.unarchive, S.of(context).import),
+          value: 1,
+        ),
+        PopupMenuItem(
+          child: _buildPopupItem(Icons.info, S.of(context).about),
+          value: 2,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPopupItem(IconData icon, String name) {
+    return Row(
+      children: <Widget>[
+        Icon(
+          icon,
+          color: Colors.black,
+        ),
+        const SizedBox(width: 5),
+        Text(name),
+      ],
+    );
   }
 
   // TODO: clean up code
