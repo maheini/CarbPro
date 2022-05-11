@@ -56,6 +56,8 @@ class _AboutScreenState extends State<AboutScreen> {
             _buildAppInfo(),
             _buildAppDescription(),
             _buildDeveloperInfo(),
+            _buildButtons(),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -107,8 +109,52 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
+  Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildWebsiteButton(),
+        const SizedBox(width: 10),
+        _buildGithubButton(),
+      ],
+    );
+  }
+
+  Widget _buildWebsiteButton() {
+    return ElevatedButton(
+      child: Text(
+        S.current.website,
+        style: const TextStyle(
+          fontSize: 17,
+        ),
         textAlign: TextAlign.justify,
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+      ),
+      onPressed: () =>
+          platformWrapper.openUrl('https://carbpro.neofix.ch', external: true),
+    );
+  }
+
+  Widget _buildGithubButton() {
+    return ElevatedButton(
+      child: Text(
+        S.current.github,
+        style: const TextStyle(
+          fontSize: 17,
+        ),
+        textAlign: TextAlign.justify,
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+      ),
+      onPressed: () => platformWrapper.openUrl(
+        'https://github.com/maheini/CarbPro',
+        external: true,
       ),
     );
   }
+
+  // TODO: Test everything, extend existing tests.
 }
