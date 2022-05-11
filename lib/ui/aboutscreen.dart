@@ -1,4 +1,5 @@
 import 'package:carbpro/generated/l10n.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -54,6 +55,7 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
             _buildAppInfo(),
             _buildAppDescription(),
+            _buildDeveloperInfo(),
           ],
         ),
       ),
@@ -83,6 +85,28 @@ class _AboutScreenState extends State<AboutScreen> {
         style: const TextStyle(
           fontSize: 17,
         ),
+        // textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  @visibleForTesting
+  PlatformWrapper platformWrapper = PlatformWrapper();
+
+  Widget _buildDeveloperInfo() {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 700),
+      padding: const EdgeInsets.all(20),
+      child: Text(
+        S.current.app_developer_info,
+        style: const TextStyle(
+          fontSize: 17,
+        ),
+        // textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
         textAlign: TextAlign.justify,
       ),
     );
