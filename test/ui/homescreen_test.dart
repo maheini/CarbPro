@@ -665,4 +665,30 @@ void main() {
 
       expect(find.byIcon(Icons.more_vert), findsOneWidget);
     });
+
+    testWidgets(
+        'After a press on the popup menu, there should be a menu'
+        'with 2 Texts', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pump();
+
+      expect(find.text(S.current.import), findsOneWidget);
+      expect(find.text(S.current.about), findsOneWidget);
+    });
+
 }
