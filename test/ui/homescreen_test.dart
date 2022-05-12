@@ -720,4 +720,34 @@ void main() {
       expect(find.text(S.current.import_failure), findsNothing);
       verify(() => listCubit.import(any())).called(1);
     });
+
+    testWidgets(
+        'After a tap on the import menu, ListCubit.import should be called '
+        'And if failing, a failure message should be displayed',
+        (WidgetTester tester) async {
+      when(() => listCubit.import(any())).thenAnswer((_) async => false);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.import));
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.current.import_failure), findsOneWidget);
+      verify(() => listCubit.import(any())).called(1);
+    });
 }
