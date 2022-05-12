@@ -750,4 +750,41 @@ void main() {
       expect(find.text(S.current.import_failure), findsOneWidget);
       verify(() => listCubit.import(any())).called(1);
     });
+
+    testWidgets(
+        'After a tap on the about menu the /about route should be called',
+        (WidgetTester tester) async {
+      bool aboutCalled = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          onGenerateRoute: (settings) {
+            if (settings.name == '/about') {
+              aboutCalled = true;
+              return MaterialPageRoute(
+                builder: (_) => Scaffold(appBar: AppBar()),
+              );
+            }
+            return null;
+          },
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.about));
+      await tester.pumpAndSettle();
+
+      expect(aboutCalled, true);
+    });
+  });
 }
