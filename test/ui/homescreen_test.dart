@@ -645,4 +645,24 @@ void main() {
       expect(find.byType(PopupMenuButton), findsNothing);
     });
 
+    testWidgets('If State is ListLoaded, the Popupmenu should be visible',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.more_vert), findsOneWidget);
+    });
 }
