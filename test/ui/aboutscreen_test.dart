@@ -31,5 +31,27 @@ void main() {
       },
     );
 
+    testWidgets(
+        'After startup, there should be a title called CarbPro text, about_carbpro as title '
+        'and an image', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const AboutScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text("CarbPro"), findsOneWidget);
+      expect(find.text(S.current.about), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
+    });
+
   });
 }
