@@ -7,10 +7,11 @@ class AboutScreen extends StatefulWidget {
   const AboutScreen({Key? key}) : super(key: key);
 
   @override
-  State<AboutScreen> createState() => _AboutScreenState();
+  State<AboutScreen> createState() => AboutScreenState();
 }
 
-class _AboutScreenState extends State<AboutScreen> {
+@visibleForTesting
+class AboutScreenState extends State<AboutScreen> {
   final ScrollController _scrollController = ScrollController();
   late PackageInfo _packageInfo;
   String _version = '--';
