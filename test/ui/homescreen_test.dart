@@ -609,4 +609,40 @@ void main() {
       verify(() => listCubit.export()).called(1);
     });
   });
+
+  group('Test the popup menu', () {
+    late ListCubit listCubit;
+    List<Item> items = [Item(1, 'item1')];
+
+    setUp(() {
+      registerFallbackValue(FileAccessWrapper());
+      listCubit = MockListCubit();
+      // simulate 1 selected item
+      when(() => listCubit.state).thenReturn(ListLoaded(items, const []));
+      when(() => listCubit.loadItems()).thenAnswer((_) async => true);
+    });
+
+    testWidgets('If State is ListLoading, no dropdown menu should be visible',
+        (WidgetTester tester) async {
+      when(() => listCubit.state).thenReturn(ListLoading());
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(PopupMenuButton), findsNothing);
+    });
+
 }
