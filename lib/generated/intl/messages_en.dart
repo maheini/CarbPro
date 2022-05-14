@@ -57,6 +57,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "start_with_first_item":
+            MessageLookupByLibrary.simpleMessage("Start with your first Item"),
+        "start_with_first_itemchild":
+            MessageLookupByLibrary.simpleMessage("Now create a new entry"),
         "storage_permission_missing":
             MessageLookupByLibrary.simpleMessage("Storage access not granted"),
         "unknown_error":

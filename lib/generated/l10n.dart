@@ -60,6 +60,26 @@ class S {
     );
   }
 
+  /// `Start with your first Item`
+  String get start_with_first_item {
+    return Intl.message(
+      'Start with your first Item',
+      name: 'start_with_first_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now create a new entry`
+  String get start_with_first_itemchild {
+    return Intl.message(
+      'Now create a new entry',
+      name: 'start_with_first_itemchild',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Error deleting item(s)`
   String get error_deleting_item {
     return Intl.message(

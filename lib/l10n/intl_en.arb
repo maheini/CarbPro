@@ -5,6 +5,8 @@
         "description": "The current language"
     },
     "@________HOMESCREEN________":{},
+    "start_with_first_item": "Start with your first Item",
+    "start_with_first_itemchild": "Now create a new entry",
     "error_deleting_item": "Error deleting item(s)",
     "unknown_error": "An unknown error occurred",
     "@unknown_error":{
