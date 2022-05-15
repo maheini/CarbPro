@@ -112,5 +112,36 @@ void main() {
       expect(find.text(S.current.app_description), findsOneWidget);
       expect(find.text(S.current.app_developer_info), findsOneWidget);
     });
+
+    testWidgets(
+        'The about screen should contain a website button, '
+        ' after a click, StorageHandler should be called',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const AboutScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final AboutScreenState myWidgetState =
+          tester.state(find.byType(AboutScreen));
+      myWidgetState.platformWrapper = platformWrapper;
+
+      expect(find.text(S.current.website), findsOneWidget);
+      await tester.ensureVisible(find.text(S.current.website));
+      await tester.tap(find.text(S.current.website));
+      verify(() => platformWrapper.openUrl(
+          any(that: equals('https://carbpro.neofix.ch')),
+          external: any(named: 'external', that: isTrue))).called(1);
+    });
+
   });
 }
