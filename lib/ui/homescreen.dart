@@ -269,7 +269,9 @@ class _HomeScreenState extends State<HomeScreen> {
       children: <Widget>[
         Icon(
           icon,
-          color: Colors.black,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
         ),
         const SizedBox(width: 5),
         Text(name),
