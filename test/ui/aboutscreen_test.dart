@@ -91,5 +91,26 @@ void main() {
 
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
+
+    testWidgets(
+        'About screen should display the app_description and the developer_info',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const AboutScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(S.current.app_description), findsOneWidget);
+      expect(find.text(S.current.app_developer_info), findsOneWidget);
+    });
   });
 }
