@@ -143,5 +143,34 @@ void main() {
           external: any(named: 'external', that: isTrue))).called(1);
     });
 
+    testWidgets(
+        'The about screen should contain a github button, '
+        ' after a click, StorageHandler should be called',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const AboutScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final AboutScreenState myWidgetState =
+          tester.state(find.byType(AboutScreen));
+      myWidgetState.platformWrapper = platformWrapper;
+
+      expect(find.text(S.current.github), findsOneWidget);
+      await tester.ensureVisible(find.text(S.current.github));
+      await tester.tap(find.text(S.current.github));
+      verify(() => platformWrapper.openUrl(
+          any(that: equals('https://github.com/maheini/CarbPro')),
+          external: any(named: 'external', that: isTrue))).called(1);
+    });
   });
 }
