@@ -10,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:carbpro/ui/homescreen.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
+import 'package:carbpro/handler/storagehandler.dart';
 
 class MockDatabaseHandler extends Mock implements DatabaseHandler {}
 
@@ -28,10 +29,18 @@ void main() {
     testWidgets('After App startup, ListCubit.loadItems should be called',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
         home: HomeScreen(
           listCubit: listCubit,
         ),
       ));
+      await tester.pump();
       verify(() => listCubit.loadItems()).called(1);
     });
 
@@ -40,10 +49,18 @@ void main() {
         'And ItemList should display a ProgressIndicator if ListCubit is successfully registered.',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
         home: HomeScreen(
           listCubit: listCubit,
         ),
       ));
+      await tester.pump();
       expect(find.text('CarbPro'), findsOneWidget);
       expect(find.byType(ItemList), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -68,10 +85,18 @@ void main() {
         'Homescreen should display a search & Add Button in ListLoaded state',
         (WidgetTester tester) async {
           await tester.pumpWidget(MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
             home: HomeScreen(
               listCubit: listCubit,
             ),
           ));
+          await tester.pump();
           expect(find.byIcon(Icons.search), findsOneWidget);
           expect(find.byType(FloatingActionButton), findsOneWidget);
         },
@@ -82,11 +107,19 @@ void main() {
         (WidgetTester tester) async {
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
               home: HomeScreen(
                 listCubit: listCubit,
               ),
             ),
           );
+          await tester.pump();
           expect(find.byIcon(Icons.search), findsOneWidget);
           expect(find.byType(FloatingActionButton), findsOneWidget);
 
@@ -203,7 +236,7 @@ void main() {
           // Close Search bar by simulating a back button pressed
           final ByteData message = const JSONMethodCodec()
               .encodeMethodCall(const MethodCall('popRoute'));
-          await ServicesBinding.instance!.defaultBinaryMessenger
+          await ServicesBinding.instance.defaultBinaryMessenger
               .handlePlatformMessage('flutter/navigation', message, (_) {});
 
           expect(find.byType(TextField), findsOneWidget);
@@ -275,7 +308,7 @@ void main() {
           // Close Search bar by simulating a back button pressed
           final ByteData message = const JSONMethodCodec()
               .encodeMethodCall(const MethodCall('popRoute'));
-          await ServicesBinding.instance!.defaultBinaryMessenger
+          await ServicesBinding.instance.defaultBinaryMessenger
               .handlePlatformMessage('flutter/navigation', message, (_) {});
 
           expect(find.text(S.current.items_selected(1)), findsOneWidget);
