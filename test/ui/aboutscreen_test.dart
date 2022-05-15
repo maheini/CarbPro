@@ -72,5 +72,24 @@ void main() {
       expect(find.text('${S.current.version}: $_version'), findsOneWidget);
       expect(find.text('${S.current.build}: $_build'), findsOneWidget);
     });
+
+    testWidgets('All the content should be in a single scroll view',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const AboutScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+    });
   });
 }
