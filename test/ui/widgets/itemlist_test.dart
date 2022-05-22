@@ -2,8 +2,11 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:carbpro/detailscreen.dart';
+import 'package:carbpro/generated/l10n.dart';
+import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:carbpro/ui/widgets/itemlist.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,6 +64,35 @@ void main() {
 
         expect(find.text('item1'), findsOneWidget);
         expect(find.text('item2'), findsOneWidget);
+      });
+
+      testWidgets(
+          'If the List is empty, ItemList should display '
+          'a EmptyListPlaceholder, containing S.current.start_with_first_item',
+          (WidgetTester tester) async {
+        when(() => listCubit.state).thenReturn(
+          const ListLoaded([], []),
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            home: BlocProvider(
+              create: (_) => listCubit,
+              child: const ItemList(),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(find.byType(EmptyListPlaceholder), findsOneWidget);
+        expect(find.text(S.current.start_with_first_item), findsOneWidget);
       });
     },
   );
