@@ -1,3 +1,5 @@
+import 'package:carbpro/generated/l10n.dart';
+import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:flutter/material.dart';
 import 'package:carbpro/bloc/list_cubit/list_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,21 +27,27 @@ class _ItemListState extends State<ItemList> {
             state is ListFiltered) {
           // update state, because state of buildwhen isn't accurate
           state = context.read<ListCubit>().state;
-          return Material(
-            child: ListView.separated(
-                controller: _scrollController,
-                itemBuilder: (context, index) =>
-                    _generateTile(context, index, state.items[index]),
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    indent: 10,
-                    endIndent: 10,
-                    thickness: 1,
-                    height: 5,
-                  );
-                },
-                itemCount: state.items.length),
-          );
+          if (state.items.isEmpty) {
+            return EmptyListPlaceholder(
+              text: S.of(context).start_with_first_item,
+            );
+          } else {
+            return Material(
+              child: ListView.separated(
+                  controller: _scrollController,
+                  itemBuilder: (context, index) =>
+                      _generateTile(context, index, state.items[index]),
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      indent: 10,
+                      endIndent: 10,
+                      thickness: 1,
+                      height: 5,
+                    );
+                  },
+                  itemCount: state.items.length),
+            );
+          }
         } else {
           return const Center(child: CircularProgressIndicator());
         }
