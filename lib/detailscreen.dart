@@ -1,3 +1,4 @@
+import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -65,11 +66,15 @@ class _DetailScreenState extends State<DetailScreen> {
           )
         ],
       ),
-      body: GridView.count(
-        childAspectRatio: 32 / 37,
-        crossAxisCount: 2,
-        children: _generatedContentItems,
-      ),
+      body: _generatedContentItems.isEmpty
+          ? EmptyListPlaceholder(
+              text: S.of(context).start_with_first_itemchild,
+            )
+          : GridView.count(
+              childAspectRatio: 32 / 37,
+              crossAxisCount: 2,
+              children: _generatedContentItems,
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _itemEditor(),
         backgroundColor: Colors.indigo,
