@@ -5,6 +5,7 @@ import 'package:carbpro/detailscreen.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:carbpro/locator/locator.dart';
+import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,11 +49,46 @@ void main() {
           .thenAnswer((_) async => Future.value([]));
 
       // start app
-      await tester.pumpWidget(const MaterialApp(home: DetailScreen(id: 1)));
-      await tester.pump();
+      await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        home: const DetailScreen(id: 1),
+      ));
+      await tester.pumpAndSettle();
 
       expect(find.text('ItemName'), findsOneWidget);
       expect(find.byIcon(Icons.edit), findsOneWidget);
+    });
+
+    testWidgets(
+        'If no Itemchildren are available, a EmptyListPlaceholder widget should '
+        'be displayed, containing text S.current.start_with_first_itemchild',
+        (WidgetTester tester) async {
+      when(() => databaseHandler.getItem(1))
+          .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
+      when(() => databaseHandler.getChildren(1))
+          .thenAnswer((_) async => Future.value([]));
+
+      // start app
+      await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        home: const DetailScreen(id: 1),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmptyListPlaceholder), findsOneWidget);
+      expect(find.text(S.current.start_with_first_itemchild), findsOneWidget);
     });
 
     testWidgets(
