@@ -156,6 +156,4 @@ class AboutScreenState extends State<AboutScreen> {
       ),
     );
   }
-
-  // TODO: Test everything, extend existing tests.
 }
