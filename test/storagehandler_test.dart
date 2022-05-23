@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:carbpro/handler/storagehandler.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,10 @@ class MockFileAccessWrapper extends Mock implements FileAccessWrapper {}
 class MockPlatformWrapper extends Mock implements PlatformWrapper {}
 
 class MockTarFileEncoder extends Mock implements TarFileEncoder {}
+
+class MockFilePicker extends Mock implements FilePicker {}
+
+class MockFilePickerResult extends Mock implements FilePickerResult {}
 
 void main() {
   group('Test File Access', () {
