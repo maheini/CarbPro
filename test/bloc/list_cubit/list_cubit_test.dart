@@ -617,7 +617,6 @@ void main() {
     String json =
         '[{"name":"item1","children":[{"description":"desc","imagepath":"imagepath"}]}]';
     List<Item> items = [Item(1, 'item1')];
-    List<ItemChild> child = [ItemChild(1, 1, '', 'imagepath')];
     late Directory temp;
     late Directory external;
     late Directory import;
