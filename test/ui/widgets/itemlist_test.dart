@@ -94,6 +94,35 @@ void main() {
         expect(find.byType(EmptyListPlaceholder), findsOneWidget);
         expect(find.text(S.current.start_with_first_item), findsOneWidget);
       });
+
+      testWidgets(
+          'If the List is empty and ListFiltered is active, '
+          'EmptyListPlaceholder should not be visible',
+          (WidgetTester tester) async {
+        when(() => listCubit.state).thenReturn(
+          const ListFiltered('filter', [], []),
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            home: BlocProvider(
+              create: (_) => listCubit,
+              child: const ItemList(),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(find.byType(EmptyListPlaceholder), findsNothing);
+        expect(find.text(S.current.start_with_first_item), findsNothing);
+      });
     },
   );
 
