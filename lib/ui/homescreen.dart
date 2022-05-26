@@ -116,13 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(3)),
         child: Center(
           child: TextField(
+            cursorColor: Colors.grey[200],
             autofocus: true,
             onChanged: (text) => context.read<ListCubit>().setFilter(text),
             decoration: InputDecoration(
                 suffixIcon: IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.clear,
-                    color: Colors.blueGrey,
+                    color: Colors.grey[200],
                   ),
                   onPressed: () => context.read<ListCubit>().disableFilter(),
                 ),
