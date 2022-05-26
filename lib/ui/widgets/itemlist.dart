@@ -27,7 +27,7 @@ class _ItemListState extends State<ItemList> {
             state is ListFiltered) {
           // update state, because state of buildwhen isn't accurate
           state = context.read<ListCubit>().state;
-          if (state.items.isEmpty) {
+          if (state.items.isEmpty && state is! ListFiltered) {
             return EmptyListPlaceholder(
               text: S.of(context).start_with_first_item,
             );
