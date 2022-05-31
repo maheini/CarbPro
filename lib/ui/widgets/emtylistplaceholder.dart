@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO: Test everything
 class EmptyListPlaceholder extends StatelessWidget {
   const EmptyListPlaceholder({required this.text, Key? key}) : super(key: key);
 
