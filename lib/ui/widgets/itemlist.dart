@@ -41,8 +41,8 @@ class _ItemListState extends State<ItemList> {
                     return const Divider(
                       indent: 10,
                       endIndent: 10,
-                      thickness: 1,
-                      height: 5,
+                      thickness: 1.5,
+                      height: 2,
                     );
                   },
                   itemCount: state.items.length),
