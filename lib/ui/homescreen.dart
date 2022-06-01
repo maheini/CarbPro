@@ -13,11 +13,15 @@ class HomeScreen extends StatefulWidget {
   final ListCubit? listCubit;
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+@visibleForTesting
+class HomeScreenState extends State<HomeScreen> {
   late ListCubit _listCubit;
+
+  @visibleForTesting
+  final PlatformWrapper platformWrapper = PlatformWrapper();
 
   @override
   void initState() {
