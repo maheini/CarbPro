@@ -16,6 +16,8 @@ class MockDatabaseHandler extends Mock implements DatabaseHandler {}
 
 class MockListCubit extends MockCubit<ListState> implements ListCubit {}
 
+class MockPlatformWrapper extends Mock implements PlatformWrapper {}
+
 void main() {
   group('General UI layout & startup', () {
     late ListCubit listCubit;
@@ -701,7 +703,7 @@ void main() {
 
     testWidgets(
         'After a press on the popup menu, there should be a menu'
-        'with 2 Texts', (WidgetTester tester) async {
+        'with 3 Texts', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: const [
@@ -722,6 +724,7 @@ void main() {
 
       expect(find.text(S.current.import), findsOneWidget);
       expect(find.text(S.current.about), findsOneWidget);
+      expect(find.text(S.current.download_items), findsOneWidget);
     });
 
     testWidgets(
@@ -818,6 +821,43 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(aboutCalled, true);
+    });
+
+    testWidgets(
+        'After a tap on "Download items" the PlatformWrapper should be called',
+        (WidgetTester tester) async {
+      when(() => listCubit.import(any())).thenAnswer((_) async => false);
+      MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
+      when(() => mockPlatformWrapper.openUrl(any()))
+          .thenAnswer((_) async => true);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: HomeScreen(
+            listCubit: listCubit,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final HomeScreenState myWidgetState =
+          tester.state(find.byType(HomeScreen));
+      myWidgetState.platformWrapper = mockPlatformWrapper;
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.download_items));
+      await tester.pumpAndSettle();
+
+      verify(() => mockPlatformWrapper.openUrl(S.current.website_downloads_url))
+          .called(1);
     });
   });
 }
