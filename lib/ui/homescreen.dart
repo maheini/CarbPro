@@ -253,6 +253,8 @@ class HomeScreenState extends State<HomeScreen> {
             },
           );
         } else if (result == 2) {
+          platformWrapper.openUrl(S.of(context).website_downloads_url);
+        } else if (result == 3) {
           Navigator.pushNamed(context, '/about');
         }
       },
@@ -262,8 +264,13 @@ class HomeScreenState extends State<HomeScreen> {
           value: 1,
         ),
         PopupMenuItem(
-          child: _buildPopupItem(Icons.info, S.of(context).about),
+          child: _buildPopupItem(
+              Icons.cloud_download, S.of(context).download_items),
           value: 2,
+        ),
+        PopupMenuItem(
+          child: _buildPopupItem(Icons.info, S.of(context).about),
+          value: 3,
         ),
       ],
     );
