@@ -57,6 +57,7 @@
     "import_failure": "Import aborted. Are all permissions granted?",
     "import": "Import items",
     "about": "About CarbPro",
+    "download_items": "Download Items",
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Storage access not granted",
     "@storage_permission_missing":{
@@ -88,5 +89,7 @@
     "app_description": "Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... ",
     "app_developer_info": "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.",
     "github": "GitHub",
-    "website": "Website"
+    "website": "Website",
+    "website_url": "https://carbpro.neofix.ch/",
+    "website_downloads_url": "https://carbpro.neofix.ch/collection/"
 }
