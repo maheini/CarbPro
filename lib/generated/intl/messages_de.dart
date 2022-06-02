@@ -38,6 +38,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
         "description_empty":
             MessageLookupByLibrary.simpleMessage("Beschreibung ist leer"),
+        "download_items":
+            MessageLookupByLibrary.simpleMessage("Elemente herunterladen"),
         "edit_item": MessageLookupByLibrary.simpleMessage("Element bearbeiten"),
         "error_deleting_item": MessageLookupByLibrary.simpleMessage(
             "Fehler beim Löschen der Einträge"),
@@ -68,6 +70,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Möchtest du des Element wirklich entfernen?"),
-        "website": MessageLookupByLibrary.simpleMessage("Website")
+        "website": MessageLookupByLibrary.simpleMessage("Website"),
+        "website_downloads_url": MessageLookupByLibrary.simpleMessage(
+            "https://carbpro.neofix.ch/de/sammlung/"),
+        "website_url": MessageLookupByLibrary.simpleMessage(
+            "https://carbpro.neofix.ch/de/")
       };
 }

@@ -21,6 +21,7 @@
     "import_failure": "Import abgebrochen. Sind alle Berechtigungen erlaubt?",
     "import": "Elemente importieren",
     "about": "Über CarbPro",
+    "download_items": "Elemente herunterladen",
     "@________DETAILSCREEN________":{},
     "storage_permission_missing": "Fehlende Berechtigung für den Speicher",
     "description": "Beschreibung",
@@ -34,5 +35,7 @@
     "app_description": "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... ",
     "app_developer_info": "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung.",
     "github": "GitHub",
-    "website": "Website"
+    "website": "Website",
+    "website_url": "https://carbpro.neofix.ch/de/",
+    "website_downloads_url": "https://carbpro.neofix.ch/de/sammlung/"
 }

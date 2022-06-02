@@ -252,6 +252,16 @@ class S {
     );
   }
 
+  /// `Download Items`
+  String get download_items {
+    return Intl.message(
+      'Download Items',
+      name: 'download_items',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Storage access not granted`
   String get storage_permission_missing {
     return Intl.message(
@@ -367,6 +377,26 @@ class S {
     return Intl.message(
       'Website',
       name: 'website',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://carbpro.neofix.ch/`
+  String get website_url {
+    return Intl.message(
+      'https://carbpro.neofix.ch/',
+      name: 'website_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://carbpro.neofix.ch/collection/`
+  String get website_downloads_url {
+    return Intl.message(
+      'https://carbpro.neofix.ch/collection/',
+      name: 'website_downloads_url',
       desc: '',
       args: [],
     );
