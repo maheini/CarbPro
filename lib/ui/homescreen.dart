@@ -21,7 +21,7 @@ class HomeScreenState extends State<HomeScreen> {
   late ListCubit _listCubit;
 
   @visibleForTesting
-  final PlatformWrapper platformWrapper = PlatformWrapper();
+  PlatformWrapper platformWrapper = PlatformWrapper();
 
   @override
   void initState() {
@@ -285,8 +285,8 @@ class HomeScreenState extends State<HomeScreen> {
               ? Colors.white
               : Colors.black,
         ),
-        const SizedBox(width: 5),
-        Text(name),
+        const SizedBox(width: 10),
+        Flexible(child: Text(name)),
       ],
     );
   }
