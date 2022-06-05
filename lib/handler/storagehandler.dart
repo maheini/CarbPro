@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -47,12 +48,21 @@ class PlatformWrapper {
         ? await launchUrl(uri, mode: LaunchMode.externalApplication)
         : await launchUrl(uri);
   }
+
+  Future<int?> getSdkVersion() async {
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    return androidInfo.version.sdkInt;
+  }
   // coverage:ignore-end
 }
 
 class StorageHandler {
+  @visibleForTesting
+  PlatformWrapper platformWrapper = PlatformWrapper();
   late final FileAccessWrapper _fileAccessWrapper;
   StorageHandler(this._fileAccessWrapper);
+
+  Future<int?> getSdkVersion() async => platformWrapper.getSdkVersion();
 
   Future<Directory?> getExternalStorageDirectory() async {
     return await path_provider.getExternalStorageDirectory();
