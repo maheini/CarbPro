@@ -273,4 +273,23 @@ void main() {
       );
     },
   );
+
+  group('Test Various small methods from StorageHandler', () {
+    test(
+        'StorageHandler.getSdkVersion should call Platformwrapper.getSdkVersion',
+        () async {
+      // Arrange
+      StorageHandler storageHandler = StorageHandler(FileAccessWrapper());
+      MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
+      when(() => mockPlatformWrapper.getSdkVersion())
+          .thenAnswer((_) async => 23);
+      storageHandler.platformWrapper = mockPlatformWrapper;
+
+      // Act
+      final actual = await storageHandler.getSdkVersion();
+
+      // Assert
+      expect(actual, 23);
+    });
+  });
 }
