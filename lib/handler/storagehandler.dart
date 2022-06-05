@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 class FileAccessWrapper {
   // This is a wrapper class for file operations -> designed for unit testing
 
+  // coverage:ignore-start
   Future<bool> exists(File file) async => file.exists();
   Future<bool> existsDir(Directory dir) async => dir.exists();
   Future<bool> writeFile(File file, String content) async {
@@ -25,6 +26,7 @@ class FileAccessWrapper {
   Future<RandomAccessFile> openFile(File file) async => file.open();
   Future<File> copyFile(File file, String newPath) async => file.copy(newPath);
   Future<FileSystemEntity> deleteFile(File file) async => file.delete();
+  // coverage:ignore-end
 }
 
 class PlatformWrapper {
@@ -32,6 +34,7 @@ class PlatformWrapper {
   //
   // Its purpose is to provide a unit testable interface.
 
+  // coverage:ignore-start
   bool isAndroid() => Platform.isAndroid;
   Future<bool> isGranted(Permission permission) async =>
       await permission.isGranted;
@@ -44,6 +47,7 @@ class PlatformWrapper {
         ? await launchUrl(uri, mode: LaunchMode.externalApplication)
         : await launchUrl(uri);
   }
+  // coverage:ignore-end
 }
 
 class StorageHandler {
