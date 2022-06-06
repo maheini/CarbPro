@@ -30,6 +30,7 @@ class _ItemListState extends State<ItemList> {
           if (state.items.isEmpty && state is! ListFiltered) {
             return EmptyListPlaceholder(
               text: S.of(context).start_with_first_item,
+              title: S.of(context).welcome,
             );
           } else {
             return Material(

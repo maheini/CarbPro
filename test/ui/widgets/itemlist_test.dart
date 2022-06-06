@@ -68,8 +68,8 @@ void main() {
 
       testWidgets(
           'If the List is empty, ItemList should display '
-          'a EmptyListPlaceholder, containing S.current.start_with_first_item',
-          (WidgetTester tester) async {
+          'a EmptyListPlaceholder, containing S.current.welcome and '
+          'S.current.start_with_first_item', (WidgetTester tester) async {
         when(() => listCubit.state).thenReturn(
           const ListLoaded([], []),
         );
@@ -92,6 +92,7 @@ void main() {
         await tester.pump();
 
         expect(find.byType(EmptyListPlaceholder), findsOneWidget);
+        expect(find.text(S.current.welcome), findsOneWidget);
         expect(find.text(S.current.start_with_first_item), findsOneWidget);
       });
 
