@@ -48,7 +48,8 @@ class DatabaseHandler {
     List<Item> result = [];
 
     List<Map> queryResult =
-        await _database?.rawQuery('SELECT * FROM items') ?? [];
+        await _database?.rawQuery('SELECT * FROM items ORDER BY name ASC') ??
+            [];
     for (var element in queryResult) {
       if (element.containsKey('id') && element.containsKey('name')) {
         Item newItem = Item(element['id'] is int ? element['id'] : 0,
