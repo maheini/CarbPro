@@ -2,6 +2,7 @@
     "@@locale": "de",
     "language": "Deutsch",
     "@________HOMESCREEN________":{},
+    "welcome": "Willkommen",
     "start_with_first_item": "Starte mit deinem ersten Element",
     "start_with_first_itemchild": "Erstelle nun einen Eintrag",
     "error_deleting_item": "Fehler beim Löschen der Einträge",

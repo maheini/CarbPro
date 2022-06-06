@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "website_downloads_url": MessageLookupByLibrary.simpleMessage(
             "https://carbpro.neofix.ch/collection/"),
         "website_url":
-            MessageLookupByLibrary.simpleMessage("https://carbpro.neofix.ch/")
+            MessageLookupByLibrary.simpleMessage("https://carbpro.neofix.ch/"),
+        "welcome": MessageLookupByLibrary.simpleMessage("Welcome")
       };
 }
