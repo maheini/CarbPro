@@ -141,7 +141,9 @@ class StorageHandler {
     if (result == null) return null;
 
     temp = Directory(temp.path + '/carbpro_import');
-    await temp.exists() ? temp.delete(recursive: true) : temp.create();
+    await temp.exists()
+        ? await temp.delete(recursive: true)
+        : await temp.create();
 
     File file = File(result.files.single.path!);
     // Read the Tar file from disk.
@@ -155,7 +157,7 @@ class StorageHandler {
       // storing the decompressed data in memory.
       file.writeContent(outputStream);
       // Make sure to close the output stream so the File is closed.
-      outputStream.close();
+      await outputStream.close();
     }
     return temp;
   }
