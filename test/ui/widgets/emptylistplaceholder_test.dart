@@ -16,8 +16,28 @@ void main() {
           ),
         ),
       );
-
+      expect(find.byType(Text), findsOneWidget);
       expect(find.text('message'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
+    });
+
+    testWidgets('If title is set, it should be displayed',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(),
+          darkTheme: ThemeData.dark(),
+          themeMode: ThemeMode.system,
+          home: const EmptyListPlaceholder(
+            text: 'message',
+            title: 'title',
+          ),
+        ),
+      );
+
+      expect(find.byType(Text), findsNWidgets(2));
+      expect(find.text('message'), findsOneWidget);
+      expect(find.text('title'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
     });
 
