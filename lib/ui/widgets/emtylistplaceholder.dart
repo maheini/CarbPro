@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class EmptyListPlaceholder extends StatelessWidget {
-  const EmptyListPlaceholder({required this.text, Key? key}) : super(key: key);
+  const EmptyListPlaceholder({required this.text, this.title, Key? key})
+      : super(key: key);
 
   final String text;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +13,12 @@ class EmptyListPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          title == null
+              ? const SizedBox()
+              : Text(
+                  title ?? '',
+                  style: const TextStyle(fontSize: 35),
+                ),
           Text(
             text,
             style: const TextStyle(fontSize: 20),
