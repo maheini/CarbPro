@@ -3,8 +3,10 @@ import 'package:archive/archive_io.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FileAccessWrapper {
@@ -52,6 +54,21 @@ class PlatformWrapper {
   Future<int?> getSdkVersion() async {
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     return androidInfo.version.sdkInt;
+  }
+
+  Future<String> getAppVersion() async {
+    PackageInfo _packageInfo = await PackageInfo.fromPlatform();
+    return _packageInfo.version;
+  }
+
+  Future<bool> setPreference(String name, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    return await prefs.setString(name, value);
+  }
+
+  Future<String?> getPreference(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(name);
   }
   // coverage:ignore-end
 }
