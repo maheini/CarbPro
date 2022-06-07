@@ -24,12 +24,14 @@ void main() {
 
     setUp(() {
       listCubit = MockListCubit();
+      when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
       when(() => listCubit.state).thenReturn(ListLoading());
       when(() => listCubit.loadItems()).thenAnswer((_) async => true);
     });
 
-    testWidgets('After App startup, ListCubit.loadItems should be called',
-        (WidgetTester tester) async {
+    testWidgets(
+        'After App startup, ListCubit.checkForFirsLoad and then'
+        ' ListCubit.loadItems should be called', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: const [
           S.delegate,
@@ -43,6 +45,7 @@ void main() {
         ),
       ));
       await tester.pump();
+      verify(() => listCubit.checkForFirstLoad()).called(1);
       verify(() => listCubit.loadItems()).called(1);
     });
 
@@ -79,6 +82,7 @@ void main() {
 
       setUp(() {
         listCubit = MockListCubit();
+        when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
         when(() => listCubit.state).thenReturn(const ListLoaded([], []));
         when(() => listCubit.loadItems()).thenAnswer((_) async => true);
       });
@@ -139,6 +143,7 @@ void main() {
 
       setUp(() {
         listCubit = MockListCubit();
+        when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
         when(() => listCubit.state).thenReturn(const ListFiltered('', [], []));
         when(() => listCubit.loadItems()).thenAnswer((_) async => true);
       });
@@ -255,6 +260,7 @@ void main() {
 
       setUp(() {
         listCubit = MockListCubit();
+        when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
         // simulate 1 loaded and 1 selected item
         when(() => listCubit.state)
             .thenReturn(ListSelection([Item(0, 'item1')], const [0]));
@@ -378,6 +384,7 @@ void main() {
 
       setUp(() {
         listCubit = MockListCubit();
+        when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
         // simulate 1 loaded item
         when(() => listCubit.state)
             .thenReturn(ListLoaded([Item(1, 'item1')], const []));
@@ -536,6 +543,7 @@ void main() {
 
     setUp(() {
       listCubit = MockListCubit();
+      when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
       // simulate 1 selected item
       when(() => listCubit.state).thenReturn(ListSelection(items, const [1]));
       when(() => listCubit.loadItems()).thenAnswer((_) async => true);
@@ -652,6 +660,7 @@ void main() {
     setUp(() {
       registerFallbackValue(FileAccessWrapper());
       listCubit = MockListCubit();
+      when(() => listCubit.checkForFirstLoad()).thenAnswer((_) async => true);
       // simulate 1 selected item
       when(() => listCubit.state).thenReturn(ListLoaded(items, const []));
       when(() => listCubit.loadItems()).thenAnswer((_) async => true);
