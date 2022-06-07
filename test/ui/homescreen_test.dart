@@ -828,7 +828,8 @@ void main() {
         (WidgetTester tester) async {
       when(() => listCubit.import(any())).thenAnswer((_) async => false);
       MockPlatformWrapper mockPlatformWrapper = MockPlatformWrapper();
-      when(() => mockPlatformWrapper.openUrl(any()))
+      when(() => mockPlatformWrapper.openUrl(any(),
+              external: any(named: 'external', that: isTrue)))
           .thenAnswer((_) async => true);
 
       await tester.pumpWidget(
@@ -856,8 +857,8 @@ void main() {
       await tester.tap(find.text(S.current.download_items));
       await tester.pumpAndSettle();
 
-      verify(() => mockPlatformWrapper.openUrl(S.current.website_downloads_url))
-          .called(1);
+      verify(() => mockPlatformWrapper.openUrl(S.current.website_downloads_url,
+          external: any(named: 'external', that: isTrue))).called(1);
     });
   });
 }

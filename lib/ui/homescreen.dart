@@ -253,7 +253,8 @@ class HomeScreenState extends State<HomeScreen> {
             },
           );
         } else if (result == 2) {
-          platformWrapper.openUrl(S.of(context).website_downloads_url);
+          platformWrapper.openUrl(S.of(context).website_downloads_url,
+              external: true);
         } else if (result == 3) {
           Navigator.pushNamed(context, '/about');
         }
