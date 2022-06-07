@@ -554,11 +554,28 @@ void main() {
       },
     );
 
+    blocTest(
+      'ListCubit should check for the SDK version. If SDK is equal or below 29, '
+      'Permission.Storage should be checked/requested',
+      setUp: () {
+        when(() => storageHandler.getSdkVersion()).thenAnswer((_) async => 29);
+        when(() => storageHandler.getPermission(Permission.storage, any()))
+            .thenAnswer((_) async => true);
+      },
       build: () => ListCubit(databaseHandler, storageHandler),
       act: (ListCubit cubit) async {
         await cubit.loadItems();
         cubit.itemPressed(1);
-        expect(await cubit.export(), false);
+        await cubit.export();
+      },
+      verify: (_) {
+        verify(() => storageHandler.getSdkVersion()).called(1);
+        verify(() => storageHandler.getPermission(Permission.storage, any()))
+            .called(1);
+        verifyNever(() => storageHandler.getPermission(
+            Permission.manageExternalStorage, any()));
+      },
+    );
       },
       verify: (_) {
         verify(() => storageHandler.getPermission(any(), any())).called(1);
