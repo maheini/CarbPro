@@ -530,6 +530,30 @@ void main() {
             () => storageHandler.getPermission(Permission.storage, any()));
       },
     );
+
+    blocTest(
+      'If Permission is denied for ManageExternalStorage, nothing should happen',
+      setUp: () {
+        when(() => storageHandler.getSdkVersion()).thenAnswer((_) async => 30);
+        when(() => storageHandler.getPermission(
+                Permission.manageExternalStorage, any()))
+            .thenAnswer((_) async => false);
+      },
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.loadItems();
+        cubit.itemPressed(1);
+        expect(false, await cubit.export());
+      },
+      verify: (_) {
+        verify(() => storageHandler.getSdkVersion()).called(1);
+        verify(() => storageHandler.getPermission(
+            Permission.manageExternalStorage, any())).called(1);
+        verifyNever(
+            () => storageHandler.getPermission(Permission.storage, any()));
+      },
+    );
+
       build: () => ListCubit(databaseHandler, storageHandler),
       act: (ListCubit cubit) async {
         await cubit.loadItems();
