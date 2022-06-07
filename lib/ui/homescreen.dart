@@ -27,8 +27,13 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     _listCubit = widget.listCubit ??
         ListCubit(locator<DatabaseHandler>(), locator<StorageHandler>());
-    _listCubit.loadItems();
+    _load();
     super.initState();
+  }
+
+  void _load() async {
+    await _listCubit.checkForFirstLoad();
+    _listCubit.loadItems();
   }
 
   @override
