@@ -1,13 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:archive/archive_io.dart';
 import 'package:bloc/bloc.dart';
 import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:carbpro/handler/databasehandler.dart';
 import 'package:carbpro/handler/storagehandler.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:carbpro/datamodels/item.dart';
 import 'package:equatable/equatable.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../generated/l10n.dart';
 
 part 'list_state.dart';
 
@@ -238,6 +244,99 @@ class ListCubit extends Cubit<ListState> {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Checks if the app is loaded the first time and if yes, loads the initial data
+  Future<void> checkForFirstLoad(
+      {PlatformWrapper? wrapper, FileAccessWrapper? fileAccessWrapper}) async {
+    // prepare dependencies
+    wrapper ??= PlatformWrapper();
+    fileAccessWrapper ??= FileAccessWrapper();
+
+    String? version = await wrapper.getPreference('carbpro_version');
+    if (version == null || version.isEmpty) {
+      try {
+        // Prepare (load all directorys and permissions)
+        Directory? external =
+            await storageHandler.getExternalStorageDirectory();
+        Directory? temp = await storageHandler.getTempStorageDirectory();
+        if (external == null || temp == null) {
+          return;
+        }
+
+        //extract assets to temp file
+        temp = Directory(temp.path + '/carbpro_import');
+        await temp.exists()
+            ? await temp.delete(recursive: true)
+            : await temp.create();
+
+        // Select localized asset
+        final bytes = await rootBundle.load(S.current.language == 'Deutsch'
+            ? 'assets/carbpro_import_de.tar'
+            : 'assets/carbpro_import_en.tar');
+        // Read the Tar file from assets
+        Uint8List audioUint8List =
+            bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+
+        // Decode the Tar file
+        final archive = TarDecoder().decodeBytes(audioUint8List);
+        // Extract the contents of the Tar archive to disk.
+        for (final file in archive) {
+          final outputStream = OutputFileStream('${temp.path}/${file.name}');
+          // The writeContent method will decompress the file content directly to disk without
+          // storing the decompressed data in memory.
+          file.writeContent(outputStream);
+          // Make sure to close the output stream so the File is closed.
+          await outputStream.close();
+        }
+
+        // Read content and check if it is a valid json & files
+        File itemsFile = File('${temp.path}/items.json');
+        if (!await fileAccessWrapper.exists(itemsFile)) return;
+        List<dynamic> content =
+            jsonDecode(await fileAccessWrapper.readFile(itemsFile) ?? '');
+        // check for existance of images
+        for (final Map<String, dynamic> item in content) {
+          List<dynamic> children = item['children'];
+          for (final Map<String, dynamic> child in children) {
+            // check if temp file exists
+            if (!await fileAccessWrapper
+                .exists(File('${temp.path}/${child['imagepath']}'))) {
+              return;
+            }
+          }
+        }
+
+        // Import all files & content to the database & storage
+        const uuid = Uuid();
+        for (final Map<String, dynamic> item in content) {
+          // Map<String, dynamic> item = jsonDecode(element);
+          final parentID = await databaseHandler.addItem(item['name']);
+          List<dynamic> children = item['children'];
+
+          for (final Map<String, dynamic> child in children) {
+            String newName = uuid.v4();
+            await storageHandler.copyFile('${temp.path}/${child['imagepath']}',
+                '${external.path}/$newName');
+            await databaseHandler.addItemChild(
+              ItemChild(
+                0,
+                parentID,
+                child['description'],
+                newName,
+              ),
+            );
+          }
+        }
+        // Set shared preference value to current version
+        //     -> to prevent reloading next startup
+        await wrapper.setPreference(
+            'carbpro_version', await wrapper.getAppVersion());
+        return;
+      } catch (e) {
+        return;
+      }
     }
   }
 }
