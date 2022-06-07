@@ -104,10 +104,6 @@ class StorageHandler {
       List<File> images, PlatformWrapper platformWrapper,
       {TarFileEncoder? encoder}) async {
     try {
-      if (!await platformWrapper.isGranted(Permission.manageExternalStorage)) {
-        return false;
-      }
-
       // Write json file
       File output = File(externalStorageDir + '/items.json');
       if (!await _fileAccessWrapper.writeFile(output, json)) {

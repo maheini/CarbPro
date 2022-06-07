@@ -128,7 +128,17 @@ class ListCubit extends Cubit<ListState> {
   /// Exports all selected [Item] to the external storage
   Future<bool> export() async {
     try {
-      if (state is! ListSelection ||
+      if (state is! ListSelection) {
+        return false;
+      }
+      int? sdkVersion = await storageHandler.getSdkVersion();
+      if (sdkVersion == null) {
+        return false;
+      } else if (sdkVersion <= 29 &&
+          !await storageHandler.getPermission(
+              Permission.storage, PlatformWrapper())) {
+        return false;
+      } else if (sdkVersion > 29 &&
           !await storageHandler.getPermission(
               Permission.manageExternalStorage, PlatformWrapper())) {
         return false;
