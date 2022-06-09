@@ -85,9 +85,7 @@ class ListCubit extends Cubit<ListState> {
   /// Calls loadItems() to reload the list after deletion
   Future<bool> deleteSelection() async {
     try {
-      if (state is! ListSelection ||
-          !await storageHandler.getPermission(
-              Permission.storage, PlatformWrapper())) return false;
+      if (state is! ListSelection) return false;
 
       Directory dir =
           await storageHandler.getExternalStorageDirectory() ?? Directory('');
@@ -189,7 +187,7 @@ class ListCubit extends Cubit<ListState> {
 
   Future<bool> import(FileAccessWrapper fileAccessWrapper) async {
     try {
-      // Prepare (load all directorys and permissions)
+      // Prepare (load all directorys)
       Directory? external = await storageHandler.getExternalStorageDirectory();
       Directory? temporary = await storageHandler.getTempStorageDirectory();
       if (external == null || temporary == null) {
@@ -257,7 +255,7 @@ class ListCubit extends Cubit<ListState> {
     String? version = await wrapper.getPreference('carbpro_version');
     if (version == null || version.isEmpty) {
       try {
-        // Prepare (load all directorys and permissions)
+        // Prepare (load all directorys)
         Directory? external =
             await storageHandler.getExternalStorageDirectory();
         Directory? temp = await storageHandler.getTempStorageDirectory();

@@ -414,7 +414,6 @@ void main() {
         expect(await cubit.deleteSelection(), true);
       },
       verify: (_) {
-        verify(() => storageHandler.getPermission(any(), any())).called(1);
         verify(() => storageHandler.getExternalStorageDirectory()).called(1);
         verify(() => storageHandler.deleteFile('hi/imagepath')).called(1);
         verify(() => databaseHandler.getChildren(1)).called(1);
@@ -427,32 +426,6 @@ void main() {
         ListSelection(items, const [1]),
         ListLoading(),
         ListLoaded(items, const []),
-      ],
-    );
-
-    blocTest(
-      'If permission is not available, nothing should happen'
-      'and false should be returned',
-      setUp: () => when(() => storageHandler.getPermission(any(), any()))
-          .thenAnswer((_) async => false),
-      build: () => ListCubit(databaseHandler, storageHandler),
-      act: (ListCubit cubit) async {
-        await cubit.loadItems();
-        cubit.itemPressed(1);
-        expect(await cubit.deleteSelection(), false);
-      },
-      verify: (_) {
-        verify(() => storageHandler.getPermission(any(), any())).called(1);
-        verifyNever(() => storageHandler.getExternalStorageDirectory());
-        verifyNever(() => storageHandler.deleteFile(any()));
-        verifyNever(() => databaseHandler.getChildren(any()));
-        verifyNever(() => databaseHandler.deleteAllChildren(any()));
-        verifyNever(() => databaseHandler.deleteItem(any()));
-      },
-      expect: () => [
-        ListLoading(),
-        ListLoaded(items, const []),
-        ListSelection(items, const [1]),
       ],
     );
 
