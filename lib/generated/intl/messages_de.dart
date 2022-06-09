@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("Über CarbPro"),
         "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
-        "add_item": MessageLookupByLibrary.simpleMessage("Artikel hinzufügen"),
+        "add_item": MessageLookupByLibrary.simpleMessage("Element hinzufügen"),
         "app_description": MessageLookupByLibrary.simpleMessage(
             "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... "),
         "app_developer_info": MessageLookupByLibrary.simpleMessage(
