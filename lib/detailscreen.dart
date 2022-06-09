@@ -2,7 +2,6 @@ import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'datamodels/item.dart';
@@ -86,49 +85,24 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  bool _permissionWarningShowed = false;
   //LOAD ALL VALUES OF THIS ITEM AND SET NEW STATE
   Future<List<Widget>> _buildList() async {
-    final bool hasStorageAccess = await locator<StorageHandler>()
-        .getPermission(Permission.storage, PlatformWrapper());
-    if (!hasStorageAccess) {
-      if (!_permissionWarningShowed) {
-        _permissionWarningShowed = true;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.redAccent,
-          content: Text(S.of(context).storage_permission_missing),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: S.of(context).ok.toUpperCase(),
-            onPressed: () =>
-                ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-          ),
-        ));
-      }
-    } else {
-      _permissionWarningShowed = false;
-    }
-
     //GENERATE LIST WITH IMAGES AND THEIR DESCRIPTION
     List<Widget> _tempContentList = [];
     for (int x = 0; x < _itemChildren.length; x++) {
-      _tempContentList
-          .add(await _createListTile(_itemChildren[x], hasStorageAccess));
+      _tempContentList.add(await _createListTile(_itemChildren[x]));
     }
     return _tempContentList;
   }
 
   //CREATE LIST TILE
-  Future<Widget> _createListTile(
-      ItemChild item, bool hasImageReadPermission) async {
+  Future<Widget> _createListTile(ItemChild item) async {
     Directory dir =
         await locator<StorageHandler>().getExternalStorageDirectory() ??
             Directory('');
 
     File file = File('${dir.path}/${item.imagepath}');
-    if (!await locator<StorageHandler>().exists(file)) {
-      hasImageReadPermission = false;
-    }
+    bool fileExists = await locator<StorageHandler>().exists(file);
 
     return Container(
         decoration: BoxDecoration(
@@ -139,7 +113,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: InkWell(
             onTap: () => _itemEditor(
                 itemChild: item,
-                image: hasImageReadPermission
+                image: fileExists
                     ? Image.file(
                         file,
                         fit: BoxFit.cover,
@@ -166,8 +140,7 @@ class _DetailScreenState extends State<DetailScreen> {
               );
 
               if (remove) {
-                if (hasImageReadPermission &&
-                    await locator<StorageHandler>().exists(file)) {
+                if (await locator<StorageHandler>().exists(file)) {
                   await locator<StorageHandler>().deleteFile(file.path);
                 }
                 await locator<DatabaseHandler>().deleteItemChild(item);
@@ -189,7 +162,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       borderRadius: BorderRadius.circular(3),
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child: hasImageReadPermission
+                        child: fileExists
                             ? Image.file(
                                 file,
                                 fit: BoxFit.cover,
@@ -318,13 +291,10 @@ class _DetailScreenState extends State<DetailScreen> {
   /// Updates and/or add ItemChild inside File sytem and database
   /// remember to serve newImagePath if your image isn't inside the default dir.
   ///
-  /// returns false if there is any error (file System Permission, no externalStorageDirectory, Database error...)
+  /// returns false if there is any error (file System, no externalStorageDirectory, Database error...)
   Future<bool> _setItemChild(
       {required ItemChild itemChild, String? newImagePath}) async {
     if (newImagePath != null) {
-      if (!await locator<StorageHandler>()
-          .getPermission(Permission.storage, PlatformWrapper())) return false;
-
       Directory? dirPrefix =
           await locator<StorageHandler>().getExternalStorageDirectory();
       if (dirPrefix == null) return false;
