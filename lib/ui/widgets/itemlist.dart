@@ -35,6 +35,7 @@ class _ItemListState extends State<ItemList> {
           } else {
             return Material(
               child: ListView.separated(
+                  key: const PageStorageKey<String>('ItemList'),
                   controller: _scrollController,
                   itemBuilder: (context, index) =>
                       _generateTile(context, index, state.items[index]),
