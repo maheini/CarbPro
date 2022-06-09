@@ -791,14 +791,13 @@ void main() {
 
     late bool hasCheckedImageFile;
     blocTest(
-      'After the items.json check, there should be a check for all images inside external storage',
+      'After the items.json check, there should be a check for all images inside temp storage',
       setUp: () {
         hasCheckedImageFile = false;
         when(() => fileAccessWrapper.exists(any())).thenAnswer((val) async {
           File file = val.positionalArguments[0];
-          if (file.path == '${external.path}/imagepath') {
+          if (file.path == '${import.path}/imagepath') {
             hasCheckedImageFile = true;
-            return false;
           }
           return true;
         });

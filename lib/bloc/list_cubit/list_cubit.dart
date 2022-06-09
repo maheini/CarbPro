@@ -209,8 +209,8 @@ class ListCubit extends Cubit<ListState> {
       for (final Map<String, dynamic> item in content) {
         List<dynamic> children = item['children'];
         for (final Map<String, dynamic> child in children) {
-          if (await fileAccessWrapper.exists(
-            File('${external.path}/${child['imagepath']}'),
+          if (!await fileAccessWrapper.exists(
+            File('${files.path}/${child['imagepath']}'),
           )) {
             return false;
           }
@@ -218,20 +218,24 @@ class ListCubit extends Cubit<ListState> {
       }
 
       // Import all files & content to the database
+      const uuid = Uuid();
       for (final Map<String, dynamic> item in content) {
         // Map<String, dynamic> item = jsonDecode(element);
         final parentID = await databaseHandler.addItem(item['name']);
         List<dynamic> children = item['children'];
 
         for (final Map<String, dynamic> child in children) {
+          dynamic imageName =
+              child['imagepath'] is String ? child['imagepath'] : '';
+          String newName = uuid.v4() + '.' + imageName.split('.').last;
           await storageHandler.copyFile('${files.path}/${child['imagepath']}',
-              '${external.path}/${child['imagepath']}');
+              '${external.path}/$newName');
           await databaseHandler.addItemChild(
             ItemChild(
               0,
               parentID,
               child['description'],
-              child['imagepath'],
+              newName,
             ),
           );
         }
@@ -314,7 +318,9 @@ class ListCubit extends Cubit<ListState> {
           List<dynamic> children = item['children'];
 
           for (final Map<String, dynamic> child in children) {
-            String newName = uuid.v4();
+            dynamic imageName =
+                child['imagepath'] is String ? child['imagepath'] : '';
+            String newName = uuid.v4() + '.' + imageName.split('.').last;
             await storageHandler.copyFile('${temp.path}/${child['imagepath']}',
                 '${external.path}/$newName');
             await databaseHandler.addItemChild(
