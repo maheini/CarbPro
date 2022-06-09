@@ -112,7 +112,7 @@ class ListCubit extends Cubit<ListState> {
 
   /// Filter all loaded [Items] by [filter]
   void setFilter(String filter) {
-    if (state is ListLoading || filter.toLowerCase() == _filter) {
+    if (state is ListLoading) {
       return;
     }
     _filter = filter.toLowerCase();
