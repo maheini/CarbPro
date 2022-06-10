@@ -948,4 +948,28 @@ void main() {
             .called(greaterThan(0));
       },
     );
+
+    blocTest(
+      'If the PlatformWrapper returns an empty String'
+      ', temp and external directory should be requested',
+      setUp: () {
+        when(() => platformWrapper.getPreference(any()))
+            .thenAnswer((_) async => null);
+      },
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.checkForFirstLoad(
+            wrapper: platformWrapper, fileAccessWrapper: fileAccessWrapper);
+      },
+      expect: () => [],
+      verify: (_) {
+        verify(() => platformWrapper.getPreference('carbpro_version'))
+            .called(1);
+        verify(() => storageHandler.getTempStorageDirectory())
+            .called(greaterThan(0));
+        verify(() => storageHandler.getExternalStorageDirectory())
+            .called(greaterThan(0));
+      },
+    );
+  });
 }
