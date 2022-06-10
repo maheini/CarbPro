@@ -926,4 +926,26 @@ void main() {
         verifyNever(() => storageHandler.getTempStorageDirectory());
       },
     );
+
+    blocTest(
+      'If the PlatformWrapper returns null, temp and external directory should be requested',
+      setUp: () {
+        when(() => platformWrapper.getPreference(any()))
+            .thenAnswer((_) async => null);
+      },
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.checkForFirstLoad(
+            wrapper: platformWrapper, fileAccessWrapper: fileAccessWrapper);
+      },
+      expect: () => [],
+      verify: (_) {
+        verify(() => platformWrapper.getPreference('carbpro_version'))
+            .called(1);
+        verify(() => storageHandler.getTempStorageDirectory())
+            .called(greaterThan(0));
+        verify(() => storageHandler.getExternalStorageDirectory())
+            .called(greaterThan(0));
+      },
+    );
 }
