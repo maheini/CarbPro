@@ -849,4 +849,81 @@ void main() {
       },
     );
   });
+
+  group('Test firstload functions', () {
+    late Directory temp;
+    late Directory external;
+    late Directory import;
+
+    late DatabaseHandler databaseHandler;
+    late StorageHandler storageHandler;
+    late FileAccessWrapper fileAccessWrapper;
+    late PlatformWrapper platformWrapper;
+
+    setUp(() {
+      registerFallbackValue(Directory(''));
+      registerFallbackValue(File(''));
+      registerFallbackValue(ItemChild(1, 0, 'description', 'imagepath'));
+
+      temp = Directory('temp');
+      external = Directory('external');
+      import = Directory('import');
+
+      databaseHandler = MockDatabaseHandler();
+      storageHandler = MockStorageHandler();
+      fileAccessWrapper = MockFileAccessWrapper();
+      platformWrapper = MockPlatformWrapper();
+
+      when(() => storageHandler.getTempStorageDirectory())
+          .thenAnswer((_) async => temp);
+      when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((_) async => external);
+      when(() => storageHandler.import(any(), any()))
+          .thenAnswer((_) async => import);
+      when(() => storageHandler.copyFile(any(), any())).thenAnswer(
+          (invocation) async => File(invocation.positionalArguments[1]));
+
+      when(() => fileAccessWrapper.readFile(any())).thenAnswer((_) async =>
+          '{"name":"item2","children":[{"description":"","imagepath":"imagepath"}]}');
+      when(() => fileAccessWrapper.exists(any())).thenAnswer((val) async {
+        File file = val.positionalArguments[0];
+        // return false to simulate that the image isn't imported already
+        if (file.path == '${external.path}/imagepath') {
+          return false;
+        }
+        return true;
+      });
+
+      when(() => databaseHandler.loadDatabase()).thenAnswer((_) async => true);
+
+      // real data
+      when(() => platformWrapper.getPreference('carbpro_version'))
+          .thenAnswer((_) async => '1');
+      when(() => platformWrapper.setPreference('carbpro_version', '1'))
+          .thenAnswer((_) async => true);
+      when(() => platformWrapper.getAppVersion()).thenAnswer((_) async => '1');
+
+      // Folders
+      when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((invocation) async => external);
+      when(() => storageHandler.getTempStorageDirectory())
+          .thenAnswer((invocation) async => temp);
+    });
+
+    blocTest(
+      'Firstload should call Plattformwrapper and check if the app was opened '
+      'before and return if if was opened before',
+      build: () => ListCubit(databaseHandler, storageHandler),
+      act: (ListCubit cubit) async {
+        await cubit.checkForFirstLoad(
+            wrapper: platformWrapper, fileAccessWrapper: fileAccessWrapper);
+      },
+      expect: () => [],
+      verify: (_) {
+        verify(() => platformWrapper.getPreference('carbpro_version'))
+            .called(1);
+        verifyNever(() => platformWrapper.setPreference(any(), any()));
+        verifyNever(() => storageHandler.getTempStorageDirectory());
+      },
+    );
 }
