@@ -50,7 +50,8 @@ void main() {
         {'id': 1, 'name': 'name'},
         {'id': 2, 'name': 'name2'}
       ]);
-      when(() => database.rawQuery('SELECT * FROM items ORDER BY name ASC'))
+      when(() => database
+              .rawQuery('SELECT * FROM items ORDER BY name COLLATE NOCASE ASC'))
           .thenAnswer((_) async => future);
 
       // Act
@@ -70,7 +71,8 @@ void main() {
         {'id': 1},
         {'id': 2, 'name': 'hi'}
       ]);
-      when(() => database.rawQuery('SELECT * FROM items ORDER BY name ASC'))
+      when(() => database
+              .rawQuery('SELECT * FROM items ORDER BY name COLLATE NOCASE ASC'))
           .thenAnswer((_) async => future);
 
       // Act
