@@ -1,4 +1,5 @@
 import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
+import 'package:carbpro/ui/widgets/itemcard.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -104,86 +105,49 @@ class _DetailScreenState extends State<DetailScreen> {
     File file = File('${dir.path}/${item.imagepath}');
     bool fileExists = await locator<StorageHandler>().exists(file);
 
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-          color: Colors.black.withOpacity(0.2),
-        ),
-        margin: const EdgeInsets.all(7),
-        child: InkWell(
-            onTap: () => _itemEditor(
-                itemChild: item,
-                image: fileExists
-                    ? Image.file(
-                        file,
-                        fit: BoxFit.cover,
-                      )
-                    : null),
-            onLongPress: () async {
-              bool remove = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text(S.of(context).confirm),
-                    content: Text(S.of(context).warning_confirm_remove),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text(S.of(context).cancel.toUpperCase()),
-                      ),
-                      TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: Text(S.of(context).remove.toUpperCase())),
-                    ],
-                  );
-                },
-              );
+    return ItemCard(
+      onTap: () => _itemEditor(
+          itemChild: item,
+          image: fileExists
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                )
+              : null),
+      onLongPress: () async {
+        bool remove = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(S.of(context).confirm),
+              content: Text(S.of(context).warning_confirm_remove),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(S.of(context).cancel.toUpperCase()),
+                ),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(S.of(context).remove.toUpperCase())),
+              ],
+            );
+          },
+        );
 
-              if (remove) {
-                if (await locator<StorageHandler>().exists(file)) {
-                  await locator<StorageHandler>().deleteFile(file.path);
-                }
-                await locator<DatabaseHandler>().deleteItemChild(item);
-                await _loadItemChildren();
-                _generatedContentItems = await _buildList();
-                setState(() {});
-              }
-            },
-            child: Container(
-              //CONTENT
-              padding: const EdgeInsets.all(5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                    flex: 17,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(3),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: fileExists
-                            ? Image.file(
-                                file,
-                                fit: BoxFit.cover,
-                              )
-                            : const Icon(Icons.wallpaper),
-                      ),
-                    ),
-                  ),
-                  const Spacer(
-                    flex: 1,
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Text(
-                      item.description,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                ],
-              ),
-            )));
+        if (remove) {
+          if (await locator<StorageHandler>().exists(file)) {
+            await locator<StorageHandler>().deleteFile(file.path);
+          }
+          await locator<DatabaseHandler>().deleteItemChild(item);
+          await _loadItemChildren();
+          _generatedContentItems = await _buildList();
+          setState(() {});
+        }
+      },
+      title: item.description,
+      value: '',
+      image: fileExists ? file : null,
+    );
   }
 
   // Item editor
