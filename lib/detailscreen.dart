@@ -55,6 +55,10 @@ class _DetailScreenState extends State<DetailScreen> {
   //UI BUILDER
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
+    final double itemWidth = size.width / 2;
+    final double itemHeight = itemWidth + 55;
     return Scaffold(
       appBar: AppBar(
         title: Text(_item.name),
@@ -71,7 +75,7 @@ class _DetailScreenState extends State<DetailScreen> {
               text: S.of(context).start_with_first_itemchild,
             )
           : GridView.count(
-              childAspectRatio: 32 / 37,
+              childAspectRatio: (itemWidth / itemHeight),
               crossAxisCount: 2,
               children: _generatedContentItems,
             ),
