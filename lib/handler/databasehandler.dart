@@ -121,11 +121,13 @@ class DatabaseHandler {
     for (var element in queryResult) {
       if (element.containsKey('id') &&
           element.containsKey('description') &&
+          element.containsKey('value') &&
           element.containsKey('imageurl')) {
         ItemChild newItem = ItemChild(
           element['id'] is int ? element['id'] : 0,
           element['parent'] is int ? element['parent'] : 0,
           element['description'] is String ? element['description'] : '',
+          element['value'] is double ? element['value'] : 0,
           element['imageurl'] is String ? element['imageurl'] : '',
         );
         result.add(newItem);
@@ -137,8 +139,13 @@ class DatabaseHandler {
   /// Adds a ItemChild into the Database and returns the new ID
   Future<int> addItemChild(final ItemChild itemChild) async {
     final int newID = await _database?.rawInsert(
-            'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
-            [itemChild.parentID, itemChild.description, itemChild.imagepath]) ??
+            'INSERT INTO content (parent, description, value, imageurl) VALUES (?,?,?,?)',
+            [
+              itemChild.parentID,
+              itemChild.description,
+              itemChild.value,
+              itemChild.imagepath,
+            ]) ??
         0;
     return newID;
   }
@@ -154,8 +161,13 @@ class DatabaseHandler {
   /// Updates the content of an ItemChild inside of the Database and returns the amount of affected rows
   Future<int> updateItemChild(ItemChild itemChild) async {
     final int affestedRows = await _database?.rawUpdate(
-            'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
-            [itemChild.description, itemChild.imagepath, itemChild.id]) ??
+            'UPDATE content SET description = ?, value = ?, imageurl = ? WHERE id = ?',
+            [
+              itemChild.description,
+              itemChild.value,
+              itemChild.imagepath,
+              itemChild.id,
+            ]) ??
         0;
     return affestedRows;
   }
