@@ -18,7 +18,7 @@ class DatabaseHandler {
       databaseName,
       onCreate: (db, version) {
         db.execute(
-            'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT)');
+            'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT, value FLOAT)');
         return db.execute(
           'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',
         );
@@ -32,7 +32,7 @@ class DatabaseHandler {
       databaseName,
       onCreate: (db, version) {
         db.execute(
-            'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT)');
+            'CREATE TABLE content(id INTEGER PRIMARY KEY, parent INTEGER, description TEXT, imageurl TEXT, value FLOAT)');
         return db.execute(
           'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',
         );
