@@ -27,8 +27,8 @@ class ItemCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.all(7),
       child: InkWell(
-        onTap: () => onTap,
-        onLongPress: () => onLongPress,
+        onTap: () => onTap?.call(),
+        onLongPress: () => onLongPress?.call(),
         child: Container(
           //CONTENT
           padding: const EdgeInsets.all(5),
