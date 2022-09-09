@@ -47,9 +47,9 @@ class DatabaseHandler {
   Future<List<Item>> getItems() async {
     List<Item> result = [];
 
-    List<Map> queryResult =
-        await _database?.rawQuery('SELECT * FROM items ORDER BY name COLLATE NOCASE ASC') ??
-            [];
+    List<Map> queryResult = await _database?.rawQuery(
+            'SELECT * FROM items ORDER BY name COLLATE NOCASE ASC') ??
+        [];
     for (var element in queryResult) {
       if (element.containsKey('id') && element.containsKey('name')) {
         Item newItem = Item(element['id'] is int ? element['id'] : 0,
