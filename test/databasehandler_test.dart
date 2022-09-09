@@ -23,18 +23,20 @@ void main() {
     });
     test('Test ItemChild -> Set Values and get them all back', () {
       // Arrange
-      ItemChild item = ItemChild(1, 2, 'description', 'imagepath');
+      ItemChild item = ItemChild(1, 2, 'description', 25, 'imagepath');
 
       // Act
       final int id = item.id;
       final int parentID = item.parentID;
       final String description = item.description;
+      final double value = item.value;
       final String imagepath = item.imagepath;
 
       // Assert
       expect(id, 1);
       expect(parentID, 2);
       expect(description, 'description');
+      expect(value, 25);
       expect(imagepath, 'imagepath');
     });
   }); // Finished Class testing of Item and ItemChild
