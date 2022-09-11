@@ -262,12 +262,14 @@ void main() {
           'id': 1,
           'parent': 3,
           'description': 'Description',
+          'value': 11.0,
           'imageurl': 'emptypath'
         },
         {
           'id': 2,
           'parent': 3,
           'description': 'Description2',
+          'value': 22.0,
           'imageurl': 'emptypath2'
         }
       ]);
@@ -284,6 +286,7 @@ void main() {
       expect(child.id, 1);
       expect(child.parentID, 3);
       expect(child.description, 'Description');
+      expect(child.value, 11);
       expect(child.imagepath, 'emptypath');
     });
     test(
