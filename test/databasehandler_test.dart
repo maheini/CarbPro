@@ -290,7 +290,7 @@ void main() {
       expect(child.imagepath, 'emptypath');
     });
     test(
-        'Should return 1 Child from the Database, because the DB column description is missing',
+        'Should return 1 Child from the Database, because the DB column description is missing in the second',
         () async {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
@@ -300,9 +300,15 @@ void main() {
           'id': 1,
           'parent': 3,
           'description': 'Description',
+          'value': 11.0,
           'imageurl': 'emptypath'
         },
-        {'id': 2, 'parent': 3, 'imageurl': 'emptypath2'}
+        {
+          'id': 2,
+          'parent': 3,
+          'value': 22.0,
+          'imageurl': 'emptypath2',
+        }
       ]); //Missing column here :)
       when(() => mockDatabase
               .rawQuery('SELECT * FROM content WHERE parent = ?', [3]))
@@ -317,6 +323,7 @@ void main() {
       expect(child.id, 1);
       expect(child.parentID, 3);
       expect(child.description, 'Description');
+      expect(child.value, 11);
       expect(child.imagepath, 'emptypath');
     });
 
