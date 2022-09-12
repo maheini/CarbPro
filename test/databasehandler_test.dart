@@ -332,11 +332,15 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      ItemChild itemChild = ItemChild(0, 1, 'description', 11, 'imagepath');
       when(() => mockDatabase.rawInsert(
-              'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
-              [1, 'description', 'imagepath']))
-          .thenAnswer((realInvocation) async => Future.value(5));
+              'INSERT INTO content (parent, description, value, imageurl) VALUES (?,?,?,?)',
+              [
+                1,
+                'description',
+                11.0,
+                'imagepath'
+              ])).thenAnswer((realInvocation) async => Future.value(5));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
@@ -349,11 +353,15 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      ItemChild itemChild = ItemChild(0, 1, 'description', 11, 'imagepath');
       when(() => mockDatabase.rawInsert(
-              'INSERT INTO content (parent, description, imageurl) VALUES (?,?,?)',
-              [1, 'description', 'imagepath']))
-          .thenAnswer((realInvocation) async => Future.value(0));
+              'INSERT INTO content (parent, description, value, imageurl) VALUES (?,?,?,?)',
+              [
+                1,
+                'description',
+                11.0,
+                'imagepath'
+              ])).thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
       final int id = await databaseHandler.addItemChild(itemChild);
