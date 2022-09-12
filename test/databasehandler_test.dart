@@ -377,7 +377,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      ItemChild itemChild = ItemChild(1, 1, 'description', 'imagepath');
+      ItemChild itemChild = ItemChild(1, 1, 'description', 11, 'imagepath');
       when(() =>
               mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [1]))
           .thenAnswer((realInvocation) async => Future.value(1));
@@ -394,7 +394,7 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      ItemChild itemChild = ItemChild(0, 1, 'description', 'imagepath');
+      ItemChild itemChild = ItemChild(0, 1, 'description', 11, 'imagepath');
       when(() =>
               mockDatabase.rawDelete('DELETE FROM content WHERE id = ?', [0]))
           .thenAnswer((realInvocation) async => Future.value(0));
