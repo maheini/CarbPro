@@ -73,23 +73,21 @@ class ItemCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(4),
                         color: Colors.blue[800],
-                        child: Expanded(
-                          child: DottedBorder(
-                            borderType: BorderType.Rect,
-                            strokeWidth: 2,
-                            color: Colors.white.withOpacity(0.7),
-                            dashPattern: const [6, 4],
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 5),
-                                child: Text(
-                                  value + ' g KH',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                  ),
+                        child: DottedBorder(
+                          borderType: BorderType.Rect,
+                          strokeWidth: 2,
+                          color: Colors.white.withOpacity(0.7),
+                          dashPattern: const [6, 4],
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              child: Text(
+                                value + ' g KH',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
