@@ -156,7 +156,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   // Item editor
   void _itemEditor({ItemChild? itemChild, Image? image}) async {
-    itemChild ??= ItemChild(0, widget.id, '', '');
+    itemChild ??= ItemChild(0, widget.id, '', 0, '');
     File? newImageFile;
     TextEditingController itemNameController =
         TextEditingController(text: itemChild.description);
