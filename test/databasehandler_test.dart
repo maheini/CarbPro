@@ -436,11 +436,16 @@ void main() {
       // Arrange
       MockDatabase mockDatabase = MockDatabase();
       DatabaseHandler databaseHandler = DatabaseHandler(mockDatabase);
-      ItemChild itemChild = ItemChild(0, 2, 'newDescription', 'newImagepath');
+      ItemChild itemChild =
+          ItemChild(0, 2, 'newDescription', 11, 'newImagepath');
       when(() => mockDatabase.rawUpdate(
-              'UPDATE content SET description = ?, imageurl = ? WHERE id = ?',
-              ['newDescription', 'newImagepath', 0]))
-          .thenAnswer((realInvocation) async => Future.value(0));
+              'UPDATE content SET description = ?, value = ?, imageurl = ? WHERE id = ?',
+              [
+                'newDescription',
+                11.0,
+                'newImagepath',
+                0
+              ])).thenAnswer((realInvocation) async => Future.value(0));
 
       // Act
       final int affectedRows = await databaseHandler.updateItemChild(itemChild);
