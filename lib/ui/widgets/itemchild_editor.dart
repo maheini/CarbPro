@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
+// TODO: Add tests
 class ItemChildEditor extends StatefulWidget {
   const ItemChildEditor({
     required this.itemChild,
