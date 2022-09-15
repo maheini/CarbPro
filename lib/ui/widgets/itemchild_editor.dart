@@ -26,6 +26,32 @@ class ItemChildEditor extends StatefulWidget {
 }
 
 class _ItemChildEditorState extends State<ItemChildEditor> {
+  File? image;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _valueController = TextEditingController();
+
+  File? newImageFile;
+
+  @override
+  void initState() {
+    _loadImage();
+    super.initState();
+  }
+
+  void _loadImage() async {
+    Directory dir =
+        await locator<StorageHandler>().getExternalStorageDirectory() ??
+            Directory('');
+    File file = File('${dir.path}/${widget.itemChild.imagepath}');
+    bool fileExists = await locator<StorageHandler>().exists(file);
+
+    if (fileExists) {
+      image = file;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
 
