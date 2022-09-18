@@ -27,6 +27,8 @@
     "storage_permission_missing": "Fehlende Berechtigung für den Speicher",
     "description": "Beschreibung",
     "description_empty": "Beschreibung ist leer",
+    "value": "Wert",
+    "value_empty": "Wert ist leer",
     "edit_item": "Element bearbeiten",
     "save": "Speichern",
     "ok": "Ok",
