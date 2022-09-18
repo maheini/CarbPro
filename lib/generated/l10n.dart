@@ -302,6 +302,26 @@ class S {
     );
   }
 
+  /// `Value`
+  String get value {
+    return Intl.message(
+      'Value',
+      name: 'value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value is empty`
+  String get value_empty {
+    return Intl.message(
+      'Value is empty',
+      name: 'value_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Edit item`
   String get edit_item {
     return Intl.message(

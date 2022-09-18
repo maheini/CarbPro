@@ -67,6 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Fehlende Berechtigung für den Speicher"),
         "unknown_error": MessageLookupByLibrary.simpleMessage(
             "Ein unbekannter Fehler trat auf"),
+        "value": MessageLookupByLibrary.simpleMessage("Wert"),
+        "value_empty": MessageLookupByLibrary.simpleMessage("Wert ist leer"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "warning_confirm_remove": MessageLookupByLibrary.simpleMessage(
             "Möchtest du des Element wirklich entfernen?"),
