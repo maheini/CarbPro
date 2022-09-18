@@ -72,6 +72,8 @@
     "@description_empty":{
         "description": "Message if description is empty"
     },
+    "value": "Value",
+    "value_empty": "Value is empty",
     "edit_item": "Edit item",
     "@edit_item":{
         "description": "Text displayed for edit item buttons"
