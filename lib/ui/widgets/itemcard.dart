@@ -13,7 +13,7 @@ class ItemCard extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
-  final String value;
+  final double value;
   final File? image;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -83,7 +83,11 @@ class ItemCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 5),
                               child: Text(
-                                value + ' g KH',
+                                value.toStringAsFixed(
+                                        value.truncateToDouble() == value
+                                            ? 0
+                                            : 1) +
+                                    ' g KH',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 15,
