@@ -110,14 +110,7 @@ class _DetailScreenState extends State<DetailScreen> {
     bool fileExists = await locator<StorageHandler>().exists(file);
 
     return ItemCard(
-      onTap: () => _itemEditor(
-          itemChild: item,
-          image: fileExists
-              ? Image.file(
-                  file,
-                  fit: BoxFit.cover,
-                )
-              : null),
+      onTap: () => _itemEditor(itemChild: item),
       onLongPress: () async {
         bool remove = await showDialog(
           context: context,
