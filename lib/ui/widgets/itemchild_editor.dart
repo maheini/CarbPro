@@ -57,65 +57,125 @@ class _ItemChildEditorState extends State<ItemChildEditor> {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _nameController,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+        child: Container(
+          //CONTENT
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 5),
+              TextField(
+                controller: _nameController,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                decoration: InputDecoration(
+                  hintText: S.of(context).description,
+                ),
               ),
-              decoration: InputDecoration(
-                hintText: S.of(context).description,
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                _pickImage().then((file) {
-                  if (file != null) {
-                    setState(() => image = file);
-                  }
-                });
-              },
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: image != null
-                      ? Image.file(
-                          image!,
-                          fit: BoxFit.cover,
-                        )
-                      : Center(
-                          child: CircleAvatar(
-                            radius: 45,
-                            backgroundColor: Colors.black.withOpacity(0.1),
-                            child: const Icon(
-                              Icons.add_photo_alternate_outlined,
-                              size: 50,
+              const SizedBox(height: 5),
+              Stack(
+                alignment: AlignmentDirectional.bottomCenter,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.grey[200],
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        _pickImage().then((file) {
+                          if (file != null) {
+                            setState(() => image = file);
+                          }
+                        });
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: image != null
+                              ? Image.file(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Center(
+                                  child: CircleAvatar(
+                                    radius: 45,
+                                    backgroundColor: Colors.grey[350],
+                                    child: const Icon(
+                                      Icons.add_photo_alternate_outlined,
+                                      size: 50,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Flexible(child: IntrinsicWidth(child: TextField())),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        color: Colors.blue[800],
+                        child: DottedBorder(
+                          borderType: BorderType.Rect,
+                          strokeWidth: 2,
+                          color: Colors.white.withOpacity(0.7),
+                          dashPattern: const [6, 4],
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              child: Row(
+                                children: [
+                                  IntrinsicWidth(
+                                    child: TextField(
+                                      controller: _valueController,
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                        isCollapsed: true,
+                                        border: InputBorder.none,
+                                        hintText: S.of(context).value,
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'^[\d./-]+$')),
+                                      ],
+                                      onTap: () => _valueController.selection =
+                                          TextSelection(
+                                              baseOffset: 0,
+                                              extentOffset: _valueController
+                                                  .value.text.length),
+                                    ),
+                                  ),
+                                  const Text(
+                                    ' g KH',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: TextField(
-                controller: _valueController,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: S.of(context).value,
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'^[\d./-]+$')),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [
