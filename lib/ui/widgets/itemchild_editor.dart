@@ -32,10 +32,10 @@ class _ItemChildEditorState extends State<ItemChildEditor> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _valueController = TextEditingController();
 
-  File? newImageFile;
-
   @override
   void initState() {
+    _nameController.text = widget.itemChild.description;
+    _valueController.text = widget.itemChild.value.toString();
     _loadImage();
     super.initState();
   }
