@@ -254,16 +254,16 @@ class _DetailScreenState extends State<DetailScreen> {
   ///
   /// returns false if there is any error (file System, no externalStorageDirectory, Database error...)
   Future<bool> _setItemChild(
-      {required ItemChild itemChild, String? newImagePath}) async {
-    if (newImagePath != null) {
+      {required ItemChild itemChild, bool? hasImageChanged}) async {
+    if (hasImageChanged != null && hasImageChanged) {
       Directory? dirPrefix =
           await locator<StorageHandler>().getExternalStorageDirectory();
       if (dirPrefix == null) return false;
 
-      final String filename = path.basename(newImagePath);
+      final String filename = path.basename(itemChild.imagepath);
 
       File copyFile = await locator<StorageHandler>()
-          .copyFile(newImagePath, '${dirPrefix.path}/$filename');
+          .copyFile(itemChild.imagepath, '${dirPrefix.path}/$filename');
       if (!await locator<StorageHandler>().exists(copyFile)) return false;
 
       itemChild.imagepath = filename;
