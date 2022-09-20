@@ -142,7 +142,7 @@ class _DetailScreenState extends State<DetailScreen> {
         }
       },
       title: item.description,
-      value: '',
+      value: item.value,
       image: fileExists ? file : null,
     );
   }
