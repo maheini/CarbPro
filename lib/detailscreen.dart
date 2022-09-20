@@ -280,21 +280,6 @@ class _DetailScreenState extends State<DetailScreen> {
     return false;
   }
 
-  Future<File?> _pickImage() async {
-    XFile? pickedFile = await locator<ImagePicker>().pickImage(
-      source: ImageSource.camera,
-      maxHeight: 1600,
-      maxWidth: 1600,
-      imageQuality: 50,
-    );
-
-    File? imageFile;
-    if (pickedFile != null) {
-      imageFile = File(pickedFile.path);
-    }
-    return imageFile;
-  }
-
   //EDIT ITEM NAME ->Main purpose: show Details of an Item, let the user edit them and
   //    provide a possibility for adding new items.
   void _editName() async {
