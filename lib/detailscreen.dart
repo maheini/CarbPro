@@ -1,5 +1,6 @@
 import 'package:carbpro/ui/widgets/emtylistplaceholder.dart';
 import 'package:carbpro/ui/widgets/itemcard.dart';
+import 'package:carbpro/ui/widgets/itemchild_editor.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
@@ -148,105 +149,33 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   // Item editor
-  void _itemEditor({ItemChild? itemChild, Image? image}) async {
+  void _itemEditor({ItemChild? itemChild}) async {
     itemChild ??= ItemChild(0, widget.id, '', 0, '');
-    File? newImageFile;
-    TextEditingController itemNameController =
-        TextEditingController(text: itemChild.description);
-    bool textEmptyError = false;
 
     await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return AlertDialog(
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _pickImage().then((file) {
-                            if (file != null) {
-                              newImageFile = file;
-                              setState(() => image = Image.file(
-                                    file,
-                                    fit: BoxFit.cover,
-                                  ));
-                            }
-                          });
-                        },
-                        child: AspectRatio(
-                            aspectRatio: 1,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: image ??
-                                    Center(
-                                      child: CircleAvatar(
-                                        radius: 45,
-                                        backgroundColor:
-                                            Colors.black.withOpacity(0.1),
-                                        child: const Icon(
-                                          Icons.add_photo_alternate_outlined,
-                                          size: 50,
-                                        ),
-                                      ),
-                                    ))),
-                      ),
-                      TextField(
-                        controller: itemNameController,
-                        decoration: InputDecoration(
-                          hintText: S.of(context).description,
-                          errorText: textEmptyError
-                              ? S.of(context).description_empty
-                              : null,
-                        ),
-                        onChanged: (String input) {
-                          if (itemNameController.text.isEmpty) {
-                            setState(() {
-                              textEmptyError = true;
-                            });
-                          } else if (textEmptyError) {
-                            setState(() {
-                              textEmptyError = false;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(S.of(context).cancel.toUpperCase()),
-                    onPressed: () => Navigator.pop(context, false),
-                  ),
-                  TextButton(
-                    child: Text(S.of(context).save.toUpperCase()),
-                    onPressed: () async {
-                      if (itemNameController.text.isEmpty && image == null) {
-                        Navigator.pop(context, false);
-                      } else {
-                        itemChild?.description = itemNameController.text;
-                        await _setItemChild(
-                            itemChild: itemChild!,
-                            newImagePath: newImageFile?.path);
-                        Navigator.pop(context, true);
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        }).then((value) async {
-      if (value) {
-        await _loadItemChildren();
-        _generatedContentItems = await _buildList();
-        setState(() {});
-      }
-    });
+      context: context,
+      builder: (BuildContext context) => ItemChildEditor(
+        itemChild: itemChild!,
+        onCancel: Navigator.of(context).pop,
+        onSave: (itemChild, imageHasChanged) async {
+          // Is card empty? Then cancel saving...
+          if (itemChild.description.isEmpty &&
+              itemChild.value == 0 &&
+              itemChild.imagepath.isEmpty) {
+            Navigator.pop(context);
+          }
+          // Save itemChild
+          else {
+            await _setItemChild(
+                itemChild: itemChild, hasImageChanged: imageHasChanged);
+          }
+          Navigator.pop(context);
+          await _loadItemChildren();
+          _generatedContentItems = await _buildList();
+          setState(() {});
+        },
+      ),
+    );
   }
 
   /// Updates and/or add ItemChild inside File sytem and database
