@@ -24,7 +24,7 @@ void main() {
   setUpAll(
     () {
       registerFallbackValue(PlatformWrapper());
-      registerFallbackValue(ItemChild(0, 0, '', ''));
+      registerFallbackValue(ItemChild(0, 0, '', 0.0, ''));
       registerFallbackValue(ImageSource.camera);
       registerFallbackValue(CameraDevice.front);
       registerFallbackValue(File('d'));
@@ -282,7 +282,7 @@ void main() {
       when(() => storageHandler.copyFile(any(), any())).thenAnswer(
           (_) => Future.value(File('assets/storagehandler_test_image.jpg')));
       when(() => databaseHandler.getChildren(1)).thenAnswer(
-          (_) async => Future.value([ItemChild(1, 1, 'ItemChild', '')]));
+          (_) async => Future.value([ItemChild(1, 1, 'ItemChild', 11.0, '')]));
       expect(find.text(S.current.save.toUpperCase()), findsOneWidget);
       await tester.tap(find.text(S.current.save.toUpperCase()));
       await tester.pump();
