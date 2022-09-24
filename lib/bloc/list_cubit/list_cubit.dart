@@ -161,6 +161,7 @@ class ListCubit extends Cubit<ListState> {
         for (ItemChild child in children) {
           files.add(File('$basepath/${child.imagepath}'));
           childrenJson.add({
+            'value': child.value,
             'description': child.description,
             'imagepath': child.imagepath,
           });
