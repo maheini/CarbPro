@@ -330,6 +330,7 @@ class ListCubit extends Cubit<ListState> {
                 0,
                 parentID,
                 child['description'],
+                child['value'],
                 newName,
               ),
             );
