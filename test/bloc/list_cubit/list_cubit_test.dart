@@ -665,7 +665,7 @@ void main() {
 
   group('Test the import function', () {
     String json =
-        '[{"name":"item1","children":[{"description":"desc","imagepath":"imagepath"}]}]';
+        '[{"name":"item1","children":[{"value":11.1,"description":"desc","imagepath":"imagepath"}]}]';
     List<Item> items = [Item(1, 'item1')];
     late Directory temp;
     late Directory external;
@@ -677,7 +677,7 @@ void main() {
     setUp(() {
       registerFallbackValue(Directory(''));
       registerFallbackValue(File(''));
-      registerFallbackValue(ItemChild(1, 0, 'description', 'imagepath'));
+      registerFallbackValue(ItemChild(1, 0, 'description', 11.1, 'imagepath'));
 
       temp = Directory('temp');
       external = Directory('external');
@@ -696,8 +696,9 @@ void main() {
       when(() => storageHandler.copyFile(any(), any())).thenAnswer(
           (invocation) async => File(invocation.positionalArguments[1]));
 
-      when(() => fileAccessWrapper.readFile(any())).thenAnswer((_) async =>
-          '{"name":"item2","children":[{"description":"","imagepath":"imagepath"}]}');
+      when(() => fileAccessWrapper.readFile(any())).thenAnswer((_) async {
+        return '{"name":"item2","children":[{"value":11.1,"description":"","imagepath":"imagepath"}]}';
+      });
       when(() => fileAccessWrapper.exists(any())).thenAnswer((val) async {
         File file = val.positionalArguments[0];
         // return false to simulate that the image isn't imported already
