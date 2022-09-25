@@ -588,9 +588,9 @@ void main() {
     late String actualPath;
     late String actualJson;
     String expectedJson =
-        '[{"name":"item2","children":[{"description":"","imagepath":"imagepath"}]}]';
+        '[{"name":"item2","children":[{"value":11.1,"description":"","imagepath":"imagepath"}]}]';
     blocTest(
-        'The export function call StorageHandler.export with appropriate arguments',
+        'The export function should call StorageHandler.export with appropriate arguments',
         setUp: () {
           when(() => storageHandler.getPermission(any(), any()))
               .thenAnswer((_) async => true);
