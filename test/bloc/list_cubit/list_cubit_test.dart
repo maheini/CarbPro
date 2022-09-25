@@ -450,7 +450,7 @@ void main() {
 
   group('Test the export function', () {
     List<Item> items = [Item(0, 'item1'), Item(1, 'item2')];
-    List<ItemChild> child = [ItemChild(0, 1, '', 'imagepath')];
+    List<ItemChild> child = [ItemChild(0, 1, '', 11.1, 'imagepath')];
     late MockDatabaseHandler databaseHandler;
     late MockStorageHandler storageHandler;
 
