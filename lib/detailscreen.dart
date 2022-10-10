@@ -163,6 +163,7 @@ class _DetailScreenState extends State<DetailScreen> {
               itemChild.value == 0 &&
               itemChild.imagepath.isEmpty) {
             Navigator.pop(context);
+            return;
           }
           // Save itemChild
           else {
