@@ -169,6 +169,10 @@ void main() {
       locator.registerSingleton<StorageHandler>(storageHandler);
       when(() => storageHandler.getPermission(Permission.storage, any()))
           .thenAnswer((realInvocation) => Future.value(true));
+      when(() => storageHandler.exists(any()))
+          .thenAnswer((invocation) => Future.value(true));
+      when(() => storageHandler.getExternalStorageDirectory())
+          .thenAnswer((invocation) async => Directory(''));
     });
 
     testWidgets(
