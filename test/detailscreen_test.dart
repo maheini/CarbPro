@@ -176,13 +176,14 @@ void main() {
     });
 
     testWidgets(
-        'Check if Addbutton is aviable -> after clicking on it, '
-        'a popup should appear with with a field of name and image',
-        (WidgetTester tester) async {
+        'Check if Addbutton is avaible -> after clicking on it, '
+        '_itemEditor Widget should popup', (WidgetTester tester) async {
       when(() => databaseHandler.getItem(1))
           .thenAnswer((_) async => Future.value(Item(1, 'ItemName')));
       when(() => databaseHandler.getChildren(1))
           .thenAnswer((_) async => Future.value([]));
+      when(() => storageHandler.exists(any()))
+          .thenAnswer((invocation) => Future.value(false));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -202,8 +203,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
       await tester.pump();
 
-      // expect a popup with textfield and add-image icon
-      expect(find.byType(TextField), findsOneWidget);
+      // expect a popup with two textfield and add-image icon
+      expect(find.byType(TextField), findsNWidgets(2));
       expect(find.byIcon(Icons.add_photo_alternate_outlined), findsOneWidget);
       expect(find.text(S.current.save.toUpperCase()), findsOneWidget);
       expect(find.text(S.current.cancel.toUpperCase()), findsOneWidget);
