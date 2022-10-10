@@ -278,7 +278,8 @@ void main() {
 
       // Pick image and enter name
       await tester.tap(find.byIcon(Icons.add_photo_alternate_outlined));
-      await tester.enterText(find.byType(TextField), 'ItemChild');
+      await tester.enterText(find.byType(TextField).first, 'ItemChild');
+      await tester.enterText(find.byType(TextField).at(1), '22.0');
       await tester.pump();
 
       // save everything
