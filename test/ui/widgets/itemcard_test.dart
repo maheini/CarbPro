@@ -36,6 +36,37 @@ void main() {
         },
       );
 
+      testWidgets(
+        'Check if Image gets loaded if there is one and replacement icon isn"t visible',
+        (WidgetTester tester) async {
+          File mockFile = MockFile();
+          Uint8List fileContent =
+              (await rootBundle.load('assets/default_icon.png'))
+                  .buffer
+                  .asUint8List();
+          when(() => mockFile.readAsBytes())
+              .thenAnswer((invocation) async => fileContent);
+          when(() => mockFile.path).thenReturn('path');
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: SizedBox(
+                  width: 300,
+                  child: ItemCard(
+                    title: 'title',
+                    value: 11.2,
+                    image: mockFile,
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          verify(() => mockFile.readAsBytes()).called(1);
+          expect(find.byIcon(Icons.wallpaper), findsNothing);
+        },
+      );
     },
   );
 }
