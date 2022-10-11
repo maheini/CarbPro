@@ -95,6 +95,32 @@ void main() {
         },
       );
 
+      testWidgets(
+        'Check if longPress is called if the card is pressed long',
+        (WidgetTester tester) async {
+          bool check = false;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: SizedBox(
+                  width: 300,
+                  child: ItemCard(
+                    title: 'title',
+                    value: 11.2,
+                    image: File(''),
+                    onLongPress: () => check = true,
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          await tester.longPress(find.byType(ItemCard));
+
+          expect(check, true);
+        },
+      );
     },
   );
 }
