@@ -67,6 +67,34 @@ void main() {
           expect(find.byIcon(Icons.wallpaper), findsNothing);
         },
       );
+
+      testWidgets(
+        'Check if tap is called if the card is tapped',
+        (WidgetTester tester) async {
+          bool check = false;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: SizedBox(
+                  width: 300,
+                  child: ItemCard(
+                    title: 'title',
+                    value: 11.2,
+                    image: File(''),
+                    onTap: () => check = true,
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          await tester.tap(find.byType(ItemCard));
+
+          expect(check, true);
+        },
+      );
+
     },
   );
 }
