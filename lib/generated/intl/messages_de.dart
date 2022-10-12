@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_developer_info": MessageLookupByLibrary.simpleMessage(
             "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung."),
         "build": MessageLookupByLibrary.simpleMessage("Build"),
+        "camera": MessageLookupByLibrary.simpleMessage("Kamera"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
         "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
@@ -47,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export fehlgeschlagen. Sind alle Berechtigungen erlaubt?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "Alle Elemente wurden exportiert in den /downloads Ordner"),
+        "gallery": MessageLookupByLibrary.simpleMessage("Galerie"),
         "github": MessageLookupByLibrary.simpleMessage("GitHub"),
         "import": MessageLookupByLibrary.simpleMessage("Elemente importieren"),
         "import_failure": MessageLookupByLibrary.simpleMessage(

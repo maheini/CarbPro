@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_developer_info": MessageLookupByLibrary.simpleMessage(
             "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development."),
         "build": MessageLookupByLibrary.simpleMessage("Build"),
+        "camera": MessageLookupByLibrary.simpleMessage("Camera"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "description": MessageLookupByLibrary.simpleMessage("Description"),
@@ -47,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Export failed. Are all permissions granted?"),
         "export_success": MessageLookupByLibrary.simpleMessage(
             "all items were exported to /Downloads folder"),
+        "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
         "github": MessageLookupByLibrary.simpleMessage("GitHub"),
         "import": MessageLookupByLibrary.simpleMessage("Import items"),
         "import_failure": MessageLookupByLibrary.simpleMessage(
