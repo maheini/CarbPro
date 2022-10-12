@@ -94,5 +94,8 @@
     "github": "GitHub",
     "website": "Website",
     "website_url": "https://carbpro.neofix.ch/",
-    "website_downloads_url": "https://carbpro.neofix.ch/collection/"
+    "website_downloads_url": "https://carbpro.neofix.ch/collection/",
+    "@________ImageGetter________":{},
+    "camera": "Camera",
+    "gallery": "Gallery"
 }
