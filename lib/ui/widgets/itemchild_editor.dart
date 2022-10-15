@@ -4,12 +4,13 @@ import 'package:carbpro/datamodels/itemchild.dart';
 import 'package:carbpro/generated/l10n.dart';
 import 'package:carbpro/handler/storagehandler.dart';
 import 'package:carbpro/locator/locator.dart';
+import 'package:carbpro/ui/widgets/image_getter.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
-// TODO: Add tests
 class ItemChildEditor extends StatefulWidget {
   const ItemChildEditor({
     required this.itemChild,
