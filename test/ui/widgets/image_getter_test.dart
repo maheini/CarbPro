@@ -86,5 +86,10 @@ void main() {
   );
 
   group('test functionality of the widget', () {
+    // TODO check if camera is called with the right settings
+    // TODO check if gallery is called with the right settings
+
+    // TODO check if camera returns null, the return is also null
+    // TODO check if gallery returns null, the return is also null
   });
 }
