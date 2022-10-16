@@ -47,6 +47,41 @@ void main() {
           expect(find.byIcon(Icons.image), findsOneWidget);
         },
       );
+
+      testWidgets(
+        'Test if popup is dismissible',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                home: Builder(
+                  builder: (context) {
+                    return Scaffold(
+                      body: ElevatedButton(
+                        onPressed: () => ImageGetter().getImage(context),
+                        child: const Text('button'),
+                      ),
+                    );
+                  },
+                )),
+          );
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.text('button'));
+          await tester.pump();
+          expect(find.text(S.current.camera), findsOneWidget);
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+          await tester.pump();
+
+          expect(find.text(S.current.camera), findsNothing);
+        },
+      );
     },
   );
 
