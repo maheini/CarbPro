@@ -1,6 +1,8 @@
 {
     "@@locale": "de",
     "language": "Deutsch",
+    "@________GENERAL________":{},
+    "carbs_unit": "g KH",
     "@________HOMESCREEN________":{},
     "welcome": "Willkommen",
     "start_with_first_item": "Starte mit deinem ersten Element",
