@@ -10,7 +10,7 @@ class ImageGetter {
 
   Future<File?> getImage(BuildContext context) async {
     File? imageFile;
-    await showModalBottomSheet(
+    int? selection = await showModalBottomSheet<int>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -28,25 +28,28 @@ class ImageGetter {
               title: Text(S.of(context).camera),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              onTap: () async {
-                imageFile = await _pickCameraImage();
-                Navigator.of(context).pop();
-              },
+              onTap: () => Navigator.of(context).pop(0),
             ),
             ListTile(
               leading: const Icon(Icons.image),
               title: Text(S.of(context).gallery),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              onTap: () async {
-                imageFile = await _pickGalleryImage();
-                Navigator.of(context).pop();
-              },
+              onTap: () => Navigator.of(context).pop(1),
             ),
           ],
         );
       },
     );
+
+    switch (selection) {
+      case 0:
+        imageFile = await _pickCameraImage();
+        break;
+      case 1:
+        imageFile = await _pickGalleryImage();
+        break;
+    }
     return imageFile;
   }
 
