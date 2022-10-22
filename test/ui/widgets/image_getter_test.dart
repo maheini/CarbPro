@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:carbpro/generated/l10n.dart';
 import 'package:carbpro/ui/widgets/image_getter.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';
 
-class mockImagePicker extends Mock implements ImagePicker {}
+class MockImagePicker extends Mock implements ImagePicker {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(ImageSource.camera);
+    registerFallbackValue(CameraDevice.front);
+  });
+
   group(
     'Test Layout',
     () {
