@@ -1,3 +1,4 @@
+import 'package:carbpro/generated/l10n.dart';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,8 @@ class ItemCard extends StatelessWidget {
                                         value.truncateToDouble() == value
                                             ? 0
                                             : 1) +
-                                    ' g KH',
+                                    ' ' +
+                                    S.current.carbs_unit,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 15,
