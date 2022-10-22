@@ -161,9 +161,9 @@ class _ItemChildEditorState extends State<ItemChildEditor> {
                                                   .value.text.length),
                                     ),
                                   ),
-                                  const Text(
-                                    ' g KH',
-                                    style: TextStyle(color: Colors.white),
+                                  Text(
+                                    ' ' + S.current.carbs_unit,
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
