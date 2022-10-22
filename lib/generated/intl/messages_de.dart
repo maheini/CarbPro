@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "build": MessageLookupByLibrary.simpleMessage("Build"),
         "camera": MessageLookupByLibrary.simpleMessage("Kamera"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
+        "carbs_unit": MessageLookupByLibrary.simpleMessage("g KH"),
         "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
         "description": MessageLookupByLibrary.simpleMessage("Beschreibung"),
         "description_empty":

@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `carbs`
+  String get carbs_unit {
+    return Intl.message(
+      'carbs',
+      name: 'carbs_unit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Welcome`
   String get welcome {
     return Intl.message(
