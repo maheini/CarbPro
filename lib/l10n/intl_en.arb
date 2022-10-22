@@ -4,6 +4,8 @@
     "@language":{
         "description": "The current language"
     },
+    "@________GENERAL________":{},
+    "carbs_unit": "carbs",
     "@________HOMESCREEN________":{},
     "welcome": "Welcome",
     "start_with_first_item": "Start with your first Item",
