@@ -55,8 +55,10 @@ void main() {
       );
 
       testWidgets(
-        'Test if popup is dismissible',
+        'Test if popup is dismissible and image file is null',
         (WidgetTester tester) async {
+          File? imageFile;
+
           await tester.pumpWidget(
             MaterialApp(
                 localizationsDelegates: const [
@@ -70,7 +72,9 @@ void main() {
                   builder: (context) {
                     return Scaffold(
                       body: ElevatedButton(
-                        onPressed: () => ImageGetter().getImage(context),
+                        onPressed: () async {
+                          imageFile = await ImageGetter().getImage(context);
+                        },
                         child: const Text('button'),
                       ),
                     );
@@ -86,6 +90,7 @@ void main() {
           await tester.pump();
 
           expect(find.text(S.current.camera), findsNothing);
+          expect(imageFile, isNull);
         },
       );
     },
