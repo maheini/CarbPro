@@ -151,5 +151,45 @@ void main() {
       expect(imageFile?.path, 'assets/storagehandler_test_image.jpg');
       expect(find.text(S.current.camera), findsNothing);
     });
+
+    testWidgets(
+        'Test if tap on gallery button is opening Image picker '
+        'and correct image is returned', (WidgetTester tester) async {
+      ImageGetter imageGetter = ImageGetter();
+      imageGetter.imagePicker = imagePicker;
+      File? imageFile;
+
+      await tester.pumpWidget(
+        MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            home: Builder(
+              builder: (context) {
+                return Scaffold(
+                  body: ElevatedButton(
+                    onPressed: () async {
+                      imageFile = await imageGetter.getImage(context);
+                    },
+                    child: const Text('button'),
+                  ),
+                );
+              },
+            )),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('button'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.gallery));
+      await tester.pumpAndSettle();
+
+      expect(imageFile?.path, 'assets/storagehandler_test_image.jpg');
+      expect(find.text(S.current.gallery), findsNothing);
+    });
   });
 }
