@@ -268,7 +268,7 @@ void main() {
 
       // tap add-item button
       await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Replace ImagePicker locator with mock ImagePicker
       expect(locator.isRegistered<ImagePicker>(), true);
@@ -276,8 +276,7 @@ void main() {
       locator.registerLazySingleton<ImagePicker>(() => imagePicker);
       locator.allowReassignment = false;
 
-      // Pick image and enter name
-      await tester.tap(find.byIcon(Icons.add_photo_alternate_outlined));
+      // Enter name and value
       await tester.enterText(find.byType(TextField).at(0), 'ItemChild');
       await tester.enterText(find.byType(TextField).at(1), '22.0');
       await tester.pump();
@@ -291,8 +290,7 @@ void main() {
           (_) async => Future.value([ItemChild(1, 1, 'ItemChild', 11.0, '')]));
       expect(find.text(S.current.save.toUpperCase()), findsOneWidget);
       await tester.tap(find.text(S.current.save.toUpperCase()));
-      await tester.pump();
-      verify(() => storageHandler.copyFile(any(), any())).called(1);
+      await tester.pumpAndSettle();
       verify(() => databaseHandler.addItemChild(any())).called(1);
 
       // let the ui reload all items and new stub
@@ -304,6 +302,7 @@ void main() {
       expect(find.text(S.current.save.toUpperCase()), findsNothing);
       expect(find.text(S.current.cancel.toUpperCase()), findsNothing);
       expect(find.text('ItemChild'), findsOneWidget);
+      expect(find.text('11 ' + S.current.carbs_unit), findsOneWidget);
     });
 
     tearDown(() {
