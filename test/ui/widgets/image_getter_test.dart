@@ -97,10 +97,59 @@ void main() {
   );
 
   group('test functionality of the widget', () {
-    // TODO check if camera is called with the right settings
-    // TODO check if gallery is called with the right settings
+    late ImagePicker imagePicker;
 
-    // TODO check if camera returns null, the return is also null
-    // TODO check if gallery returns null, the return is also null
+    setUp(() {
+      imagePicker = MockImagePicker();
+      when(() => imagePicker.pickImage(
+                source: any(named: "source"),
+                maxWidth: any(named: "maxWidth"),
+                maxHeight: any(named: "maxHeight"),
+                imageQuality: any(named: "imageQuality"),
+                preferredCameraDevice: any(named: "preferredCameraDevice"),
+              ))
+          .thenAnswer((realInvocation) =>
+              Future.value(XFile('assets/storagehandler_test_image.jpg')));
+    });
+
+    testWidgets(
+        'Test if tap on camera button is opening Image picker '
+        'and correct image is returned', (WidgetTester tester) async {
+      ImageGetter imageGetter = ImageGetter();
+      imageGetter.imagePicker = imagePicker;
+      File? imageFile;
+
+      await tester.pumpWidget(
+        MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            home: Builder(
+              builder: (context) {
+                return Scaffold(
+                  body: ElevatedButton(
+                    onPressed: () async {
+                      imageFile = await imageGetter.getImage(context);
+                    },
+                    child: const Text('button'),
+                  ),
+                );
+              },
+            )),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('button'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.camera));
+      await tester.pumpAndSettle();
+
+      expect(imageFile?.path, 'assets/storagehandler_test_image.jpg');
+      expect(find.text(S.current.camera), findsNothing);
+    });
   });
 }
