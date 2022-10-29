@@ -1,8 +1,10 @@
+import 'package:carbpro/generated/l10n.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:carbpro/ui/widgets/itemcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -16,8 +18,15 @@ void main() {
         'Check if all values are visible',
         (WidgetTester tester) async {
           await tester.pumpWidget(
-            const MaterialApp(
-              home: Scaffold(
+            MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              home: const Scaffold(
                 body: SizedBox(
                   width: 300,
                   child: ItemCard(
@@ -29,9 +38,10 @@ void main() {
               ),
             ),
           );
+          await tester.pump();
 
           expect(find.text('title'), findsOneWidget);
-          expect(find.text('11.2 g KH'), findsOneWidget);
+          expect(find.text('11.2 ' + S.current.carbs_unit), findsOneWidget);
           expect(find.byIcon(Icons.wallpaper), findsOneWidget);
         },
       );
