@@ -60,6 +60,13 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
               home: Scaffold(
                 body: SizedBox(
                   width: 300,
@@ -72,6 +79,7 @@ void main() {
               ),
             ),
           );
+          await tester.pump();
 
           verify(() => mockFile.readAsBytes()).called(1);
           expect(find.byIcon(Icons.wallpaper), findsNothing);
@@ -85,6 +93,13 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
               home: Scaffold(
                 body: SizedBox(
                   width: 300,
@@ -98,6 +113,7 @@ void main() {
               ),
             ),
           );
+          await tester.pump();
 
           await tester.tap(find.byType(ItemCard));
 
@@ -112,6 +128,13 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
               home: Scaffold(
                 body: SizedBox(
                   width: 300,
@@ -125,6 +148,7 @@ void main() {
               ),
             ),
           );
+          await tester.pump();
 
           await tester.longPress(find.byType(ItemCard));
 
