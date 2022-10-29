@@ -90,11 +90,10 @@ class _ItemChildEditorState extends State<ItemChildEditor> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        _pickImage().then((file) {
-                          if (file != null) {
-                            setState(() => image = file);
-                          }
-                        });
+                        ImageGetter().getImage(context).then((imageFile) => {
+                              if (imageFile != null)
+                                {setState(() => image = imageFile)}
+                            });
                       },
                       child: AspectRatio(
                         aspectRatio: 1,
