@@ -177,7 +177,7 @@ void main() {
         (WidgetTester tester) async {
           when(() => listCubit.state).thenReturn(
             ListLoaded(
-              [Item(0, 'item1'), Item(1, 'item2')],
+              [Item(1, 'item1'), Item(2, 'item2')],
               const [],
             ),
           );
@@ -203,7 +203,7 @@ void main() {
 
           await tester.longPress(find.text('item1'));
 
-          verify(() => listCubit.itemPressed(0)).called(1);
+          verify(() => listCubit.itemPressed(1)).called(1);
           expect(settingsOpened, false);
         },
       );
@@ -219,8 +219,8 @@ void main() {
       setUp(() {
         listCubit = MockListCubit();
         listSelection = ListSelection(
-          [Item(0, 'item1'), Item(1, 'item2')],
-          const [0],
+          [Item(1, 'item1'), Item(2, 'item2')],
+          const [1],
         );
       });
 
@@ -263,7 +263,7 @@ void main() {
           expect(finder, findsOneWidget);
 
           await tester.tap(finder);
-          verify(() => listCubit.itemPressed(0)).called(1);
+          verify(() => listCubit.itemPressed(1)).called(1);
         },
       );
     },
