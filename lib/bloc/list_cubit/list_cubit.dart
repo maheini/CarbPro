@@ -22,7 +22,7 @@ class ListCubit extends Cubit<ListState> {
     databaseHandler.loadDatabase().then((_) => _databaseLoaded = true);
   }
   List<Item> _items = [];
-  List<int> _selectedItems = [];
+  List<int> _selectedIds = [];
   bool _databaseLoaded = false;
   String? _filter;
 
@@ -35,32 +35,32 @@ class ListCubit extends Cubit<ListState> {
     while (_databaseLoaded == false) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    _selectedItems = [];
+    _selectedIds = [];
     _items = await databaseHandler.getItems();
-    emit(ListLoaded(_items, _selectedItems));
+    emit(ListLoaded(_items, _selectedIds));
   }
 
   /// add or remove [Item] from current selection
-  void itemPressed(int index) {
-    if (_selectedItems.contains(index)) {
-      _selectedItems = [..._selectedItems]..remove(index);
-      if (_selectedItems.isEmpty) {
-        emit(ListLoaded(_items, _selectedItems));
+  void itemPressed(int id) {
+    if (_selectedIds.contains(id)) {
+      _selectedIds = [..._selectedIds]..remove(id);
+      if (_selectedIds.isEmpty) {
+        emit(ListLoaded(_items, _selectedIds));
       } else {
-        emit(ListSelection(_items, _selectedItems));
+        emit(ListSelection(_items, _selectedIds));
       }
       return;
-    } else if (index < _items.length) {
-      _selectedItems = [..._selectedItems, index];
-      emit(ListSelection(_items, _selectedItems));
+    } else if (_items.where((element) => element.id == id).isNotEmpty) {
+      _selectedIds = [..._selectedIds, id];
+      emit(ListSelection(_items, _selectedIds));
     }
   }
 
   /// clear current selection
   void clearSelection() {
     if (state is ListSelection) {
-      _selectedItems = [];
-      emit(ListLoaded(_items, _selectedItems));
+      _selectedIds = [];
+      emit(ListLoaded(_items, _selectedIds));
     }
   }
 
@@ -90,9 +90,7 @@ class ListCubit extends Cubit<ListState> {
       Directory dir =
           await storageHandler.getExternalStorageDirectory() ?? Directory('');
 
-      for (var element in _selectedItems) {
-        final parentID = _items[element].id;
-
+      for (int parentID in _selectedIds) {
         List<ItemChild> children = await databaseHandler.getChildren(parentID);
         if (children.isNotEmpty) {
           for (var child in children) {
@@ -116,17 +114,17 @@ class ListCubit extends Cubit<ListState> {
       return;
     }
     _filter = filter.toLowerCase();
-    _selectedItems = [];
-    List<Item> filteredItems = _items
+    _selectedIds = [];
+    List<Item> _filteredItems = _items
         .where((element) => element.name.toLowerCase().contains(_filter ?? ''))
         .toList();
-    emit(ListFiltered(_filter ?? '', filteredItems, _selectedItems));
+    emit(ListFiltered(_filter ?? '', _filteredItems, _selectedIds));
   }
 
   /// Clear the filter and load all [Items]
   void disableFilter() {
     _filter = null;
-    emit(ListLoaded(_items, _selectedItems));
+    emit(ListLoaded(_items, _selectedIds));
   }
 
   /// Exports all selected [Item] to the external storage
@@ -153,10 +151,10 @@ class ListCubit extends Cubit<ListState> {
       List<File> files = [];
       List<Map<String, dynamic>> itemsJson = [];
 
-      for (var element in _selectedItems) {
+      for (var parentId in _selectedIds) {
         List<Map<String, dynamic>> childrenJson = [];
-        List<ItemChild> children =
-            await databaseHandler.getChildren(_items[element].id);
+        Item item = _items.where((element) => element.id == parentId).first;
+        List<ItemChild> children = await databaseHandler.getChildren(parentId);
 
         for (ItemChild child in children) {
           files.add(File('$basepath/${child.imagepath}'));
@@ -167,7 +165,7 @@ class ListCubit extends Cubit<ListState> {
           });
         }
         Map<String, dynamic> itemJson = {
-          'name': _items[element].name,
+          'name': item.name,
           'children': childrenJson,
         };
 
