@@ -2,9 +2,9 @@ part of 'list_cubit.dart';
 
 @immutable
 abstract class ListState extends Equatable {
-  const ListState(this.items, this.selectedItems);
+  const ListState(this.items, this.selectedIds);
   final List<Item> items;
-  final List<int> selectedItems;
+  final List<int> selectedIds;
 }
 
 class ListLoading extends ListState {
@@ -18,7 +18,7 @@ class ListLoaded extends ListState {
       : super(items, selectedItems);
 
   @override
-  List<Object> get props => [super.items, super.selectedItems];
+  List<Object> get props => [super.items, super.selectedIds];
 }
 
 class ListFiltered extends ListState {
@@ -27,7 +27,7 @@ class ListFiltered extends ListState {
 
   final String filter;
   @override
-  List<Object> get props => [filter, super.items, super.selectedItems];
+  List<Object> get props => [filter, super.items, super.selectedIds];
 }
 
 class ListSelection extends ListState {
@@ -35,5 +35,5 @@ class ListSelection extends ListState {
       : super(items, selectedItems);
 
   @override
-  List<Object> get props => [super.items, super.selectedItems];
+  List<Object> get props => [super.items, super.selectedIds];
 }
