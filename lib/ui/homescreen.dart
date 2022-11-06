@@ -147,8 +147,9 @@ class HomeScreenState extends State<HomeScreen> {
   AppBar _buildSelectBar(BuildContext context) {
     return AppBar(
       title: Text(
-        S.of(context).items_selected(
-            context.read<ListCubit>().state.selectedItems.length),
+        S
+            .of(context)
+            .items_selected(context.read<ListCubit>().state.selectedIds.length),
       ),
       actions: <Widget>[
         IconButton(
@@ -296,6 +297,4 @@ class HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // TODO: clean up code
 }
