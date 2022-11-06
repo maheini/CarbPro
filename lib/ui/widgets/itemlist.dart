@@ -60,7 +60,7 @@ class _ItemListState extends State<ItemList> {
   Widget _generateTile(BuildContext context, int index, Item item) {
     return BlocSelector<ListCubit, ListState, bool>(
       selector: ((state) {
-        return state.selectedItems.contains(index);
+        return state.selectedIds.contains(item.id);
       }),
       builder: (context, isSelected) {
         return ListTile(
@@ -70,14 +70,14 @@ class _ItemListState extends State<ItemList> {
           title: Text(item.name),
           onTap: () {
             if (context.read<ListCubit>().state is ListSelection) {
-              context.read<ListCubit>().itemPressed(index);
+              context.read<ListCubit>().itemPressed(item.id);
             } else {
               Navigator.pushNamed(context, '/details', arguments: item.id)
                   .then((value) => context.read<ListCubit>().loadItems());
             }
           },
           onLongPress: () {
-            context.read<ListCubit>().itemPressed(index);
+            context.read<ListCubit>().itemPressed(item.id);
           },
         );
       },
