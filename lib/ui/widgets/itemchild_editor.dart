@@ -213,19 +213,4 @@ class _ItemChildEditorState extends State<ItemChildEditor> {
       ],
     );
   }
-
-  Future<File?> _pickImage() async {
-    XFile? pickedFile = await locator<ImagePicker>().pickImage(
-      source: ImageSource.camera,
-      maxHeight: 1600,
-      maxWidth: 1600,
-      imageQuality: 50,
-    );
-
-    File? imageFile;
-    if (pickedFile != null) {
-      imageFile = File(pickedFile.path);
-    }
-    return imageFile;
-  }
 }
