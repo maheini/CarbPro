@@ -189,12 +189,12 @@ void main() {
           cubit.loadItems();
           await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
 
-          // select item 0
-          cubit.itemPressed(0);
-          expect(cubit.state, ListSelection(items, const [0]));
-
+          // select item with id 1
           cubit.itemPressed(1);
-          expect(cubit.state, ListSelection(items, const [0, 1]));
+          expect(cubit.state, ListSelection(items, const [1]));
+
+          cubit.itemPressed(2);
+          expect(cubit.state, ListSelection(items, const [1, 2]));
         },
       );
 
