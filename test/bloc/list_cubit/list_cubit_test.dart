@@ -39,7 +39,7 @@ void main() {
 
           expect(cubit.state is ListLoading, true);
           expect(cubit.state.items.length, 0);
-          expect(cubit.state.selectedItems.length, 0);
+          expect(cubit.state.selectedIds.length, 0);
           verifyNever(() => databaseHandler.getItems());
           verify(() => databaseHandler.loadDatabase()).called(1);
         },
@@ -144,8 +144,8 @@ void main() {
           await expectLater(cubit.stream, emits(ListLoaded(items, const [])));
 
           // select item 0
-          cubit.itemPressed(0);
-          expect(cubit.state, ListSelection(items, const [0]));
+          cubit.itemPressed(1);
+          expect(cubit.state, ListSelection(items, const [1]));
         },
       );
 
