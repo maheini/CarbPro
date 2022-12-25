@@ -237,14 +237,14 @@ void main() {
         build: () => cubit,
         act: (ListCubit bloc) async {
           await bloc.loadItems();
-          bloc.itemPressed(0);
+          bloc.itemPressed(1);
           bloc.clearSelection();
         },
         verify: (ListCubit cu) => cu.state == ListLoading(),
         expect: () => [
           ListLoading(),
           ListLoaded(items, const []),
-          ListSelection(items, const [0]),
+          ListSelection(items, const [1]),
           ListLoaded(items, const []),
         ],
       );
