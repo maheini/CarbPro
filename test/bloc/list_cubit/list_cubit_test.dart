@@ -156,17 +156,17 @@ void main() {
         build: () => cubit,
         act: (ListCubit cubit) async {
           await cubit.loadItems();
-          cubit.itemPressed(0);
           cubit.itemPressed(1);
+          cubit.itemPressed(2);
+          cubit.itemPressed(2);
           cubit.itemPressed(1);
-          cubit.itemPressed(0);
         },
         expect: () => [
           ListLoading(),
           ListLoaded(items, const []),
-          ListSelection(items, const [0]),
-          ListSelection(items, const [0, 1]),
-          ListSelection(items, const [0]),
+          ListSelection(items, const [1]),
+          ListSelection(items, const [1, 2]),
+          ListSelection(items, const [1]),
           ListLoaded(items, const []),
         ],
       );
