@@ -44,7 +44,9 @@ class AboutScreenState extends State<AboutScreen> {
             const SizedBox(height: 20),
             Center(
               child: Image.asset(
-                'assets/adaptive_icon.png',
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/adaptive_icon_white.png'
+                    : 'assets/adaptive_icon.png',
                 fit: BoxFit.cover,
                 width: 350,
               ),
