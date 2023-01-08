@@ -91,7 +91,7 @@
     "@________ABOUTSCREEN________":{},
     "version": "Version",
     "build": "Build",
-    "app_description": "Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... ",
+    "app_description": "CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.",
     "app_developer_info": "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.",
     "github": "GitHub",
     "website": "Website",

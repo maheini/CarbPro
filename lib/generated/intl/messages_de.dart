@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
         "add_item": MessageLookupByLibrary.simpleMessage("Element hinzufügen"),
         "app_description": MessageLookupByLibrary.simpleMessage(
-            "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... "),
+            "CarbPro ist eine grossartige App zum Erstellen von Sammlungen für Diabetiker. Es bietet die Möglichkeit, Nährwerte mit einem Bild abzuspeichern, was bisher einzigartig ist."),
         "app_developer_info": MessageLookupByLibrary.simpleMessage(
             "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung."),
         "build": MessageLookupByLibrary.simpleMessage("Build"),

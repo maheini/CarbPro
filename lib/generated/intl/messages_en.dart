@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_item": MessageLookupByLibrary.simpleMessage("Add item"),
         "app_description": MessageLookupByLibrary.simpleMessage(
-            "Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... "),
+            "CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far."),
         "app_developer_info": MessageLookupByLibrary.simpleMessage(
             "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development."),
         "build": MessageLookupByLibrary.simpleMessage("Build"),

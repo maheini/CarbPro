@@ -37,7 +37,7 @@
     "@________ABOUTSCREEN________":{},
     "version": "Version",
     "build": "Build",
-    "app_description": "Carbpro ist ein großartiges Tool zum Erstellen von Sammlungen, z.B. Bild/Kohlenhydrat-Sammlung für Diabetiker, Bild/Name-Sammlung für Pilzsammler... ",
+    "app_description": "CarbPro ist eine grossartige App zum Erstellen von Sammlungen für Diabetiker. Es bietet die Möglichkeit, Nährwerte mit einem Bild abzuspeichern, was bisher einzigartig ist.",
     "app_developer_info": "Carbpro wurde von Martin Heini entwickelt, unterstützt durch neofix.ch App Entwicklung.",
     "github": "GitHub",
     "website": "Website",
