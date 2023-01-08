@@ -382,10 +382,10 @@ class S {
     );
   }
 
-  /// `Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... `
+  /// `CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.`
   String get app_description {
     return Intl.message(
-      'Carbpro is a great tool to create collections, e.g. image/carb collection for diabetics, image/name collection for mushroom picker... ',
+      'CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.',
       name: 'app_description',
       desc: '',
       args: [],
