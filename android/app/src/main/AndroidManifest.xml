@@ -1,16 +1,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.carbpro">
 
+    <!-- Require camera to pick images to export items -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- Require camera to pick images for items -->
     <uses-permission android:name="android.permission.CAMERA" />
 
 
-
+    <!-- Required for url_launcher package and android > API 30 (opening device url) -->
+    <queries>
+        <!-- If your app opens https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
    <application
         android:requestLegacyExternalStorage="true"
-
 
         android:label="CarbPro"
         android:name="${applicationName}"

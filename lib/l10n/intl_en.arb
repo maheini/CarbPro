@@ -1,1 +1,103 @@
-{}
+{
+    "@@locale": "en",
+    "language": "English",
+    "@language":{
+        "description": "The current language"
+    },
+    "@________GENERAL________":{},
+    "carbs_unit": "carbs",
+    "@________HOMESCREEN________":{},
+    "welcome": "Welcome",
+    "start_with_first_item": "Start with your first Item",
+    "start_with_first_itemchild": "Now create a new entry",
+    "error_deleting_item": "Error deleting item(s)",
+    "unknown_error": "An unknown error occurred",
+    "@unknown_error":{
+        "description": "Text for unknown errors"
+    },
+    "confirm": "Confirm",
+    "@confirm":{
+        "description": "Text title to confirm anything..."
+    },
+    "search": "Search",
+    "@search":{
+        "description": "Text for search bars e.g."
+    },
+    "add_item": "Add item",
+    "@add_item":{
+        "description": "Text for adding an item"
+    },
+    "name": "Name",
+    "@name":{
+        "description": "Name text "
+    },
+    "name_empty": "Name is empty",
+    "@name_empty":{
+        "description": "Message if name is empty"
+    },
+    "warning_confirm_remove": "Do you really want to remove the item?",
+    "@warning_confirm_remove":{
+        "description": "Warning text which is shown before removing an item"
+    },
+    "cancel": "Cancel",
+    "@cancel":{
+        "description": "Cancel text"
+    },
+    "add": "Add",
+    "@add":{
+        "description": "Text fot adding an item"
+    },
+    "remove": "Remove",
+    "@remove":{
+        "description": "Button text to remove a something"
+    },
+    "items_selected": "{howMany, plural, one{1 Item} other{{howMany} Items}}",
+    "@items_selected":{
+        "description": "Text to display selected items"
+    },
+    "export_success": "all items were exported to /Downloads folder",
+    "export_failure": "Export failed. Are all permissions granted?",
+    "import_failure": "Import aborted. Are all permissions granted?",
+    "import": "Import items",
+    "about": "About CarbPro",
+    "download_items": "Download Items",
+    "@________DETAILSCREEN________":{},
+    "storage_permission_missing": "Storage access not granted",
+    "@storage_permission_missing":{
+        "description": "Error message if there is no storage access granted"
+    },
+    "description": "Description",
+    "@description":{
+        "description": "Translation for description :)"
+    },
+    "description_empty": "Description is empty",
+    "@description_empty":{
+        "description": "Message if description is empty"
+    },
+    "value": "Value",
+    "value_empty": "Value is empty",
+    "edit_item": "Edit item",
+    "@edit_item":{
+        "description": "Text displayed for edit item buttons"
+    },
+    "save": "Save",
+    "@save":{
+        "description": "Text for save button"
+    },
+    "ok": "Ok",
+    "@ok":{
+        "description": "Text for ok button"
+    },
+    "@________ABOUTSCREEN________":{},
+    "version": "Version",
+    "build": "Build",
+    "app_description": "CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.",
+    "app_developer_info": "Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.",
+    "github": "GitHub",
+    "website": "Website",
+    "website_url": "https://carbpro.neofix.ch/",
+    "website_downloads_url": "https://carbpro.neofix.ch/collection/",
+    "@________ImageGetter________":{},
+    "camera": "Camera",
+    "gallery": "Gallery"
+}

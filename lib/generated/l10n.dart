@@ -49,6 +49,418 @@ class S {
   static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
+
+  /// `English`
+  String get language {
+    return Intl.message(
+      'English',
+      name: 'language',
+      desc: 'The current language',
+      args: [],
+    );
+  }
+
+  /// `carbs`
+  String get carbs_unit {
+    return Intl.message(
+      'carbs',
+      name: 'carbs_unit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome`
+  String get welcome {
+    return Intl.message(
+      'Welcome',
+      name: 'welcome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start with your first Item`
+  String get start_with_first_item {
+    return Intl.message(
+      'Start with your first Item',
+      name: 'start_with_first_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now create a new entry`
+  String get start_with_first_itemchild {
+    return Intl.message(
+      'Now create a new entry',
+      name: 'start_with_first_itemchild',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error deleting item(s)`
+  String get error_deleting_item {
+    return Intl.message(
+      'Error deleting item(s)',
+      name: 'error_deleting_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An unknown error occurred`
+  String get unknown_error {
+    return Intl.message(
+      'An unknown error occurred',
+      name: 'unknown_error',
+      desc: 'Text for unknown errors',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: 'Text title to confirm anything...',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: 'Text for search bars e.g.',
+      args: [],
+    );
+  }
+
+  /// `Add item`
+  String get add_item {
+    return Intl.message(
+      'Add item',
+      name: 'add_item',
+      desc: 'Text for adding an item',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: 'Name text ',
+      args: [],
+    );
+  }
+
+  /// `Name is empty`
+  String get name_empty {
+    return Intl.message(
+      'Name is empty',
+      name: 'name_empty',
+      desc: 'Message if name is empty',
+      args: [],
+    );
+  }
+
+  /// `Do you really want to remove the item?`
+  String get warning_confirm_remove {
+    return Intl.message(
+      'Do you really want to remove the item?',
+      name: 'warning_confirm_remove',
+      desc: 'Warning text which is shown before removing an item',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: 'Cancel text',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: 'Text fot adding an item',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get remove {
+    return Intl.message(
+      'Remove',
+      name: 'remove',
+      desc: 'Button text to remove a something',
+      args: [],
+    );
+  }
+
+  /// `{howMany, plural, one{1 Item} other{{howMany} Items}}`
+  String items_selected(num howMany) {
+    return Intl.plural(
+      howMany,
+      one: '1 Item',
+      other: '$howMany Items',
+      name: 'items_selected',
+      desc: 'Text to display selected items',
+      args: [howMany],
+    );
+  }
+
+  /// `all items were exported to /Downloads folder`
+  String get export_success {
+    return Intl.message(
+      'all items were exported to /Downloads folder',
+      name: 'export_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export failed. Are all permissions granted?`
+  String get export_failure {
+    return Intl.message(
+      'Export failed. Are all permissions granted?',
+      name: 'export_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import aborted. Are all permissions granted?`
+  String get import_failure {
+    return Intl.message(
+      'Import aborted. Are all permissions granted?',
+      name: 'import_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import items`
+  String get import {
+    return Intl.message(
+      'Import items',
+      name: 'import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About CarbPro`
+  String get about {
+    return Intl.message(
+      'About CarbPro',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Items`
+  String get download_items {
+    return Intl.message(
+      'Download Items',
+      name: 'download_items',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Storage access not granted`
+  String get storage_permission_missing {
+    return Intl.message(
+      'Storage access not granted',
+      name: 'storage_permission_missing',
+      desc: 'Error message if there is no storage access granted',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get description {
+    return Intl.message(
+      'Description',
+      name: 'description',
+      desc: 'Translation for description :)',
+      args: [],
+    );
+  }
+
+  /// `Description is empty`
+  String get description_empty {
+    return Intl.message(
+      'Description is empty',
+      name: 'description_empty',
+      desc: 'Message if description is empty',
+      args: [],
+    );
+  }
+
+  /// `Value`
+  String get value {
+    return Intl.message(
+      'Value',
+      name: 'value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value is empty`
+  String get value_empty {
+    return Intl.message(
+      'Value is empty',
+      name: 'value_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit item`
+  String get edit_item {
+    return Intl.message(
+      'Edit item',
+      name: 'edit_item',
+      desc: 'Text displayed for edit item buttons',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: 'Text for save button',
+      args: [],
+    );
+  }
+
+  /// `Ok`
+  String get ok {
+    return Intl.message(
+      'Ok',
+      name: 'ok',
+      desc: 'Text for ok button',
+      args: [],
+    );
+  }
+
+  /// `Version`
+  String get version {
+    return Intl.message(
+      'Version',
+      name: 'version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Build`
+  String get build {
+    return Intl.message(
+      'Build',
+      name: 'build',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.`
+  String get app_description {
+    return Intl.message(
+      'CarbPro is a great app for creating collections for diabetics. It offers the possibility to save nutritional values with a picture, which is unique so far.',
+      name: 'app_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.`
+  String get app_developer_info {
+    return Intl.message(
+      'Carbpro is developed opensource by Martin Heini, supported by neofix.ch app development.',
+      name: 'app_developer_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GitHub`
+  String get github {
+    return Intl.message(
+      'GitHub',
+      name: 'github',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Website`
+  String get website {
+    return Intl.message(
+      'Website',
+      name: 'website',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://carbpro.neofix.ch/`
+  String get website_url {
+    return Intl.message(
+      'https://carbpro.neofix.ch/',
+      name: 'website_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://carbpro.neofix.ch/collection/`
+  String get website_downloads_url {
+    return Intl.message(
+      'https://carbpro.neofix.ch/collection/',
+      name: 'website_downloads_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get camera {
+    return Intl.message(
+      'Camera',
+      name: 'camera',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gallery`
+  String get gallery {
+    return Intl.message(
+      'Gallery',
+      name: 'gallery',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -57,6 +469,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
     ];
   }
 
