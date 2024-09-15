@@ -1,4 +1,4 @@
-package com.example.carbpro
+package com.neofix.carbpro
 
 import io.flutter.embedding.android.FlutterActivity
 

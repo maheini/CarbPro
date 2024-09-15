@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.carbpro">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Require camera to pick images to export items -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
